@@ -18,15 +18,21 @@
 ********************************************************************************/
 
 #include  "StateMashine.h"// 
-#include  "Core/_Protocols/_MB/mb_com.hpp"
+#include  "mb_com.hpp"
 
 eProcess_t eSM_proc;
 
+/*
+**
+*/
 void ProcessInit( void )
 {
   eSM_proc = ST_IDLE;
 }// ProcessInit()
 
+/*
+**
+*/
 void SM_loop( void )
 {  
   switch( eSM_proc )    // 

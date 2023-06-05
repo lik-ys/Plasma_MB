@@ -19,6 +19,11 @@
 /*===============================[ REDEFINITION DEFENCE ]======================*/ 
 #ifndef __STATE_MASHINE_HPP__ 
 #define __STATE_MASHINE_HPP__ 
+
+#ifdef __cplusplus
+extern "C" {
+#endif
+  
 /*===============================[ SPECIAL ]===================================*/ 
     // Блок операторов условной компиляции 
 /*===============================[ PUBLIC CONSTANTS ]==========================*/ 
@@ -51,6 +56,10 @@ extern  eProcess_t eSM_proc;
 void ProcessInit(void);
 
 void SM_loop( void );
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif 
 /** (END OF FILE  : StateMashine.hpp) 
