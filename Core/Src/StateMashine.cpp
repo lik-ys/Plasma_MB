@@ -1,12 +1,12 @@
 /*******************************************************************************
 *
-* Copyright (C) 2022 Sharopin Yuri
+* Copyright (C) 2023 Sharopin Yuri
 *
 * File              : StateMashine.cpp
 * Compiler          : IAR EWA 8.32
 * Version           : 0.0
-* Created File      : 01.06.2022
-* Last modified     : 01.06.2022
+* Created File      : 01.06.2023
+* Last modified     : 01.06.2023
 *
 * Support mail      : yshar@ngs.ru
 *
@@ -18,6 +18,7 @@
 ********************************************************************************/
 
 #include  "StateMashine.h"// 
+#include  "Core/_Protocols/_MB/mb_com.hpp"
 
 eProcess_t eSM_proc;
 
@@ -26,7 +27,7 @@ void ProcessInit( void )
   eSM_proc = ST_IDLE;
 }// ProcessInit()
 
-void SM_process( void )
+void SM_loop( void )
 {  
   switch( eSM_proc )    // 
   {

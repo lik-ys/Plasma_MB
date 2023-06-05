@@ -36,7 +36,7 @@ USHORT   usSRegHoldStart                              = S_REG_HOLDING_START;
 USHORT   usSRegHoldBuf[S_REG_HOLDING_NREGS]           ;
 #endif
 /*------------------------Slave user code----------------------*/
-extern uint16_t adc_data[2];
+
 /*------------------------Slave registers callback function----------------------*/
 
 /**

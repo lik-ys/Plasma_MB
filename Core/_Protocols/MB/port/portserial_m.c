@@ -14,9 +14,8 @@
 #if MB_MASTER_RTU_ENABLED > 0 || MB_MASTER_ASCII_ENABLED > 0
 
 /* ----------------------- Static variables ---------------------------------*/
-UART_HandleTypeDef *uart;
-//static
-uint8_t singlechar;
+UART_HandleTypeDef *uart_m;
+static uint8_t singlechar_m;
 
 /* ----------------------- User defenitions ---------------------------------*/
 #define RS485_MASTER_RTS_LOW	{}//HAL_GPIO_WritePin(RS485_RTS_GPIO_Port, RS485_RTS_Pin, GPIO_PIN_RESET)
@@ -26,7 +25,7 @@ uint8_t singlechar;
 
 BOOL xMBMasterPortSerialInit(void *dHUART, ULONG ulBaudRate, void *dHTIM)
 {
-	uart = (UART_HandleTypeDef *)dHUART;
+	uart_m = (UART_HandleTypeDef *)dHUART;
 
 	return TRUE;
 }
@@ -36,11 +35,11 @@ void vMBMasterPortSerialEnable(BOOL xRxEnable, BOOL xTxEnable)
 	if(xRxEnable)
 	{
 		RS485_Dir(rx);
-		HAL_UART_Receive_IT(uart, &singlechar, 1);
+		HAL_UART_Receive_IT(uart_m, &singlechar_m, 1);
 	}	
 	else
 	{
-		HAL_UART_AbortReceive_IT(uart);
+		HAL_UART_AbortReceive_IT(uart_m);
 	}
 
 	if(xTxEnable)
@@ -50,46 +49,46 @@ void vMBMasterPortSerialEnable(BOOL xRxEnable, BOOL xTxEnable)
 	}
 	else
 	{
-		HAL_UART_AbortTransmit_IT(uart);
+		HAL_UART_AbortTransmit_IT(uart_m);
 	}
 }
 
 void vMBMasterPortClose(void)
 {
-	HAL_UART_AbortReceive_IT(uart);
-	HAL_UART_AbortTransmit_IT(uart);
+	HAL_UART_AbortReceive_IT(uart_m);
+	HAL_UART_AbortTransmit_IT(uart_m);
 }
 
 BOOL xMBMasterPortSerialPutBytes(volatile UCHAR *ucByte, USHORT usSize)
 {
-	HAL_UART_Transmit_IT(uart, (uint8_t *)ucByte, usSize);
+	HAL_UART_Transmit_IT(uart_m, (uint8_t *)ucByte, usSize);
 	return TRUE;
 }
 
 BOOL xMBMasterPortSerialPutByte(CHAR ucByte)
 {
-	HAL_UART_Transmit_IT(uart, (uint8_t*)&ucByte, 1);
+	HAL_UART_Transmit_IT(uart_m, (uint8_t*)&ucByte, 1);
 	return TRUE;
 }
 
 BOOL xMBMasterPortSerialGetByte(CHAR * pucByte)
 {
-	*pucByte = (uint8_t)(singlechar);
+	*pucByte = (uint8_t)(singlechar_m);
 	return TRUE;
 }
 //
-//void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart)
+//void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart_m)
 //{
-//	if(huart->Instance == uart->Instance)
+//	if(huart->Instance == uart_m->Instance)
 //	{
 //		pxMBMasterFrameCBByteReceived();
-//		HAL_UART_Receive_IT(uart, &singlechar, 1);
+//		HAL_UART_Receive_IT(uart_m, &singlechar_m, 1);
 //	}
 //}
 //
 //void HAL_UART_TxCpltCallback(UART_HandleTypeDef *huart)
 //{
-//	if(huart->Instance == uart->Instance)
+//	if(huart->Instance == uart_m->Instance)
 //	{
 //		pxMBMasterFrameCBTransmitterEmpty();
 //	}

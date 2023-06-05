@@ -131,7 +131,7 @@ int main(void)
   while (1)
   {
     /* USER CODE END WHILE */
-    SM_process();
+    SM_loop();
     /* USER CODE BEGIN 3 */
   }
   /* USER CODE END 3 */

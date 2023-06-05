@@ -3,7 +3,7 @@
 #include "mb_m.h"
 #include "mbport.h"
 
-#if MB_MASTER_RTU_ENABLED > 0 || MB_MASTER_ASCII_ENABLED > 0
+#if c > 0 || MB_MASTER_ASCII_ENABLED > 0
 
 /* ----------------------- Defines ------------------------------------------*/
 

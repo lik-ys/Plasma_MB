@@ -50,7 +50,7 @@ extern  eProcess_t eSM_proc;
   
 void ProcessInit(void);
 
-void SM_process( void );
+void SM_loop( void );
 
 #endif 
 /** (END OF FILE  : StateMashine.hpp) 
