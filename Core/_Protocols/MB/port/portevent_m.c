@@ -95,10 +95,10 @@ void vMBMasterRunResRelease( void )
  */
 void vMBMasterErrorCBRespondTimeout(UCHAR ucDestAddress, const UCHAR* pucPDUData, USHORT ucPDULength)
 {
-	//RS485_Dir(tx);
+	RS485_Dir(tx);
 	xMBMasterPortEventPost(EV_MASTER_ERROR_RESPOND_TIMEOUT);
 	//HAL_Delay(10);
-	//RS485_Dir(rx);
+	RS485_Dir(rx);
 }
 
 /**
@@ -126,10 +126,13 @@ void vMBMasterErrorCBReceiveData(UCHAR ucDestAddress, const UCHAR* pucPDUData, U
  * @param ucPDULength PDU buffer length
  *
  */
+//extern "C"
 void vMBMasterErrorCBExecuteFunction(UCHAR ucDestAddress, const UCHAR* pucPDUData, USHORT ucPDULength)
 {
 	xMBMasterPortEventPost(EV_MASTER_ERROR_EXECUTE_FUNCTION);
 }
+
+
 
 /**
  * This is modbus master request process success callback function.

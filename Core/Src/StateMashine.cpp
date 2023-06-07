@@ -19,8 +19,11 @@
 
 #include  "StateMashine.h"// 
 #include  "mb_com.hpp"
+#include  "mb_m.h"
 
 eProcess_t eSM_proc;
+extern ModBusCom *pMBcntrl;
+extern ModBusCom *pMBhl;
 
 /*
 **
@@ -35,6 +38,7 @@ void ProcessInit( void )
 */
 void SM_loop( void )
 {  
+  pMBhl->Loop();
   switch( eSM_proc )    // 
   {
     case ST_IDLE:

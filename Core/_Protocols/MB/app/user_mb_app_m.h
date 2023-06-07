@@ -1,6 +1,10 @@
 #ifndef _USER_MB_MASTER_APP_
 #define _USER_MB_MASTER_APP_
 
+#ifdef __cplusplus
+PR_BEGIN_EXTERN_C
+#endif
+
 #include "mb.h"
 #include "mb_m.h"
 #include "mbconfig.h"
@@ -82,6 +86,7 @@ typedef struct
 extern mb_action_t 	mb_act;
 extern mb_cnt_t 	mb_cnt;
 
+#if ( 1== MB_MASTER_RTU_ENABLED )
 /* -----------------------Master Defines -------------------------------------*/
 
 #define M_DISCRETE_INPUT_START        0
@@ -112,5 +117,13 @@ void MBMasterTransmite(void );
 void MBMasterError(void );
 void MBMasterExec(void );
 void MBMasterErrorTO( void );
+
+
+
+#endif
+
+#ifdef __cplusplus
+PR_END_EXTERN_C
+#endif
 
 #endif // _USER_MB_MASTER_APP_

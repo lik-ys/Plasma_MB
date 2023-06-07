@@ -46,6 +46,8 @@
 #include "mbport.h"
 #if MB_SLAVE_RTU_ENABLED == 1
 #include "mbrtu.h"
+#else
+eMBErrorCode eMBPoll( void ){return MB_ENOERR;};
 #endif
 #if MB_SLAVE_ASCII_ENABLED == 1
 #include "mbascii.h"
@@ -412,4 +414,10 @@ eMBErrorCode eMBPoll( void )
     }
     return MB_ENOERR;
 }
+
+
+void vTest( void )
+{
+    static int x = 2;
+} 
 #endif

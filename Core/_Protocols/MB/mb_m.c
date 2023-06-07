@@ -47,6 +47,8 @@
 #include "mbport.h"
 #if MB_MASTER_RTU_ENABLED == 1
 #include "mbrtu.h"
+#else 
+eMBErrorCode    eMBMasterPoll( void ){return MB_ENOERR;}
 #endif
 #if MB_MASTER_ASCII_ENABLED == 1
 #include "mbascii.h"
@@ -98,6 +100,7 @@ BOOL( *pxMBMasterPortCBTimerExpired ) ( void );
 BOOL( *pxMBMasterFrameCBReceiveFSMCur ) ( void );
 BOOL( *pxMBMasterFrameCBTransmitFSMCur ) ( void );
 
+ 
 /* An array of Modbus functions handlers which associates Modbus function
  * codes with implementing functions.
  */
@@ -415,6 +418,7 @@ eMBMasterPoll( void )
 			case EV_ERROR_EXECUTE_FUNCTION:
 				vMBMasterErrorCBExecuteFunction(ucMBMasterGetDestAddress(),
 						ucMBFrame, usMBMasterGetPDUSndLength());
+                vTest();
 				return MB_EILLSTATE;
 			}
 			vMBMasterRunResRelease();

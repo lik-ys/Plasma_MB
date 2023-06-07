@@ -199,6 +199,7 @@ BOOL            eMBMasterIsEstablished( void );
  *   eMBErrorCode::MB_ENOERR.
  */
 eMBErrorCode    eMBMasterPoll( void );
+BOOL            xMBMasterPortEventGet(  /*@out@ */ eMBMasterEventType * eEvent );
 
 /*! \ingroup modbus
  * \brief Registers a callback handler for a given function code.
@@ -418,6 +419,8 @@ BOOL IsMBRcvSate (void );
 #define MB_CNT_ERROR 	15000
 
 void SetRcvIdleState (void);
+void vTest();
+//void            vMBMasterErrorCBExecuteFunction( UCHAR ucDestAddress, const UCHAR* pucPDUData, USHORT ucPDULength );
 
 /* ----------------------- Callback -----------------------------------------*/
 

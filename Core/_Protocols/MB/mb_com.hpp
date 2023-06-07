@@ -5,6 +5,14 @@
  *      Author: luch
  */
 
+
+#ifndef _MB_COM_H
+#define _MB_COM_H
+
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 /* ----------------------- System includes ----------------------------------*/
 #include <stdlib.h>
 #include <string.h>
@@ -12,7 +20,6 @@
 /* ----------------------- Platform includes --------------------------------*/
 #include "port.h"
 #include "mb_m.h"
-
 /* ----------------------- Modbus includes ----------------------------------*/
 
 class ModBusCom
@@ -38,7 +45,11 @@ private:
   type_t type;  
 };
 
+#ifdef __cplusplus
+}
+#endif
 
+#endif
 /* --------------------------- End of file ------------------------------------ */
 
 

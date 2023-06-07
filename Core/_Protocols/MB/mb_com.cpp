@@ -36,8 +36,8 @@
 #include "mbtcp.h"
 #endif
 
-ModBusCom MB_cntrl(ModBusCom::master); // связь с чопперами
-ModBusCom MB_hl(ModBusCom::slave);  // связь с ПК
+ModBusCom MB_cntrl( ModBusCom::master ); // связь с чопперами
+ModBusCom MB_hl( ModBusCom::slave );  // связь с ПК
 
 ModBusCom *pMBcntrl = &MB_cntrl;
 ModBusCom *pMBhl = &MB_hl;
@@ -75,6 +75,7 @@ void ModBusCom::Loop()
 
 
 ModBusCom::~ModBusCom(){}
+
 /* --------------------------- End of file ------------------------------------ */
 
 
