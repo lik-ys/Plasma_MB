@@ -3,6 +3,10 @@
 #include "mb_m.h"
 #include "mbport.h"
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+  
 #if c > 0 || MB_MASTER_ASCII_ENABLED > 0
 
 /* ----------------------- Defines ------------------------------------------*/
@@ -10,22 +14,23 @@
 /* ----------------------- Variables ----------------------------------------*/
 static eMBMasterEventType eQueuedEvent;
 static BOOL     xEventInQueue;
-BOOL xNeedPoll;
+static BOOL xNeedPoll;
 /* ----------------------- Start implementation -----------------------------*/
 BOOL xMBMasterPortEventInit( void )
 {
 	xEventInQueue = FALSE;
 	return TRUE;
 }
-
-BOOL xMBMasterPortEventPost( eMBMasterEventType eEvent )
+__weak
+BOOL
+xMBMasterPortEventPost( eMBMasterEventType eEvent )
 {
 	xEventInQueue = TRUE;
 	eQueuedEvent = (eMBMasterEventType)eEvent;
 	return TRUE;
 }
 
-BOOL xMBMasterPortEventGet( eMBMasterEventType * eEvent )
+__weak BOOL xMBMasterPortEventGet( eMBMasterEventType * eEvent )
 {
 	BOOL xEventHappened = FALSE;
 
@@ -36,7 +41,7 @@ BOOL xMBMasterPortEventGet( eMBMasterEventType * eEvent )
 		xEventHappened = TRUE;
 	}
 	return xEventHappened;
-}
+}   
 
 void xGetMasterEvent(eMBMasterEventType * eEvent)
 {
@@ -77,7 +82,7 @@ BOOL xMBMasterRunResTake( LONG lTimeOut )
  * Note:The resource is define by Operating System.If you not use OS this function can be empty.
  *
  */
-void vMBMasterRunResRelease( void )
+__weak void vMBMasterRunResRelease( void )
 {
 	xNeedPoll = TRUE;
 }
@@ -93,12 +98,13 @@ void vMBMasterRunResRelease( void )
  * @param ucPDULength PDU buffer length
  *
  */
+__weak
 void vMBMasterErrorCBRespondTimeout(UCHAR ucDestAddress, const UCHAR* pucPDUData, USHORT ucPDULength)
 {
-	RS485_Dir(tx);
+	//RS485_Dir(tx);
 	xMBMasterPortEventPost(EV_MASTER_ERROR_RESPOND_TIMEOUT);
 	//HAL_Delay(10);
-	RS485_Dir(rx);
+	//RS485_Dir(rx);
 }
 
 /**
@@ -111,6 +117,7 @@ void vMBMasterErrorCBRespondTimeout(UCHAR ucDestAddress, const UCHAR* pucPDUData
  * @param ucPDULength PDU buffer length
  *
  */
+__weak   
 void vMBMasterErrorCBReceiveData(UCHAR ucDestAddress, const UCHAR* pucPDUData, USHORT ucPDULength)
 {
 	xMBMasterPortEventPost(EV_MASTER_ERROR_RECEIVE_DATA);
@@ -127,9 +134,9 @@ void vMBMasterErrorCBReceiveData(UCHAR ucDestAddress, const UCHAR* pucPDUData, U
  *
  */
 //extern "C"
-void vMBMasterErrorCBExecuteFunction(UCHAR ucDestAddress, const UCHAR* pucPDUData, USHORT ucPDULength)
+__weak void vMBMasterErrorCBExecuteFunction(UCHAR ucDestAddress, const UCHAR* pucPDUData, USHORT ucPDULength)
 {
-	xMBMasterPortEventPost(EV_MASTER_ERROR_EXECUTE_FUNCTION);
+	//xMBMasterPortEventPost(EV_MASTER_ERROR_EXECUTE_FUNCTION);
 }
 
 
@@ -140,7 +147,7 @@ void vMBMasterErrorCBExecuteFunction(UCHAR ucDestAddress, const UCHAR* pucPDUDat
  * So,for real-time of system.Do not execute too much waiting process.
  *
  */
-void vMBMasterCBRequestSucess( void )
+__weak void vMBMasterCBRequestSucess( void )
 {
 	xMBMasterPortEventPost(EV_MASTER_PROCESS_SUCESS);
 }
@@ -182,4 +189,7 @@ eMBMasterReqErrCode eMBMasterWaitRequestFinish( void )
 	return eErrStatus;
 }
 
+#ifdef __cplusplus
+}
+#endif
 #endif

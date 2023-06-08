@@ -419,8 +419,7 @@ BOOL IsMBRcvSate (void );
 #define MB_CNT_ERROR 	15000
 
 void SetRcvIdleState (void);
-void vTest();
-//void            vMBMasterErrorCBExecuteFunction( UCHAR ucDestAddress, const UCHAR* pucPDUData, USHORT ucPDULength );
+
 
 /* ----------------------- Callback -----------------------------------------*/
 

@@ -64,6 +64,10 @@ eMBErrorCode    eMBMasterPoll( void ){return MB_ENOERR;}
 #define MB_PORT_HAS_CLOSE 0
 #endif
 
+static eMBMasterEventType eQueuedEvent;
+static BOOL     xEventInQueue;
+static BOOL xNeedPoll;
+
 /* ----------------------- Static variables ---------------------------------*/
 
 static UCHAR    ucMBMasterDestAddress;
@@ -418,7 +422,6 @@ eMBMasterPoll( void )
 			case EV_ERROR_EXECUTE_FUNCTION:
 				vMBMasterErrorCBExecuteFunction(ucMBMasterGetDestAddress(),
 						ucMBFrame, usMBMasterGetPDUSndLength());
-                vTest();
 				return MB_EILLSTATE;
 			}
 			vMBMasterRunResRelease();
@@ -509,5 +512,51 @@ uint16_t GetDataMBRg( USHORT slave_addr, uint16_t reg )
 		return usMRegHoldBuf[ slave_addr-1 ][ reg ];
 	else return -1;
 } // GetDataMBRg()
+
+void vMBMasterErrorCBExecuteFunction(UCHAR ucDestAddress, const UCHAR* pucPDUData, USHORT ucPDULength)
+{
+	xMBMasterPortEventPost( EV_MASTER_ERROR_EXECUTE_FUNCTION );
+}
+
+BOOL xMBMasterPortEventGet( eMBMasterEventType * eEvent )
+{
+	BOOL xEventHappened = FALSE;
+
+	if( xEventInQueue )
+	{
+		*eEvent = (eMBMasterEventType)eQueuedEvent;
+		xEventInQueue = FALSE;
+		xEventHappened = TRUE;
+	}
+	return xEventHappened;
+} 
+
+BOOL xMBMasterPortEventPost( eMBMasterEventType eEvent )
+{
+	xEventInQueue = TRUE;
+	eQueuedEvent = (eMBMasterEventType)eEvent;
+	return TRUE;
+}
+
+void vMBMasterCBRequestSucess( void )
+{
+	xMBMasterPortEventPost(EV_MASTER_PROCESS_SUCESS);
+}
+
+void vMBMasterRunResRelease( void )
+{
+	xNeedPoll = TRUE;
+}
+void vMBMasterErrorCBRespondTimeout(UCHAR ucDestAddress, const UCHAR* pucPDUData, USHORT ucPDULength)
+{
+	//RS485_Dir(tx);
+	xMBMasterPortEventPost(EV_MASTER_ERROR_RESPOND_TIMEOUT);
+	//HAL_Delay(10);
+	//RS485_Dir(rx);
+}
+void vMBMasterErrorCBReceiveData(UCHAR ucDestAddress, const UCHAR* pucPDUData, USHORT ucPDULength)
+{
+	xMBMasterPortEventPost(EV_MASTER_ERROR_RECEIVE_DATA);
+}
 
 #endif

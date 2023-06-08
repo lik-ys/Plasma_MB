@@ -97,7 +97,7 @@ BOOL            xMBMasterPortEventInit( void );
 
 BOOL            xMBMasterPortEventPost( eMBMasterEventType eEvent );
 
-//BOOL            xMBMasterPortEventGet(  /*@out@ */ eMBMasterEventType * eEvent );
+BOOL            xMBMasterPortEventGet(  /*@out@ */ eMBMasterEventType * eEvent );
 
 void            vMBMasterOsResInit( void );
 
@@ -164,8 +164,6 @@ void            vMBMasterErrorCBReceiveData( UCHAR ucDestAddress, const UCHAR* p
 void            vMBMasterErrorCBExecuteFunction( UCHAR ucDestAddress, const UCHAR* pucPDUData, USHORT ucPDULength );
 
 void            vMBMasterCBRequestSucess( void );
-
-void vTest(void); 
 
 
 /* ----------------------- Callback for the protocol stack ------------------*/

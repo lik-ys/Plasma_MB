@@ -416,8 +416,5 @@ eMBErrorCode eMBPoll( void )
 }
 
 
-void vTest( void )
-{
-    static int x = 2;
-} 
+
 #endif
