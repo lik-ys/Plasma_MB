@@ -20,12 +20,29 @@ extern "C" {
 
 typedef enum
 {
-	rx = 0,
-	tx = 1
+  led0_pin = LED_WORK1_Pin,
+  led1_pin = LED_WORK2_Pin,
+  CNT_LEDS = 2
+} leds_t;
+
+typedef struct
+{
+  leds_t led;
+  uint8_t st : 1; // on, off 
+}st_led_t;
+
+typedef enum
+{
+  rx = 0,
+  tx = 1
 }rs485_tx_rx_t;  
-  
 
 void RS485_Dir( rs485_tx_rx_t tx_rx );
+void ToggleLed(st_led_t*);
+void SetLed( st_led_t* );
+void ClrLed( st_led_t* );
+
+extern  st_led_t gLed;
 
 #ifdef __cplusplus
 }

@@ -10,8 +10,9 @@
 #include "main.h"
 #include "io_process.h"
 
-
 #define CNT_TO_DIR_RS485 5000
+   
+st_led_t gLed = { led0_pin, 0 };
 /*
  *
  */
@@ -31,7 +32,6 @@ void RS485_Dir( rs485_tx_rx_t tx_rx )
 	}
 }//RS485_Dir()
 
-
 /*
  *
  */
@@ -50,3 +50,43 @@ void RS485_Dir2( rs485_tx_rx_t tx_rx )
 		for (uint32_t i = CNT_TO_DIR_RS485; i>1; i--)__NOP();
 	}
 }//RS485_Dir()
+
+/**
+*
+**/
+void SetLed( st_led_t *sled )
+{
+  HAL_GPIO_WritePin( GPIOE, sled->led, GPIO_PIN_SET ); 
+  sled->st = 1;  
+}
+
+void ClrLed( st_led_t *sled )
+{
+  HAL_GPIO_WritePin( GPIOE, sled->led, GPIO_PIN_RESET ); 
+  sled->st = 0;
+}
+
+/**
+*
+**/
+void ToggleLed( st_led_t *sled )
+{
+  if ( sled->st )
+  {
+    HAL_GPIO_WritePin( GPIOE, sled->led, GPIO_PIN_RESET );    
+    sled->st = 0;
+  }
+  else
+  {
+    HAL_GPIO_WritePin( GPIOE, sled->led, GPIO_PIN_SET );
+    sled->st = 1;
+  }
+}// ToggleLed()
+
+void HAL_UART_TxCpltCallback( UART_HandleTypeDef *huart)
+{
+  	__enable_irq();
+}
+
+/** (END OF FILE  : io_process.c) 
+*******************************/ 

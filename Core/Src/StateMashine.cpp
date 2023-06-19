@@ -17,13 +17,25 @@
 *
 ********************************************************************************/
 
+#include  <stdint.h>
+
 #include  "StateMashine.h"// 
 #include  "mb_com.hpp"
 #include  "mb_m.h"
+#include  "io_process.h"
+#include  "main.h"
 
-eProcess_t eSM_proc;
+eProcess_t  eSM_proc;
+State_t     gStateSM = { TIME_10ms, TIME_100ms, TIME_1000ms };
+
+HAL_StatusTypeDef 	HAL_status;
+
+uint8_t bufTx[3] =  {0x55, 0x55, 0x55 };
+
 extern ModBusCom *pMBcntrl;
 extern ModBusCom *pMBhl;
+
+void SM_Tick( void );
 
 /*
 **
@@ -31,27 +43,108 @@ extern ModBusCom *pMBhl;
 void ProcessInit( void )
 {
   eSM_proc = ST_IDLE;
+  gLed.led = led1_pin;
+  //HAL_UART_Transmit_DMA();
 }// ProcessInit()
 
-/*
+/**
 **
 */
 void SM_loop( void )
 {  
-  pMBhl->Loop();
+  pMBhl->Loop( );
+  
+  SM_Tick();
+  
   switch( eSM_proc )    // 
   {
     case ST_IDLE:
       break;
+      
+    case ST_TOGGLE_LED:
+      ToggleLed( &gLed );
+      eSM_proc = ST_IDLE;
+      break;
+      
     case ST_START:
       break;
+      
     case ST_MB_MASTER:
       break;
+      
     case ST_MB_SLAVE:
       break;   
+      
+    case ST_TX:
+      HAL_status = HAL_UART_Transmit_DMA( &huart1,bufTx, 3 );  // первый раз отправляет - потом бизи
+      HAL_status = HAL_UART_Transmit_DMA( &huart2,bufTx, 3 );
+      HAL_status = HAL_UART_Transmit_DMA( &huart3,bufTx, 3 );
+      HAL_status = HAL_UART_Transmit_DMA( &huart4,bufTx, 3 );
+      eSM_proc = ST_IDLE;
+      break;
+      
     default: break;    
   } // switch( eSM_proc )
 }// SM_process()
  
+/**
+**
+*/
+void HAL_IncTick( void )
+{
+  static uint32_t preTick = 0;
+  
+  uwTick += uwTickFreq;    
+  if ( 0 == gStateSM.div10 )
+  {    
+    gStateSM.div10 = TIME_10ms;
+    gStateSM.time.b10ms = 1;
+  }else {
+    gStateSM.div10--;    
+  }
+  if ( 0 == gStateSM.div100 )
+  {
+    gStateSM.div100 = TIME_100ms;
+    gStateSM.time.b100ms = 1;
+  }else {
+    gStateSM.div100--;    
+  }  
+  if ( 0 == gStateSM.div1000 )
+  {
+    gStateSM.div1000 = TIME_1000ms;
+    gStateSM.time.b1000ms = 1;    
+  }else {
+    gStateSM.div1000--;    
+  }  
+} // HAL_IncTick()
+
+/**
+*
+**/
+void SM_Tick( void )
+{ 
+  if ( 1 == gStateSM.time.b10ms )
+  {
+    gStateSM.time.b10ms = 0;
+    eSM_proc = ST_TOGGLE_LED;
+  }else;
+  if ( 1 == gStateSM.time.b100ms )
+  {
+    gStateSM.time.b100ms = 0;
+    eSM_proc = ST_TX;
+    
+  }else;
+  if ( 1 == gStateSM.time.b1000ms )
+  {
+    gStateSM.time.b1000ms = 0;
+        
+    ClrLed( &gLed );
+    if ( gLed.led == led1_pin ) 
+         gLed.led = led0_pin;
+    else gLed.led = led1_pin;    
+    
+  }else;  
+} // SM_Tick()
+
 /** (END OF FILE  : StateMashine.cpp) 
 *******************************/ 

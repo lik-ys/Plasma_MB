@@ -49,6 +49,10 @@ extern UART_HandleTypeDef huart3;
 
 /* Exported constants --------------------------------------------------------*/
 /* USER CODE BEGIN EC */
+UART_HandleTypeDef pUartWIFI  ;
+UART_HandleTypeDef pUartPC    ;
+UART_HandleTypeDef pUartCells ;
+UART_HandleTypeDef pUartDBG   ;
 
 /* USER CODE END EC */
 
@@ -77,6 +81,8 @@ void Error_Handler(void);
 #define CNC_DI_2_GPIO_Port GPIOC
 #define CNC_DI_1_Pin GPIO_PIN_14
 #define CNC_DI_1_GPIO_Port GPIOC
+#define CNC_DI_0_Pin GPIO_PIN_15
+#define CNC_DI_0_GPIO_Port GPIOC
 #define LED_WORK1_Pin GPIO_PIN_7
 #define LED_WORK1_GPIO_Port GPIOE
 #define LED_WORK2_Pin GPIO_PIN_8
