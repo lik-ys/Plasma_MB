@@ -34,7 +34,7 @@ void vMBMasterPortSerialEnable(BOOL xRxEnable, BOOL xTxEnable)
 {
 	if(xRxEnable)
 	{
-		RS485_Dir(rx);
+		RS485_Dir_m(rx);
 		HAL_UART_Receive_IT(uart_m, &singlechar_m, 1);
 	}	
 	else
@@ -44,7 +44,7 @@ void vMBMasterPortSerialEnable(BOOL xRxEnable, BOOL xTxEnable)
 
 	if(xTxEnable)
 	{
-		RS485_Dir(tx);
+		RS485_Dir_m(tx);
 		pxMBMasterFrameCBTransmitterEmpty();
 	}
 	else

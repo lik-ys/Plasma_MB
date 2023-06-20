@@ -44,7 +44,9 @@ void ProcessInit( void )
 {
   eSM_proc = ST_IDLE;
   gLed.led = led1_pin;
-  //HAL_UART_Transmit_DMA();
+  
+  pMBhl->Init();
+  pMBcntrl->Init();
 }// ProcessInit()
 
 /**
@@ -53,6 +55,7 @@ void ProcessInit( void )
 void SM_loop( void )
 {  
   pMBhl->Loop( );
+  pMBcntrl->Loop();
   
   SM_Tick();
   
@@ -76,10 +79,10 @@ void SM_loop( void )
       break;   
       
     case ST_TX:
-      HAL_status = HAL_UART_Transmit_DMA( &huart1,bufTx, 3 );  // первый раз отправляет - потом бизи
-      HAL_status = HAL_UART_Transmit_DMA( &huart2,bufTx, 3 );
-      HAL_status = HAL_UART_Transmit_DMA( &huart3,bufTx, 3 );
-      HAL_status = HAL_UART_Transmit_DMA( &huart4,bufTx, 3 );
+      //HAL_status = HAL_UART_Transmit_DMA( pUartWIFI, bufTx, 3 );  // первый раз отправляет - потом бизи
+//      HAL_status = HAL_UART_Transmit_DMA( pMBSlave,   bufTx, 3 );
+//      HAL_status = HAL_UART_Transmit_DMA( pMBMaster,bufTx, 3 );
+      //HAL_status = HAL_UART_Transmit_DMA( pUartDBG,  bufTx, 3 );
       eSM_proc = ST_IDLE;
       break;
       

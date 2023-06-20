@@ -18,6 +18,7 @@ extern "C" {
 
 #define  TEST_TOGGEL_BB()  WR_PORT_BIT( GPIOE_BASE, 9 ) ^= 1  
 
+
 typedef enum
 {
   led0_pin = LED_WORK1_Pin,
@@ -38,6 +39,8 @@ typedef enum
 }rs485_tx_rx_t;  
 
 void RS485_Dir( rs485_tx_rx_t tx_rx );
+void RS485_Dir_m( rs485_tx_rx_t tx_rx );
+
 void ToggleLed(st_led_t*);
 void SetLed( st_led_t* );
 void ClrLed( st_led_t* );

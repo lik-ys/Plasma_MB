@@ -49,10 +49,13 @@ extern UART_HandleTypeDef huart3;
 
 /* Exported constants --------------------------------------------------------*/
 /* USER CODE BEGIN EC */
-UART_HandleTypeDef pUartWIFI  ;
-UART_HandleTypeDef pUartPC    ;
-UART_HandleTypeDef pUartCells ;
-UART_HandleTypeDef pUartDBG   ;
+extern UART_HandleTypeDef* pUartWIFI  ;
+extern UART_HandleTypeDef* pMBSlave   ;
+extern UART_HandleTypeDef* pMBMaster  ;
+extern UART_HandleTypeDef* pUartDBG   ;
+
+extern TIM_HandleTypeDef* pMBTimMaster;
+extern TIM_HandleTypeDef* pMBTimSlave;
 
 /* USER CODE END EC */
 

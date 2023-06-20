@@ -387,7 +387,7 @@ xMBMasterRTUTimerExpired(void)
 	default:
 		assert_param(
 				( eRcvState == STATE_M_RX_INIT ) || ( eRcvState == STATE_M_RX_RCV ) ||
-				( eRcvState == STATE_M_RX_ERROR ) || ( eRcvState == STATE_M_RX_IDLE ));
+				( eRcvState == STATE_M_RX_ERROR )|| ( eRcvState == STATE_M_RX_IDLE ));
 		break;
 	}
 	eRcvState = STATE_M_RX_IDLE;

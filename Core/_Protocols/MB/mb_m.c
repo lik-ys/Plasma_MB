@@ -64,6 +64,8 @@ eMBErrorCode    eMBMasterPoll( void ){return MB_ENOERR;}
 #define MB_PORT_HAS_CLOSE 0
 #endif
 
+#include "io_process.h"
+
 static eMBMasterEventType eQueuedEvent;
 static BOOL     xEventInQueue;
 static BOOL xNeedPoll;
@@ -194,7 +196,7 @@ eMBErrorCode eMBMasterInit( eMBMode eMode, void *dHUART, ULONG ulBaudRate, void 
 			eMBState = STATE_DISABLED;
 		}
 		/* initialize the OS resource for modbus master. */
-		vMBMasterOsResInit();
+		///vMBMasterOsResInit();
 	}
 	return eStatus;
 }
@@ -549,14 +551,21 @@ void vMBMasterRunResRelease( void )
 }
 void vMBMasterErrorCBRespondTimeout(UCHAR ucDestAddress, const UCHAR* pucPDUData, USHORT ucPDULength)
 {
-	//RS485_Dir(tx);
+	RS485_Dir_m(tx);
 	xMBMasterPortEventPost(EV_MASTER_ERROR_RESPOND_TIMEOUT);
-	//HAL_Delay(10);
-	//RS485_Dir(rx);
+	HAL_Delay(10);
+	RS485_Dir_m(rx);
 }
 void vMBMasterErrorCBReceiveData(UCHAR ucDestAddress, const UCHAR* pucPDUData, USHORT ucPDULength)
 {
 	xMBMasterPortEventPost(EV_MASTER_ERROR_RECEIVE_DATA);
+}
+
+
+BOOL xMBMasterPortEventInit( void )
+{
+	xEventInQueue = FALSE;
+	return TRUE;
 }
 
 #endif

@@ -16,7 +16,7 @@ static eMBMasterEventType eQueuedEvent;
 static BOOL     xEventInQueue;
 static BOOL xNeedPoll;
 /* ----------------------- Start implementation -----------------------------*/
-BOOL xMBMasterPortEventInit( void )
+__weak BOOL xMBMasterPortEventInit( void )
 {
 	xEventInQueue = FALSE;
 	return TRUE;
@@ -101,10 +101,10 @@ __weak void vMBMasterRunResRelease( void )
 __weak
 void vMBMasterErrorCBRespondTimeout(UCHAR ucDestAddress, const UCHAR* pucPDUData, USHORT ucPDULength)
 {
-	//RS485_Dir(tx);
+	RS485_Dir_m(tx);
 	xMBMasterPortEventPost(EV_MASTER_ERROR_RESPOND_TIMEOUT);
-	//HAL_Delay(10);
-	//RS485_Dir(rx);
+	HAL_Delay(10);
+	RS485_Dir_m(rx);
 }
 
 /**
@@ -151,6 +151,8 @@ __weak void vMBMasterCBRequestSucess( void )
 {
 	xMBMasterPortEventPost(EV_MASTER_PROCESS_SUCESS);
 }
+
+
 
 /**
  * This function is wait for modbus master request finish and return result.

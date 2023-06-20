@@ -36,6 +36,8 @@
 #include "mbtcp.h"
 #endif
 
+#include "io_process.h"
+
 ModBusCom MB_cntrl( ModBusCom::master ); // связь с чопперами
 ModBusCom MB_hl( ModBusCom::slave );  // связь с ПК
 
@@ -51,25 +53,30 @@ void ModBusCom::Init(void )
 {
   if (type == slave )
   {
-    eMBInit( MB_RTU,10, &huart3, SLAVE_BAUD_RATE, &htim3 );
+    eMBInit( MB_RTU,MB_ADDR_SLAVE, pMBSlave, SLAVE_BAUD_RATE, &htim3 );
+    eMBEnable();
+    RS485_Dir( rx );
+
   }
   else 
   if (type == master)
   {
-    eMBMasterInit( MB_RTU, &huart4, MASTER_BAUD_RATE, &htim4 );
+    eMBMasterInit( MB_RTU, pMBMaster, MASTER_BAUD_RATE, &htim4 );
+    eMBMasterEnable( );
+	RS485_Dir_m( tx );
   }  
 }// Init()
 
 void ModBusCom::Loop()
 {
-  if (type == slave )
+  if ( type == slave )
   {
-    gMBErrorCode = eMBPoll();
+    gMBErrorCode = eMBPoll( );
   }
   else 
-  if (type == master)
+  if ( type == master )
   {
-    gMBErrorCode = eMBMasterPoll();
+    gMBErrorCode = eMBMasterPoll( );
   }
 } // Loop()
 
