@@ -47,10 +47,13 @@ void ProcessInit( void )
   
   pMBhl->Init();
   pMBcntrl->Init();
+  
+  //HAL_TIM_Base_Start_IT( pExtSync );
+  HAL_TIM_OC_Start(pExtSync,TIM_CHANNEL_1 );
 }// ProcessInit()
 
 /**
-**
+**    todo проверить передачу
 */
 void SM_loop( void )
 {  
@@ -58,6 +61,9 @@ void SM_loop( void )
   pMBcntrl->Loop();
   
   SM_Tick();
+  
+  CHAR data  = 0;
+  CHAR * pdata = &data;
   
   switch( eSM_proc )    // 
   {
@@ -67,6 +73,9 @@ void SM_loop( void )
     case ST_TOGGLE_LED:
       ToggleLed( &gLed );
       eSM_proc = ST_IDLE;
+      xMBMasterPortSerialPutByte(0x55);
+      RS485_Dir( rx );
+      xMBPortSerialGetByte(pdata);
       break;
       
     case ST_START:

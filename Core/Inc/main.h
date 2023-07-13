@@ -56,6 +56,7 @@ extern UART_HandleTypeDef* pUartDBG   ;
 
 extern TIM_HandleTypeDef* pMBTimMaster;
 extern TIM_HandleTypeDef* pMBTimSlave;
+extern TIM_HandleTypeDef* pExtSync   ; // Sync-external-out 12kHz 50%
 
 /* USER CODE END EC */
 
@@ -63,6 +64,8 @@ extern TIM_HandleTypeDef* pMBTimSlave;
 /* USER CODE BEGIN EM */
 
 /* USER CODE END EM */
+
+void HAL_TIM_MspPostInit(TIM_HandleTypeDef *htim);
 
 /* Exported functions prototypes ---------------------------------------------*/
 void Error_Handler(void);
