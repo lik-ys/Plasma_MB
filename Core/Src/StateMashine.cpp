@@ -34,6 +34,13 @@ uint8_t bufTx[3] =  {0x55, 0x55, 0x55 };
 
 extern ModBusCom *pMBcntrl;
 extern ModBusCom *pMBhl;
+#ifdef __cplusplus
+extern "C" {
+#endif
+extern TIM_HandleTypeDef* pExtSync   ;
+#ifdef __cplusplus
+}
+#endif
 
 void SM_Tick( void );
 
