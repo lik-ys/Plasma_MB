@@ -167,5 +167,15 @@ void SM_Tick( void )
   }else;  
 } // SM_Tick()
 
+
+/**
+  * @brief
+  * @param  
+  * @retval 
+  */
+void HAL_ADC_ConvCpltCallback(ADC_HandleTypeDef* hadc)
+{
+    //getADC( );
+}
 /** (END OF FILE  : StateMashine.cpp) 
 *******************************/ 
