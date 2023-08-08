@@ -28,6 +28,8 @@
 eProcess_t  eSM_proc;
 State_t     gStateSM = { TIME_10ms, TIME_100ms, TIME_1000ms };
 
+ADC_data_t ADCdata[ ADC_BUF_LENGHT ] = {0,0,};
+
 HAL_StatusTypeDef 	HAL_status;
 
 uint8_t bufTx[3] =  {0x55, 0x55, 0x55 };

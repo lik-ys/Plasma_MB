@@ -28,8 +28,26 @@ extern "C" {
     // Ѕлок операторов условной компил€ции 
 /*===============================[ PUBLIC CONSTANTS ]==========================*/ 
     //  ѕубличные константы 
+#define ADC_MAX         4095
+#define DAC_MAX         4095
+
+#define ADC_BUF_LENGHT  64 
 /*===============================[ PUBLIC TYPES ]==============================*/ 
     // ѕубличные типы 
+typedef   enum
+{
+  eCurrent1  ,  // eVoltage
+  eCurrent2  ,
+  eVoltage   ,  
+  eChanMax
+} ADC_Channels_t;
+
+  typedef struct
+{
+  uint16_t Current1  ;
+  uint16_t Current2  ;
+  uint16_t Voltage   ;
+} ADC_data_t;
 /*===============================[ FORWARD REFERENCES ]========================*/ 
     // —сылки вперед 
 /*===============================[ PUBLIC VARIABLES ]==========================*/ 
@@ -88,6 +106,7 @@ typedef struct
 }State_t;
 
 extern  eProcess_t eSM_proc;
+extern ADC_data_t ADCdata[ ADC_BUF_LENGHT ];
   
 void ProcessInit(void);
 
