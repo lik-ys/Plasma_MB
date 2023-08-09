@@ -31,7 +31,7 @@ extern "C" {
 #define ADC_MAX         4095
 #define DAC_MAX         4095
 
-#define ADC_BUF_LENGHT  64 
+#define ADC_BUF_LENGHT  10 
 /*===============================[ PUBLIC TYPES ]==============================*/ 
     // Публичные типы 
 typedef   enum
