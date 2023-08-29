@@ -68,6 +68,8 @@ void     MedianFiltr( Signal_t* Res, Signal_t*x, uint16_t size, uint16_t win );
 int32_t    AverageN_DeleteX   ( uint16_t* adc_sample, uint16_t N , uint16_t X );
 float32_t  AverageN_DeleteX_f( float32_t* adc_sample, uint16_t N , uint16_t X );
 
+int32_t abs_i ( int32_t value );
+
 /*===============================[ END REDEFINITION DEFENCE]===================*/
 // Окончание однократно включаемого h-файла
 

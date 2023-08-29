@@ -476,5 +476,12 @@ float32_t AverageN_DeleteX_f( float32_t* adc_sample, uint16_t N , uint16_t X )
   return avg_sample;
 } // AverageN_DeleteX_f()
 
+int32_t abs_i ( int32_t value )
+{
+  if ( value < 0 ) value *= -1;
+
+  return value;
+} // abs_i( )
+
 /** (END OF FILE  : Filters.c)
 *******************************/

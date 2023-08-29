@@ -175,7 +175,24 @@ void SM_Tick( void )
   */
 void HAL_ADC_ConvCpltCallback(ADC_HandleTypeDef* hadc)
 {
+  gStateSM.st.bAdcCmplt = 1;
     //getADC( );
 }
+
+/**
+  * @brief  
+  * @param
+  * @retval
+  */
+void ADC_Process( void ) 
+{
+  if ( gStateSM.st.bAdcCmplt )
+  {
+    gStateSM.st.bAdcCmplt = 0;
+    for ()
+    {
+    }    
+  }
+} // ADC_Process()
 /** (END OF FILE  : StateMashine.cpp) 
 *******************************/ 

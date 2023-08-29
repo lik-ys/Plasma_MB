@@ -67,7 +67,8 @@ typedef enum
   ST_MB_MASTER,
   ST_MB_SLAVE,
   ST_TX,
-  
+  ST_ADC_CMPLT,
+    
   ST_END    
 } eProcess_t;
 
@@ -78,7 +79,8 @@ typedef struct
   uint16_t bStart       : 1;
   uint16_t bMB_Master   : 1;
   uint16_t bMB_Slave    : 1;
-
+  uint16_t bAdcCmplt    : 1;
+  
 }bProcess_t;
 
 typedef enum
