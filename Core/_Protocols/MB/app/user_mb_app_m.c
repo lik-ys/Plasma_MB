@@ -33,7 +33,7 @@ USHORT   usMRegInBuf[MB_MASTER_TOTAL_SLAVE_NUM][M_REG_INPUT_NREGS];
 #endif
 
 //Master mode:HoldingRegister variables
-#if M_REG_HOLDING_NREGS > 0
+#if (M_REG_HOLDING_NREGS > 0)
 USHORT   usMRegHoldStart                            = M_REG_HOLDING_START;
 USHORT   usMRegHoldBuf[MB_MASTER_TOTAL_SLAVE_NUM][M_REG_HOLDING_NREGS];
 #endif
@@ -93,6 +93,36 @@ void MBMasterExec(void )
 	mb_act.error = 0;
 }
 
+/**
+  * @brief
+  * @param  
+  * @retval 
+  */
+void SetMBRgM( uint16_t slave, eMBRegM_t numMBReg, uint16_t data )
+{
+  
+  if ( numMBReg >= REG_M_LAST ) 
+  {
+    assert(numMBReg >= REG_M_LAST);
+  }
+  
+  usMRegHoldBuf[slave][ numMBReg ] = data;  
+} // SetMBRg()
+
+/**
+  * @brief
+  * @param  
+  * @retval 
+  */
+uint16_t GetMBRgM( uint16_t slave,eMBRegM_t numMBReg )
+{
+  if ( numMBReg >= REG_M_LAST ) 
+  {
+    assert(numMBReg >= REG_M_LAST);
+  }
+  
+  return usMRegHoldBuf[slave][ numMBReg ];
+}// GetMBRg()
 /**
  * Modbus master input register callback function.
  *

@@ -9,8 +9,8 @@ UART_HandleTypeDef *uart;
 static uint8_t singlechar;
 
 /* ----------------------- User defenitions ---------------------------------*/
-#define RS485_RTS_LOW	{}//TODO HAL_GPIO_WritePin(RS485_RTS_GPIO_Port, RS485_RTS_Pin, GPIO_PIN_RESET)
-#define RS485_RTS_HIGH 	{}//TODO HAL_GPIO_WritePin(RS485_RTS_GPIO_Port, RS485_RTS_Pin, GPIO_PIN_SET)
+#define RS485_RTS_LOW	 HAL_GPIO_WritePin(DIR_RS1_GPIO_Port, DIR_RS1_Pin, GPIO_PIN_RESET)
+#define RS485_RTS_HIGH 	 HAL_GPIO_WritePin(DIR_RS1_GPIO_Port, DIR_RS1_Pin, GPIO_PIN_SET)
 
 
 /* ----------------------- Start implementation -----------------------------*/

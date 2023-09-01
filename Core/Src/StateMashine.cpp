@@ -24,11 +24,15 @@
 #include  "mb_m.h"
 #include  "io_process.h"
 #include  "main.h"
+#include  "user_mb_app.h"
+
+extern void     SetMBRgS( eMBRegS_t numMBReg, uint16_t data );
 
 eProcess_t  eSM_proc;
 State_t     gStateSM = { TIME_10ms, TIME_100ms, TIME_1000ms };
 
 ADC_data_t ADCdata[ ADC_BUF_LENGHT ] = {0,0,};
+ADC_data_t ADCdat =  {0,0,0};
 
 HAL_StatusTypeDef 	HAL_status;
 
@@ -44,6 +48,7 @@ extern TIM_HandleTypeDef* pExtSync   ;
 }
 #endif
 
+void ADC_Process( void );
 void SM_Tick( void );
 
 /*
@@ -73,6 +78,10 @@ void SM_loop( void )
   
   CHAR data  = 0;
   CHAR * pdata = &data;
+  
+  if ( 1 == gStateSM.st.bAdcCmplt){
+    eSM_proc = ST_ADC_CMPLT;
+  }
   
   switch( eSM_proc )    // 
   {
@@ -104,6 +113,10 @@ void SM_loop( void )
       eSM_proc = ST_IDLE;
       break;
       
+    case ST_ADC_CMPLT:
+      ADC_Process( );
+      break;
+      
     default: break;    
   } // switch( eSM_proc )
 }// SM_process()
@@ -113,7 +126,7 @@ void SM_loop( void )
 */
 void HAL_IncTick( void )
 {
-  static uint32_t preTick = 0;
+ // static uint32_t preTick = 0;
   
   uwTick += uwTickFreq;    
   if ( 0 == gStateSM.div10 )
@@ -186,12 +199,30 @@ void HAL_ADC_ConvCpltCallback(ADC_HandleTypeDef* hadc)
   */
 void ADC_Process( void ) 
 {
+  static uint32_t stAdc_cur1 = 0;
+  static uint32_t stAdc_cur2 = 0;
+  static uint32_t stAdc_volt = 0;
+  
   if ( gStateSM.st.bAdcCmplt )
   {
     gStateSM.st.bAdcCmplt = 0;
-    for ()
+    for(uint16_t i = 0; i< ADC_BUF_LENGHT; i++)
     {
-    }    
+      stAdc_cur1 += ADCdata[i].Current1;
+      stAdc_cur1 += ADCdata[i].Current2;
+      stAdc_cur1 += ADCdata[i].Voltage;      
+    }
+    stAdc_cur1 /= ADC_BUF_LENGHT;
+    stAdc_cur2 /= ADC_BUF_LENGHT;
+    stAdc_volt /= ADC_BUF_LENGHT;
+    
+    ADCdat.Current1  = stAdc_cur1;
+    ADCdat.Current2  = stAdc_cur2;
+    ADCdat.Voltage   = stAdc_volt;
+    
+    SetMBRgS( REG_R_CURR_1, stAdc_cur1 );
+    SetMBRgS( REG_R_CURR_1, stAdc_cur1 );
+    SetMBRgS( REG_R_VOLT,   stAdc_volt );
   }
 } // ADC_Process()
 /** (END OF FILE  : StateMashine.cpp) 

@@ -374,7 +374,7 @@ void  MedianFiltr( Signal_t* Res, Signal_t* Signal, uint16_t size, uint16_t win 
 
   if ((win%2 == 0) || (win > 15))
   {
-    WR_DEBUG("Неверно задан размер окна. должно быть Нечетным и меньше 15.");
+    //WR_DEBUG("Неверно задан размер окна. должно быть Нечетным и меньше 15.");
     return;
   }
 

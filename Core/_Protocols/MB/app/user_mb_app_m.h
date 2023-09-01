@@ -30,7 +30,7 @@ typedef enum _MB_ADDR
  * https://plc247.com/fx3u-modbus-rtu-ls-ig5a-vfd-tutorial/
  * ЧП отдает только по 8 регистров
  */
-typedef enum _MB_REG
+typedef enum _MB_REG_M
 {
 	REG_R_MODEL_INF			= 0x0000 ,
 	REG_R_INV_POW			= 0x0001 ,
@@ -62,8 +62,8 @@ typedef enum _MB_REG
 	REG_READ_ADDR_RG		= 0x0100 ,
 	REG_WRITE_ADDR_RG		= 0x0108 ,
 	// ...
-	REG_LAST                               //
-} eMBReg_t;
+	REG_M_LAST                               //
+} eMBRegM_t;
 
 
 typedef struct
@@ -96,10 +96,10 @@ extern mb_cnt_t 	mb_cnt;
 #define M_COIL_NCOILS                 0//64
 
 #define M_REG_INPUT_START             0
-#define M_REG_INPUT_NREGS             0x0016// REG_R_LAST_READ
+#define M_REG_INPUT_NREGS             0// REG_R_LAST_READ
 
 #define M_REG_HOLDING_START           0
-#define M_REG_HOLDING_NREGS           0x0016
+#define M_REG_HOLDING_NREGS           REG_M_LAST
 
 /* master mode: holding register's all address */
 #define          M_HD_RESERVE                     0
@@ -110,14 +110,13 @@ extern mb_cnt_t 	mb_cnt;
 /* master mode: discrete's all address */
 #define          M_DI_RESERVE                     0
 
-extern USHORT   usMRegHoldBuf[MB_MASTER_TOTAL_SLAVE_NUM][M_REG_HOLDING_NREGS];
+extern uint16_t   usMRegHoldBuf[MB_MASTER_TOTAL_SLAVE_NUM][M_REG_HOLDING_NREGS];
 
 void MBMasterRecieved(void );
 void MBMasterTransmite(void );
 void MBMasterError(void );
 void MBMasterExec(void );
 void MBMasterErrorTO( void );
-
 
 
 #endif

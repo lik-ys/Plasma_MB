@@ -73,8 +73,8 @@ UART_HandleTypeDef* pMBMaster    = &huart2; // RS485_2_master(to Cells)
 UART_HandleTypeDef* pUartWIFI    = &huart4; // WIFI
 UART_HandleTypeDef* pUartDBG     = &huart3; // UART_DEBUG
 
-TIM_HandleTypeDef* pMBTimMaster = &htim3;
-TIM_HandleTypeDef* pMBTimSlave  = &htim4;
+TIM_HandleTypeDef* pMBTimMaster = &htim3; // 
+TIM_HandleTypeDef* pMBTimSlave  = &htim4; // 
 TIM_HandleTypeDef* pExtSync     = &htim1;
 
 /* USER CODE END PV */
@@ -106,7 +106,7 @@ static void MX_ETH_Init(void);
   * @brief  The application entry point.
   * @retval int
   */
-int main(void)
+int main( void )
 {
   /* USER CODE BEGIN 1 */
 

@@ -41,16 +41,21 @@ inline void vMBPortTimersDisable(  )
 {
 	HAL_TIM_Base_Stop_IT(tim);
 }
-
+/*
+*
+*/
 void HAL_TIM_PeriodElapsedCallback( TIM_HandleTypeDef *htim )
 {
-	if( htim->Instance == tim->Instance )
+	if( htim == pMBTimSlave)
 	{
-		if((++counter) >= timeout)
+      if((++counter) >= timeout)   {
 			pxMBPortCBTimerExpired();
-	}else{
+            counter = 0;
+      }
+	}else
+    if (htim == pMBTimMaster){
       MBMasterPortCBTimerExpired( htim );
-    }
+    }else;
 }
 
 #endif

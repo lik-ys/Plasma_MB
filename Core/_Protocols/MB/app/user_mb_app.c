@@ -15,9 +15,9 @@ UCHAR    ucSDiscInBuf[S_DISCRETE_INPUT_NDISCRETES/8]  ;
 #endif
 
 //Slave mode:Coils variables
-#if S_COIL_NCOILS > 0
+#if (S_COIL_NCOILS > 0)
 USHORT   usSCoilStart                                 = S_COIL_START;
-#if S_COIL_NCOILS%8
+#if (S_COIL_NCOILS%8)
 UCHAR    ucSCoilBuf[S_COIL_NCOILS/8+1]                ;
 #else
 UCHAR    ucSCoilBuf[S_COIL_NCOILS/8]                  ;
@@ -25,18 +25,45 @@ UCHAR    ucSCoilBuf[S_COIL_NCOILS/8]                  ;
 #endif
 
 //Slave mode:InputRegister variables
-#if S_REG_INPUT_NREGS > 0
+#if (S_REG_INPUT_NREGS > 0)
 USHORT   usSRegInStart                                = S_REG_INPUT_START;
 USHORT   usSRegInBuf[S_REG_INPUT_NREGS]               ;
 #endif
 
 //Slave mode:HoldingRegister variables
-#if S_REG_HOLDING_NREGS > 0
+//#if (S_REG_HOLDING_NREGS > 0)
 USHORT   usSRegHoldStart                              = S_REG_HOLDING_START;
 USHORT   usSRegHoldBuf[S_REG_HOLDING_NREGS]           ;
-#endif
+//#endif
 /*------------------------Slave user code----------------------*/
 
+/**
+  * @brief
+  * @param  
+  * @retval 
+  */
+void SetMBRgS( eMBRegS_t numMBReg, uint16_t data )
+{  
+  if ( numMBReg >= REG_S_LAST ) 
+  {
+    assert(numMBReg >= REG_S_LAST);
+  } 
+  usSRegHoldBuf[ numMBReg ] = data;  
+} // SetMBRg()
+
+/**
+  * @brief
+  * @param  
+  * @retval 
+  */
+uint16_t GetMBRgS( eMBRegS_t numMBReg )
+{
+  if ( numMBReg >= REG_S_LAST ) 
+  {
+    assert(numMBReg >= REG_S_LAST);
+  }  
+  return usSRegHoldBuf[ numMBReg ];
+}// GetMBRg()
 /*------------------------Slave registers callback function----------------------*/
 
 /**
@@ -100,7 +127,7 @@ eMBErrorCode eMBRegInputCB(UCHAR * pucRegBuffer, USHORT usAddress, USHORT usNReg
  */
 eMBErrorCode eMBRegHoldingCB(UCHAR * pucRegBuffer, USHORT usAddress, USHORT usNRegs, eMBRegisterMode eMode)
 {
-#if S_REG_HOLDING_NREGS > 0
+///#if S_REG_HOLDING_NREGS > 0  - компилятор не видит  определенимя
     eMBErrorCode    eStatus = MB_ENOERR;
     USHORT          iRegIndex;
     USHORT *        pusRegHoldingBuf;
@@ -149,9 +176,9 @@ eMBErrorCode eMBRegHoldingCB(UCHAR * pucRegBuffer, USHORT usAddress, USHORT usNR
         eStatus = MB_ENOREG;
     }
     return eStatus;
-#else
-	return MB_ENOREG;
-#endif
+//#else
+//	return MB_ENOREG;
+//#endif
 }
 
 /**
