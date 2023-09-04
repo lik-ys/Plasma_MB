@@ -28,10 +28,11 @@ extern "C" {
 
 /* Includes ------------------------------------------------------------------*/
 #include "stm32f4xx_hal.h"
-#include "arm_math.h"
-
+  
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
+#include "arm_math.h"
+  
 extern ADC_HandleTypeDef hadc1;
 extern CAN_HandleTypeDef hcan1;
 extern ETH_HandleTypeDef heth;

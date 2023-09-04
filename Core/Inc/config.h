@@ -33,9 +33,10 @@
 /*===============================[ PUBLIC CONSTANTS ]=======================*/ 
 // Все частные #defines и constants должны быть объявлены в данном разделе. 
 
-#define MB_ADDR_SLAVE       10
-#define SLAVE_BAUD_RATE     57600
-#define MASTER_BAUD_RATE    57600
+#define MB_ADDR_SLAVE       55
+#define SLAVE_BAUD_RATE     57600 //15200//
+#define MB_ADDR_MASTER      85
+#define MASTER_BAUD_RATE    57600 // 15200//
 
 /*===============================[ TYPE DEFINITIONS ]==========================*/ 
 //typedef   int   new_type_t 

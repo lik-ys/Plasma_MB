@@ -92,7 +92,7 @@ void SM_loop( void )
       ToggleLed( &gLed );
       eSM_proc = ST_IDLE;
       xMBMasterPortSerialPutByte(0x55);
-      RS485_Dir( rx );
+      // RS485_Dir( rx );
       xMBPortSerialGetByte(pdata);
       break;
       

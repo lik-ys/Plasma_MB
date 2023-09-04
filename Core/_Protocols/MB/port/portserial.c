@@ -30,7 +30,7 @@ void vMBPortSerialEnable(BOOL xRxEnable, BOOL xTxEnable)
 	}	
 	else
 	{
-		HAL_UART_AbortReceive_IT(uart);
+		//HAL_UART_AbortReceive_IT(uart);
 	}
 
 	if(xTxEnable)
@@ -40,7 +40,7 @@ void vMBPortSerialEnable(BOOL xRxEnable, BOOL xTxEnable)
 	}
 	else
 	{
-		HAL_UART_AbortTransmit_IT(uart);
+		//HAL_UART_AbortTransmit_IT(uart);
 	}
 }
 

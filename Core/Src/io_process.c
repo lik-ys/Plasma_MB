@@ -10,7 +10,7 @@
 #include "main.h"
 #include "io_process.h"
 
-#define CNT_TO_DIR_RS485 5000
+#define CNT_TO_DIR_RS485 1
    
 st_led_t gLed = { led0_pin, 0 };
 /*

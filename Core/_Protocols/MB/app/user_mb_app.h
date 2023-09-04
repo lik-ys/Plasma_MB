@@ -16,11 +16,9 @@ extern "C" {
  */
 typedef enum _MB_REG_S
 {
-	REG_R_CURR_1			= 0x0000 ,
-	REG_R_CURR_2			= 0x0001 ,
+	REG_R_CURR_1		= 0x0000 ,
+	REG_R_CURR_2		= 0x0001 ,
 	REG_R_VOLT			= 0x0002 ,
-	
-
 	REG_S_LAST                               //
 } eMBRegS_t;
 
