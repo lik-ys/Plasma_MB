@@ -166,7 +166,8 @@ eMBErrorCode eMBRegHoldingCB(UCHAR * pucRegBuffer, USHORT usAddress, USHORT usNR
                 pusRegHoldingBuf[iRegIndex] = *pucRegBuffer++ << 8;
                 pusRegHoldingBuf[iRegIndex] |= *pucRegBuffer++;
                 iRegIndex++;
-                usNRegs--;
+                usNRegs--;  
+                /// UpDateWriteRg();
             }
             break;
         }

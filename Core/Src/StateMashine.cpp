@@ -50,6 +50,7 @@ extern TIM_HandleTypeDef* pExtSync   ;
 
 void ADC_Process( void );
 void SM_Tick( void );
+void FireProcess( void );
 
 /*
 **
@@ -73,6 +74,8 @@ void SM_loop( void )
 {  
   pMBhl->Loop( );
   pMBcntrl->Loop();
+  
+  FireProcess();
   
   SM_Tick();
   
@@ -225,5 +228,26 @@ void ADC_Process( void )
     SetMBRgS( REG_R_VOLT,   stAdc_volt );
   }
 } // ADC_Process()
+
+/*
+*
+*/
+void FireStart( void )
+{}
+/***
+*  Включаем CMD_FIRE_PWR  через 1 секунду  включаем CMD_FIRE_LOCK & CMD_FIRE_FIRE держим 3 секунды и выключаем все
+*
+*/
+void FireProcess( void )
+{
+  switch( eSM_proc )
+  {
+  case ST_FIRE_START: FireStart(); break;
+  case ST_FIRE_WAITE: break;
+  case ST_FIRE_ON:    break;
+  case ST_FIRE_OF:    break;
+  default:;    
+  }
+}
 /** (END OF FILE  : StateMashine.cpp) 
 *******************************/ 

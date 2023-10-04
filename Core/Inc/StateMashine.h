@@ -68,6 +68,11 @@ typedef enum
   ST_MB_SLAVE,
   ST_TX,
   ST_ADC_CMPLT,
+  
+  ST_FIRE_START,
+  ST_FIRE_WAITE,
+  ST_FIRE_ON,
+  ST_FIRE_OF,
     
   ST_END    
 } eProcess_t;
@@ -80,6 +85,11 @@ typedef struct
   uint16_t bMB_Master   : 1;
   uint16_t bMB_Slave    : 1;
   uint16_t bAdcCmplt    : 1;
+  
+  uint16_t bFireStrat   : 1;
+  uint16_t bFireWaite   : 1;
+  uint16_t bFireOn      : 1;
+  uint16_t bFireOff     : 1;
   
 }bProcess_t;
 
@@ -97,6 +107,21 @@ typedef struct
   uint16_t b1000ms : 1;  
 }bTime_t;
 
+typedef  enum
+{
+  EV_IDLE       ,           // 0
+  EV_COMMAND    ,           // 1
+  EV_MB_CONNECT ,           // 2
+  EV_ADC_DATA   ,           // 3  
+  
+  EV_FIRE_START,
+  EV_FIRE_WAITE,
+  EV_FIRE_ON,
+  EV_FIRE_OF,
+  
+  EV_COUNTS  
+}eEvent_t;
+
 typedef struct 
 {
   uint16_t   div10;
@@ -105,6 +130,8 @@ typedef struct
   eProcess_t proc;
   bTime_t    time;
   bProcess_t st;  
+  uint32_t   tick[ EV_COUNTS ];
+  
 }State_t;
 
 extern  eProcess_t eSM_proc;
