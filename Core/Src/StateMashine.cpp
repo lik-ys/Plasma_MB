@@ -15,6 +15,7 @@
 *                   : 
 * Hardware          : .sch .pcb
 *
+TODO сделать поджиг 
 ********************************************************************************/
 
 #include  <stdint.h>
@@ -25,6 +26,7 @@
 #include  "io_process.h"
 #include  "main.h"
 #include  "user_mb_app.h"
+#include "Fire.h"
 
 extern void     SetMBRgS( eMBRegS_t numMBReg, uint16_t data );
 
@@ -50,7 +52,7 @@ extern TIM_HandleTypeDef* pExtSync   ;
 
 void ADC_Process( void );
 void SM_Tick( void );
-void FireProcess( void );
+
 
 /*
 **
@@ -229,25 +231,5 @@ void ADC_Process( void )
   }
 } // ADC_Process()
 
-/*
-*
-*/
-void FireStart( void )
-{}
-/***
-*  ¬ключаем CMD_FIRE_PWR  через 1 секунду  включаем CMD_FIRE_LOCK & CMD_FIRE_FIRE держим 3 секунды и выключаем все
-*
-*/
-void FireProcess( void )
-{
-  switch( eSM_proc )
-  {
-  case ST_FIRE_START: FireStart(); break;
-  case ST_FIRE_WAITE: break;
-  case ST_FIRE_ON:    break;
-  case ST_FIRE_OF:    break;
-  default:;    
-  }
-}
 /** (END OF FILE  : StateMashine.cpp) 
 *******************************/ 

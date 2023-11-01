@@ -1,4 +1,5 @@
 #include "user_mb_app.h"
+#include "modbus.h"
 
 #if (MB_SLAVE_ASCII_ENABLED > 0 || MB_SLAVE_RTU_ENABLED > 0 || MB_SLAVE_TCP_ENABLED > 0)
 
@@ -151,11 +152,12 @@ eMBErrorCode eMBRegHoldingCB(UCHAR * pucRegBuffer, USHORT usAddress, USHORT usNR
         /* read current register values from the protocol stack. */
         case MB_REG_READ:
             while (usNRegs > 0)
-            {
+            {              
+                UpDateReadRg( iRegIndex );
                 *pucRegBuffer++ = (UCHAR) (pusRegHoldingBuf[iRegIndex] >> 8);
                 *pucRegBuffer++ = (UCHAR) (pusRegHoldingBuf[iRegIndex] & 0xFF);
                 iRegIndex++;
-                usNRegs--;
+                usNRegs--;                
             }
             break;
 
@@ -165,9 +167,9 @@ eMBErrorCode eMBRegHoldingCB(UCHAR * pucRegBuffer, USHORT usAddress, USHORT usNR
             {
                 pusRegHoldingBuf[iRegIndex] = *pucRegBuffer++ << 8;
                 pusRegHoldingBuf[iRegIndex] |= *pucRegBuffer++;
+                UpDateWriteRg( iRegIndex);
                 iRegIndex++;
-                usNRegs--;  
-                /// UpDateWriteRg();
+                usNRegs--;                  
             }
             break;
         }

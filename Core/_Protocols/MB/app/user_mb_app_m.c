@@ -211,6 +211,7 @@ eMBErrorCode eMBMasterRegHoldingCB(UCHAR * pucRegBuffer, USHORT usAddress, USHOR
         case MB_REG_READ:
             while (usNRegs > 0)
             {
+                UpDateReadRgM(iRegIndex);
                 *pucRegBuffer++ = (UCHAR) (pusRegHoldingBuf[iRegIndex] >> 8);
                 *pucRegBuffer++ = (UCHAR) (pusRegHoldingBuf[iRegIndex] & 0xFF);
                 iRegIndex++;
@@ -223,6 +224,9 @@ eMBErrorCode eMBMasterRegHoldingCB(UCHAR * pucRegBuffer, USHORT usAddress, USHOR
             {
                 pusRegHoldingBuf[iRegIndex] = *pucRegBuffer++ << 8;
                 pusRegHoldingBuf[iRegIndex] |= *pucRegBuffer++;
+                
+                UpDateWriteRgM(iRegIndex);
+                
                 iRegIndex++;
                 usNRegs--;
             }

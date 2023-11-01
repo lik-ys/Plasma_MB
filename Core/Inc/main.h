@@ -31,6 +31,7 @@ extern "C" {
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
+#include  <stdint.h>
 #include "arm_math.h"
   
 extern ADC_HandleTypeDef hadc1;

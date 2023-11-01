@@ -20,6 +20,8 @@
 #ifndef __STATE_MASHINE_HPP__ 
 #define __STATE_MASHINE_HPP__ 
 
+#include "main.h"
+
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -72,7 +74,7 @@ typedef enum
   ST_FIRE_START,
   ST_FIRE_WAITE,
   ST_FIRE_ON,
-  ST_FIRE_OF,
+  ST_FIRE_OFF,
     
   ST_END    
 } eProcess_t;
