@@ -36,7 +36,7 @@ extern "C" {
   
 extern ADC_HandleTypeDef hadc1;
 extern CAN_HandleTypeDef hcan1;
-extern ETH_HandleTypeDef heth;
+//extern ETH_HandleTypeDef heth;
 extern TIM_HandleTypeDef htim3;
 extern TIM_HandleTypeDef htim4;
 extern UART_HandleTypeDef huart4;
