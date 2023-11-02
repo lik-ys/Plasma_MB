@@ -26,12 +26,16 @@ TODO сделать поджиг
 #include  "io_process.h"
 #include  "main.h"
 #include  "user_mb_app.h"
-#include "Fire.h"
+#include  "Fire.h"
+#include  "Timer.hpp"
+
+Timer gTimer;
+Timer *hTimer = &gTimer;
 
 extern void     SetMBRgS( eMBRegS_t numMBReg, uint16_t data );
 
 eProcess_t  eSM_proc;
-State_t     gStateSM = { TIME_10ms, TIME_100ms, TIME_1000ms };
+State_t     gStateSM = { TIME_10ms, TIME_100ms, TIME_1000ms, ST_IDLE, {0,0,0},{0,0,} };
 
 ADC_data_t ADCdata[ ADC_BUF_LENGHT ] = {0,0,};
 ADC_data_t ADCdat =  {0,0,0};
@@ -59,6 +63,8 @@ void SM_Tick( void );
 */
 void ProcessInit( void )
 {
+  memcpy( gStateSM.tick, 0, sizeof(gStateSM.tick) );
+  
   eSM_proc = ST_IDLE;
   gLed.led = led1_pin;
   
@@ -66,7 +72,9 @@ void ProcessInit( void )
   pMBcntrl->Init();
   
   //HAL_TIM_Base_Start_IT( pExtSync );
-  HAL_TIM_OC_Start(pExtSync,TIM_CHANNEL_1 );
+  HAL_TIM_OC_Start( pExtSync,TIM_CHANNEL_1 );
+  
+  hTimer->Time_Out( Timer::start, TIME_OUT_TEST, PROC_EV_DEBUG );
 }// ProcessInit()
 
 /**
@@ -86,7 +94,13 @@ void SM_loop( void )
   
   if ( 1 == gStateSM.st.bAdcCmplt){
     eSM_proc = ST_ADC_CMPLT;
-  }
+  }else;
+  
+  if ( hTimer->IsTimeOut(PROC_EV_DEBUG) )
+  {    
+    static int i = 0;
+    WR_DEBUG("__Debug__ cnt = %i \r\n", i++);   
+  }else;
   
   switch( eSM_proc )    // 
   {
@@ -96,30 +110,28 @@ void SM_loop( void )
     case ST_TOGGLE_LED:
       ToggleLed( &gLed );
       eSM_proc = ST_IDLE;
-      xMBMasterPortSerialPutByte(0x55);
-      // RS485_Dir( rx );
+      RS485_Dir_m( tx );
+      xMBMasterPortSerialPutByte(0x55); // работает 
+      RS485_Dir_m( rx );
       xMBPortSerialGetByte(pdata);
+      eSM_proc = ST_IDLE;
       break;
       
     case ST_START:
       break;
       
     case ST_MB_MASTER:
-      break;
-      
-    case ST_MB_SLAVE:
-      break;   
-      
-    case ST_TX:
-      //HAL_status = HAL_UART_Transmit_DMA( pUartWIFI, bufTx, 3 );  // первый раз отправляет - потом бизи
-//      HAL_status = HAL_UART_Transmit_DMA( pMBSlave,   bufTx, 3 );
-//      HAL_status = HAL_UART_Transmit_DMA( pMBMaster,bufTx, 3 );
-      //HAL_status = HAL_UART_Transmit_DMA( pUartDBG,  bufTx, 3 );
       eSM_proc = ST_IDLE;
       break;
-      
+    case ST_MB_SLAVE:
+      eSM_proc = ST_IDLE;
+      break;   
+    case ST_TX:
+      eSM_proc = ST_IDLE;
+      break;
     case ST_ADC_CMPLT:
       ADC_Process( );
+      eSM_proc = ST_IDLE;
       break;
       
     default: break;    
@@ -176,6 +188,9 @@ void SM_Tick( void )
   if ( 1 == gStateSM.time.b1000ms )
   {
     gStateSM.time.b1000ms = 0;
+    
+    //static int i = 0;
+//    WR_DEBUG("__Debug__ cnt = %i \r\n", i++);
         
     ClrLed( &gLed );
     if ( gLed.led == led1_pin ) 
@@ -228,7 +243,7 @@ void ADC_Process( void )
     SetMBRgS( REG_R_CURR_1, stAdc_cur1 );
     SetMBRgS( REG_R_CURR_2, stAdc_cur2 );
     SetMBRgS( REG_R_VOLT,   stAdc_volt );
-  }
+  }else;
 } // ADC_Process()
 
 /** (END OF FILE  : StateMashine.cpp) 

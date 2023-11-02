@@ -2543,9 +2543,15 @@
                 <file>
                     <name>$PROJ_DIR$\..\Core\Src\stm32f4xx_it.c</name>
                 </file>
+                <file>
+                    <name>$PROJ_DIR$\..\Core\Src\Timer.cpp</name>
+                </file>
             </group>
             <group>
                 <name>Debug</name>
+                <file>
+                    <name>$PROJ_DIR$\..\Core\Src\Debug.c</name>
+                </file>
             </group>
             <group>
                 <name>Math</name>
@@ -2588,9 +2594,6 @@
             </file>
             <file>
                 <name>$PROJ_DIR$\..\Drivers\STM32F4xx_HAL_Driver\Src\stm32f4xx_hal_dma_ex.c</name>
-            </file>
-            <file>
-                <name>$PROJ_DIR$\..\Drivers\STM32F4xx_HAL_Driver\Src\stm32f4xx_hal_eth.c</name>
             </file>
             <file>
                 <name>$PROJ_DIR$\..\Drivers\STM32F4xx_HAL_Driver\Src\stm32f4xx_hal_exti.c</name>

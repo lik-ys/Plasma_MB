@@ -1,41 +1,85 @@
 /*******************************************************************************
 *
-* Copyright (C) 2023 Sharopin Yuri
+* Copyright (C) 2022 Sharopin Yuri
 *
-* File              : debug.hpp
-* Compiler          : IAR EWA 8.32
+* File              : Debug.h
+* Compiler          : IAR EW ARM 8.32
 * Version           : 0.0
-* Created File      : .2023
-* Last modified     : .2023
+* Created File      : 11.10.2022
+* Last modified     : 11.10.2022
 *
 * Support mail      : yshar@ngs.ru
 *
-* Target MCU        : MCU:  @ (Xtal = MHz | CPUclk = MHz)
+* Target MCU        : MCU @ (Xtal = MHz | CPUclk = MHz)
 * Description       : 
 *                   : 
 * Hardware          : .sch .pcb
 *
 ********************************************************************************/
 /*===============================[ REDEFINITION DEFENCE ]======================*/ 
-#ifndef ___DEBUG_HPP__ 
-#define ___DEBUG_HPP__
+#ifndef __DEBUG_H__ 
+#define __DEBUG_H__
 /*===============================[ SPECIAL ]===================================*/ 
-    // Блок операторов условной компиляции 
-/*===============================[ PUBLIC CONSTANTS ]==========================*/ 
-    //  Публичные константы 
-/*===============================[ PUBLIC TYPES ]==============================*/ 
-    // Публичные типы 
-/*===============================[ FORWARD REFERENCES ]========================*/ 
-    // Ссылки вперед 
-/*===============================[ PUBLIC VARIABLES ]==========================*/ 
-    // Публичные переменные 
-/*===============================[ PUBLIC FUNCTIONS ]==========================*/ 
-    // Публичные функции  
+                       // Блок операторов условной компиляции 
+/*===============================[ IMPORT DECLARATIONS ]=======================*/
+/* ----------------------------- [ System includes   ]-------------------------*/
+//#include   <> // MCS
+/* ------------------------------[ Platform includes ]-------------------------*/
+//#include   <> // IDE, OS
+/*-------------------------------[ Standart libs     ]-------------------------*/
+#include   <stdio.h> 
+/* ------------------------------[ Application level ]-------------------------*/
+//#include   "" // 
+/*===============================[ PUBLIC CONSTANTS ]=======================*/ 
+// Все частные #defines и constants должны быть объявлены в данном разделе. 
+#define __UART_DEBUG__  1
+
+#if ( 1 == __UART_DEBUG__ )
+  #define   WR_DEBUG(...)     {printf(__VA_ARGS__);  fflush(stdout);}  // Write Debuge
+  ///------- Отладка модуля ModBus
+  #ifdef    __MB_DEBUG__
+#define   MB_DEBUG(...)     {printf("--MB--"__VA_ARGS__); }//delay_l(50000);}
+  #else
+    #define MB_DEBUG(...)   {}
+  #endif
+  ///------- Отладка модуля CAN
+  #ifdef    __CAN_DEBUG__
+  #define   CAN_DEBUG(...)    {printf("--CAN--"__VA_ARGS__); delay_l(50000);}
+  #else
+    #define CAN_DEBUG(...)  {}
+  #endif
+  ///------- Отладка модуля ...
+#else
+  #define   WR_DEBUG(...)   {}
+  #define   MB_DEBUG(...)   {}
+  #define   CAN_DEBUG(...)  {}
+#endif
+
+#define ITM_UNLOCK   0xC5ACCE55
+
+#define __ITM_UNLOCK( unlock )     *((volatile unsigned long *)0xE0000FB0) = unlock;
+
+/*===============================[ TYPE DEFINITIONS ]==========================*/ 
+typedef enum
+{
+  ITM_CH1   = 1 ,
+  ITM_CH2       ,
+  ITM_CH3       ,
+  ITM_CH4
+}ITM_Channels_t;
+/*===============================[ EXTERN VAR ]================================*/ 
+//extern    int ext_var;
 /*===============================[ PSEUDO/INLINE FUNCTIONS ]===================*/ 
-    // Inline функции (методы класса)
+//inline                 // Inline функции (методы класса)
+                       
+/*===============================[ EXPORTED FUNCTIONS ]========================*/ 
+
+void  DBG_ITM_Event( ITM_Channels_t itm_ch, uint32_t );
+
 /*===============================[ END REDEFINITION DEFENCE]===================*/ 
-    // Окончание однократно включаемого h-файла
-    
-#endif 
-/** (END OF FILE  : debug.hpp) 
-*******************************/ 
+                         // Окончание однократно включаемого h-файла
+                       
+#endif
+/** (END OF FILE  : Debug.h.h) 
+*******************************/
+ 

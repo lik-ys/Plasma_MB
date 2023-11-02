@@ -27,10 +27,27 @@ TODO сделать поджиг
 */
 void FireStart( void )
 {
-}
+  hTimer->Time_Out( Timer::start, TIME_OUT_FIRE, PROC_EV_DEBUG );
+ 
+   
+}       
+
 void FireON( void )
 {
+  HAL_GPIO_WritePin( CMD_FIRE_FIRE_GPIO_Port, CMD_FIRE_FIRE_Pin,GPIO_PIN_SET ) ;
+  HAL_GPIO_WritePin( CMD_FIRE_LOCK_GPIO_Port, CMD_FIRE_LOCK_Pin, GPIO_PIN_SET );
+  HAL_GPIO_WritePin(CMD_FIRE_PWR_GPIO_Port, CMD_FIRE_PWR_Pin, GPIO_PIN_SET );
+  HAL_GPIO_WritePin(COMM_FIRE_GPIO_Port, COMM_FIRE_Pin, GPIO_PIN_SET);  
 }
+
+void FireOFF( void )
+{
+  HAL_GPIO_WritePin( CMD_FIRE_FIRE_GPIO_Port, CMD_FIRE_FIRE_Pin,GPIO_PIN_SET ) ;
+  HAL_GPIO_WritePin( CMD_FIRE_LOCK_GPIO_Port, CMD_FIRE_LOCK_Pin, GPIO_PIN_SET );
+  HAL_GPIO_WritePin(CMD_FIRE_PWR_GPIO_Port, CMD_FIRE_PWR_Pin, GPIO_PIN_SET );
+  HAL_GPIO_WritePin(COMM_FIRE_GPIO_Port, COMM_FIRE_Pin, GPIO_PIN_SET);  
+}
+
 /***
 *  ¬ключаем CMD_FIRE_PWR  через 1 секунду  включаем CMD_FIRE_LOCK & CMD_FIRE_FIRE держим 3 секунды и выключаем все
 *
@@ -39,10 +56,18 @@ void FireProcess( void )
 {
   switch( eSM_proc )
   {
-  case ST_FIRE_START: FireStart(); break;
-  case ST_FIRE_WAITE: break;
-  case ST_FIRE_ON:    break;
-  case ST_FIRE_OFF:    break;
+  case ST_FIRE_START:  
+    eSM_proc =   ST_FIRE_WAITE;
+    FireStart(); 
+  break;
+  case ST_FIRE_WAITE: 
+    break;
+  case ST_FIRE_ON:    
+    FireON();
+    break;
+  case ST_FIRE_OFF:
+    FireOFF();
+    break;
   default:;    
   }
 }

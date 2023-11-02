@@ -33,7 +33,9 @@ extern "C" {
 #define ADC_MAX         4095
 #define DAC_MAX         4095
 
-#define ADC_BUF_LENGHT  32 
+#define ADC_BUF_LENGHT  8
+  
+#define TIME_OUT_TEST   250
 /*===============================[ PUBLIC TYPES ]==============================*/ 
     // Публичные типы 
 typedef   enum
@@ -113,8 +115,9 @@ typedef  enum
 {
   EV_IDLE       ,           // 0
   EV_COMMAND    ,           // 1
-  EV_MB_CONNECT ,           // 2
-  EV_ADC_DATA   ,           // 3  
+  EV_MB_CONNECT_SLAVE ,     // 2
+  EV_MB_CONNECT_MASTER,     // 3  
+  EV_ADC_DATA   ,           // 4  
   
   EV_FIRE_START,
   EV_FIRE_WAITE,
