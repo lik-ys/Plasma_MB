@@ -9,18 +9,18 @@ extern "C" {
   
 typedef enum _MB_REG
 {
-  REG_W_CNTRL   = 0 ,
-  REG_W_FREQ    ,
-  REG_W_CNC_OUT , // дискретные выходы
-  
-  REG_R_STATUS  ,
   REG_R_ADC_CURR1 ,
   REG_R_ADC_CURR2 ,
   REG_R_ADC_VOLT  ,
   REG_R_CNC_IN  , // дискретные входы 
+
+  REG_R_STATUS  ,
+  
+  REG_W_CNTRL   ,  
+  REG_W_CNC_OUT , // дискретные выходы  
+  REG_W_FREQ    , // „астота синхронизации 12345 √ц  
   
   REG_LAST
-  
 }eMBReg_t;
 
 union STATUS

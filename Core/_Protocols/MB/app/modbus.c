@@ -11,7 +11,7 @@ void UpDateReadRg( eMBReg_t numRg )
 {
   switch( numRg )    // 
   {
-    case REG_W_CNTRL:
+    case REG_R_CNC_IN:
       break;
     case REG_R_STATUS:
       break;    
@@ -30,8 +30,9 @@ void UpDateWriteRg( eMBReg_t numRg )
   {
     case REG_W_CNTRL:
       break;
-    case REG_R_STATUS:
-      break;    
+    case REG_W_CNC_OUT:
+      break; 
+    case REG_W_FREQ:break;
     default:
       break;
   } // switch(  )
