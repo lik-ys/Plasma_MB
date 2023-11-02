@@ -214,8 +214,8 @@ void ADC_Process( void )
     for(uint16_t i = 0; i< ADC_BUF_LENGHT; i++)
     {
       stAdc_cur1 += ADCdata[i].Current1;
-      stAdc_cur1 += ADCdata[i].Current2;
-      stAdc_cur1 += ADCdata[i].Voltage;      
+      stAdc_cur2 += ADCdata[i].Current2;
+      stAdc_volt += ADCdata[i].Voltage;      
     }
     stAdc_cur1 /= ADC_BUF_LENGHT;
     stAdc_cur2 /= ADC_BUF_LENGHT;
@@ -226,7 +226,7 @@ void ADC_Process( void )
     ADCdat.Voltage   = stAdc_volt;
     
     SetMBRgS( REG_R_CURR_1, stAdc_cur1 );
-    SetMBRgS( REG_R_CURR_1, stAdc_cur1 );
+    SetMBRgS( REG_R_CURR_2, stAdc_cur2 );
     SetMBRgS( REG_R_VOLT,   stAdc_volt );
   }
 } // ADC_Process()
