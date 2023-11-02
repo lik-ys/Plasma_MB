@@ -1,10 +1,15 @@
 
+#include "StateMashine.h"
 #include "Timer.hpp"
 
 
-uint32_t Ev_timeout[ PROC_COMMAND_LAST ]; // timeout for each events
-uint32_t MLmsec[PROC_COMMAND_LAST];		 // current time of events
-uint32_t St_tim[PROC_COMMAND_LAST];
+uint32_t Ev_timeout[ EV_COUNTS ]; // timeout for each events
+uint32_t MLmsec[EV_COUNTS];		 // current time of events
+uint32_t St_tim[EV_COUNTS];
+
+Timer::~Timer()
+{
+}
 /*
  *
  */
@@ -13,9 +18,9 @@ Timer::Timer(void )
 	ev_timeout 	= Ev_timeout;
 	msec 		= MLmsec;
 	st_tim 		= St_tim;
-	max = PROC_COMMAND_LAST;
+	max = EV_COUNTS;
 
-	for (eProcessCom_t i = PROC_EV_FIRST; i < max; i = static_cast<eProcessCom_t>(i+1)  )
+	for (eProcessCom_t i = EV_IDLE; i < max; i = static_cast<eProcessCom_t>(i+1)  )
 		st_tim[ (eProcessCom_t)i ] = not_start;
 
 }// Timer()
@@ -44,7 +49,7 @@ void Timer::Waiting( void )
 	static eProcessCom_t i = (eProcessCom_t)0;
 	Time_Out(test, ev_timeout[i], i);
 	i = static_cast<eProcessCom_t>(i+1);
-	if (  i >= PROC_COMMAND_LAST ) i = (eProcessCom_t)0;
+	if (  i >= EV_COUNTS ) i = (eProcessCom_t)0;
 }// Waiting()
 
 

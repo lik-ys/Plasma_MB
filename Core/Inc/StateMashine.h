@@ -124,18 +124,21 @@ typedef  enum
   EV_FIRE_ON,
   EV_FIRE_OF,
   
+  PROC_EV_DEBUG   ,
   EV_COUNTS  
-}eEvent_t;
+}eProcessCom_t;
 
 typedef struct 
 {
   uint16_t   div10;
   uint16_t   div100;
   uint16_t   div1000;
-  eProcess_t proc;
+  eProcess_t  proc;
+  
   bTime_t    time;
   bProcess_t st;  
   uint32_t   tick[ EV_COUNTS ];
+  eProcessCom_t event;
   
 }State_t;
 

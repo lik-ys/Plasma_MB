@@ -6,7 +6,8 @@ extern "C" {
 #endif  
   
 
-#define TIME_OUT_FIRE   250
+#define TIME_OUT_PWR_ON   1000
+#define TIME_HOLD       3000  // время удержавния
 
 
 void FireProcess( void );

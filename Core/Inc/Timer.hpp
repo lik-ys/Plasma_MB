@@ -13,14 +13,6 @@
 /* процесс обработки событий и комманд (звершена, подтверждение, выполняется)
  *
  */
-typedef enum _process_com
-{
-	PROC_EV_FIRST		, // 0
-    
-    PROC_EV_DEBUG   ,
-    
-	PROC_COMMAND_LAST
-} eProcessCom_t;
 
 class Timer
 {
@@ -55,12 +47,9 @@ public:
 	uint32_t *msec;
 	uint32_t max; // MAV_COMMAND_LAST
 	uint32_t delta;
-
+    
+    ~Timer();
 private:
-	// При наследовании переходит весь массив todo переделать доступ к массиву через указатель
-	// TODO применить static
-	//uint32_t ev_timeout[ MAV_COMMAND_LAST ];
-	//uint32_t msec[MAV_COMMAND_LAST];
 }; // Timer
 
 #endif /* __TIMER_H__ */

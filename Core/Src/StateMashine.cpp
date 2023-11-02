@@ -98,9 +98,11 @@ void SM_loop( void )
   
   if ( hTimer->IsTimeOut(PROC_EV_DEBUG) )
   {    
-    static int i = 0;
-    WR_DEBUG("__Debug__ cnt = %i \r\n", i++);   
+    //static int i = 0;
+    //WR_DEBUG("__Debug__ cnt = %i \r\n", i++);   
   }else;
+  
+  gStateSM.proc = eSM_proc;
   
   switch( eSM_proc )    // 
   {
