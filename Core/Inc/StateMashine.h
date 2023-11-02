@@ -33,7 +33,7 @@ extern "C" {
 #define ADC_MAX         4095
 #define DAC_MAX         4095
 
-#define ADC_BUF_LENGHT  8
+#define ADC_BUF_LENGHT  32
   
 #define TIME_OUT_TEST   250
 /*===============================[ PUBLIC TYPES ]==============================*/ 
