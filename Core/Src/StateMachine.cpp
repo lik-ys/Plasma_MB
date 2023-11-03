@@ -20,7 +20,7 @@ TODO сделать поджиг
 
 #include  <stdint.h>
 
-#include  "StateMashine.h"// 
+#include  "StateMaсhine.h"// 
 #include  "mb_com.hpp"
 #include  "mb_m.h"
 #include  "io_process.h"

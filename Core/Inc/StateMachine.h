@@ -2,7 +2,7 @@
 *
 * Copyright (C) 2023 Sharopin Yuri
 *
-* File              : StateMashine.h
+* File              : StateMañhine.h
 * Compiler          : IAR EWA 8.32
 * Version           : 0.0
 * Created File      : 01.06.2023
