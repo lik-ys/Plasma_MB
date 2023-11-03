@@ -39,6 +39,44 @@ USHORT   usSRegHoldBuf[S_REG_HOLDING_NREGS]           ;
 /*------------------------Slave user code----------------------*/
 
 /**
+  * @brief  апдейт регистров чтения
+  * @param
+  * @retval
+  */
+void UpDateReadRg( eMBRegS_t numRg )
+{
+  switch( numRg )    // 
+  {
+    case REG_R_CNC_IN:
+      break;
+    case REG_R_STATUS_S:
+      break;    
+    default:
+      break;
+  } // switch(  )
+}
+/**
+  * @brief  апдейт регистров записи
+  * @param
+  * @retval
+  */
+void UpDateWriteRg( eMBRegS_t numRg )
+{
+  switch( numRg )    // 
+  {
+    case REG_W_CNTRL:
+      gMbCntrl.reg = GetMBRgS( numRg );
+      break;
+    case REG_W_CNC_OUT:
+      break; 
+    case REG_W_FREQ:
+      break;
+    default:
+      break;
+  } // switch(  )
+}
+
+/**
   * @brief
   * @param  
   * @retval 
@@ -153,7 +191,7 @@ eMBErrorCode eMBRegHoldingCB(UCHAR * pucRegBuffer, USHORT usAddress, USHORT usNR
         case MB_REG_READ:
             while (usNRegs > 0)
             {              
-                UpDateReadRg( iRegIndex );
+                UpDateReadRg( (eMBRegS_t)iRegIndex );
                 *pucRegBuffer++ = (UCHAR) (pusRegHoldingBuf[iRegIndex] >> 8);
                 *pucRegBuffer++ = (UCHAR) (pusRegHoldingBuf[iRegIndex] & 0xFF);
                 iRegIndex++;
@@ -167,7 +205,7 @@ eMBErrorCode eMBRegHoldingCB(UCHAR * pucRegBuffer, USHORT usAddress, USHORT usNR
             {
                 pusRegHoldingBuf[iRegIndex] = *pucRegBuffer++ << 8;
                 pusRegHoldingBuf[iRegIndex] |= *pucRegBuffer++;
-                UpDateWriteRg( iRegIndex);
+                UpDateWriteRg( (eMBRegS_t)iRegIndex);
                 iRegIndex++;
                 usNRegs--;                  
             }

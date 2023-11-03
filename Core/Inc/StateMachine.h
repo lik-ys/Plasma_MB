@@ -154,9 +154,7 @@ typedef struct
   
 }State_t;
 
-
 // REG_W_CNTRL
-
 typedef union 
 {  
   struct {

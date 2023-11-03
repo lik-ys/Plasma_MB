@@ -22,6 +22,7 @@ TODO сделать поджиг
 #include  "Fire.h"
 #include  "StateMachine.h"
 #include  "Timer.hpp"
+#include  "user_mb_app.h"
 
 extern  State_t     gStateSM;
 extern  Timer*      hTimer;
@@ -77,6 +78,8 @@ void FireProcess( void )
   {
   case ST_FIRE_START:  
     gStateSM.proc =   ST_FIRE_WAITE;
+    gMbStatus.bit.bFireStart = 0;
+    SetMBRgS( REG_R_STATUS_S, gMbStatus.reg );
     WR_DEBUG("Fire Start \r\n");
     FireStart(); 
     
@@ -99,16 +102,28 @@ void FireProcess( void )
     FireOFF();
     gStateSM.st.bFireOff = 0;  gStateSM.st.bFireStrat = 0; gStateSM.st.bCommFire = 0;
     HAL_NVIC_EnableIRQ( EXTI4_IRQn );
+    gMbStatus.bit.bFireStart = 1;
+    SetMBRgS( REG_R_STATUS_S, gMbStatus.reg );
     break;
   default:;    
   }
 } // FireProcess()
 
+/***
+*
+*/
 void CommandProcess( void )
 {
   if ( gStateSM.st.bCommStart    == 1 )  gStateSM.proc = ST_COMM_START  ;
   if ( gStateSM.st.bCommFire     == 1 )  gStateSM.proc = ST_COMM_FIRE   ;
   if ( gStateSM.st.bMetalContact == 1 )  gStateSM.proc = ST_METAL_CONTACT; 
+  
+  if ( gMbCntrl.bit.bFireStart ) 
+  {
+    gMbCntrl.bit.bFireStart = 0;
+    
+    gStateSM.st.bCommFire = 1;     
+  }
   
   switch( gStateSM.proc )
   {
