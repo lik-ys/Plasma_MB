@@ -34,6 +34,7 @@ extern "C" {
 #include  <stdint.h>
 #include "arm_math.h"
 #include "Debug.h"
+#include "StateMashine.h"  
   
 extern ADC_HandleTypeDef hadc1;
 extern CAN_HandleTypeDef hcan1;
@@ -81,10 +82,13 @@ void Error_Handler(void);
 /* Private defines -----------------------------------------------------------*/
 #define COMM_START_Pin GPIO_PIN_2
 #define COMM_START_GPIO_Port GPIOE
+#define COMM_START_EXTI_IRQn EXTI2_IRQn
 #define DI_METAL_CONTACT_Pin GPIO_PIN_3
 #define DI_METAL_CONTACT_GPIO_Port GPIOE
+#define DI_METAL_CONTACT_EXTI_IRQn EXTI3_IRQn
 #define COMM_FIRE_Pin GPIO_PIN_4
 #define COMM_FIRE_GPIO_Port GPIOE
+#define COMM_FIRE_EXTI_IRQn EXTI4_IRQn
 #define CNC_DI_3_Pin GPIO_PIN_6
 #define CNC_DI_3_GPIO_Port GPIOE
 #define CNC_DI_2_Pin GPIO_PIN_13

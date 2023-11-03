@@ -19,6 +19,13 @@ typedef enum _MB_REG_S
 	REG_R_CURR_1		= 0x0000 ,
 	REG_R_CURR_2		= 0x0001 ,
 	REG_R_VOLT			= 0x0002 ,
+    REG_R_CNC_IN  ,     // дискретные входы 
+    REG_R_STATUS_S  ,   // 
+    
+    REG_W_CNTRL         = 15 ,//
+    REG_W_CNC_OUT ,     // дискретные выходы  
+    REG_W_FREQ    ,     // „астота синхронизации 12345 √ц      
+    
 	REG_S_LAST                               //
 } eMBRegS_t;
 
@@ -45,7 +52,6 @@ typedef enum _MB_REG_S
 #define          S_CO_RESERVE                     0
 /* salve mode: discrete's all address */
 #define          S_DI_RESERVE                     0
-
 
 extern void     SetMBRgS( eMBRegS_t numMBReg, uint16_t data );
 extern uint16_t GetMBRgS( eMBRegS_t numMBReg );

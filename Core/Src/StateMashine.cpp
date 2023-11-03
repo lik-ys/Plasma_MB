@@ -37,6 +37,9 @@ extern void     SetMBRgS( eMBRegS_t numMBReg, uint16_t data );
 eProcess_t  eSM_proc;
 State_t     gStateSM = { TIME_10ms, TIME_100ms, TIME_1000ms, ST_IDLE, {0,0,0},{0,0,} };
 
+RgCntrl_t   gMbCntrl;
+RgCntrl_t   gMbStatus;
+
 ADC_data_t ADCdata[ ADC_BUF_LENGHT ] = {0,0,};
 ADC_data_t ADCdat =  {0,0,0};
 
@@ -78,7 +81,7 @@ void ProcessInit( void )
 }// ProcessInit()
 
 /**
-**    todo проверить передачу
+** 
 */
 void SM_loop( void )
 {  
@@ -86,6 +89,7 @@ void SM_loop( void )
   pMBcntrl->Loop();
   
   FireProcess();
+  CommandProcess();
   
   SM_Tick();
   
@@ -93,18 +97,10 @@ void SM_loop( void )
   CHAR * pdata = &data;
   
   if ( 1 == gStateSM.st.bAdcCmplt){
-    eSM_proc = ST_ADC_CMPLT;
+    gStateSM.proc = ST_ADC_CMPLT;
   }else;
   
-  if ( hTimer->IsTimeOut(PROC_EV_DEBUG) )
-  {    
-    //static int i = 0;
-    //WR_DEBUG("__Debug__ cnt = %i \r\n", i++);   
-  }else;
-  
-  gStateSM.proc = eSM_proc;
-  
-  switch( eSM_proc )    // 
+  switch( gStateSM.proc )    // 
   {
     case ST_IDLE:
       break;
@@ -134,8 +130,7 @@ void SM_loop( void )
     case ST_ADC_CMPLT:
       ADC_Process( );
       eSM_proc = ST_IDLE;
-      break;
-      
+      break;      
     default: break;    
   } // switch( eSM_proc )
 }// SM_process()
@@ -245,6 +240,8 @@ void ADC_Process( void )
     SetMBRgS( REG_R_CURR_1, stAdc_cur1 );
     SetMBRgS( REG_R_CURR_2, stAdc_cur2 );
     SetMBRgS( REG_R_VOLT,   stAdc_volt );
+    
+    DBG_ITM_Event(ITM_CH1, stAdc_cur1);
   }else;
 } // ADC_Process()
 

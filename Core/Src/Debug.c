@@ -77,6 +77,15 @@ void DBG_ITM_Event( ITM_Channels_t itm_ch, uint32_t data )
   ITM_EVENT32_WITH_PC( itm_ch, data );
 //#endif
 }// DBG_ITM_Event()
+
+void DBG_Process( void )
+{
+//  if ( hTimer->IsTimeOut(PROC_EV_DEBUG) )
+//  {    
+//    //static int i = 0;
+//    //WR_DEBUG("__Debug__ cnt = %i \r\n", i++);   
+//  }else;  
+}
 /**
   * @}
   */

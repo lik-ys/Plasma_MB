@@ -49,9 +49,7 @@ void FireON( void )
       gStateSM.proc = ST_FIRE_OFF; 
       gStateSM.st.bFireOff = 1;
     }else;
-  }else;  
-  //HAL_GPIO_WritePin( CMD_FIRE_PWR_GPIO_Port, CMD_FIRE_PWR_Pin, GPIO_PIN_SET );
-  //HAL_GPIO_WritePin( COMM_FIRE_GPIO_Port, COMM_FIRE_Pin, GPIO_PIN_SET );  
+  }else;    
 }
 /***
 *
@@ -60,9 +58,8 @@ void FireOFF( void )
 { 
   HAL_GPIO_WritePin( CMD_FIRE_PWR_GPIO_Port, CMD_FIRE_PWR_Pin, GPIO_PIN_RESET );  
   HAL_GPIO_WritePin( CMD_FIRE_FIRE_GPIO_Port, CMD_FIRE_FIRE_Pin,GPIO_PIN_RESET ) ;
-  HAL_GPIO_WritePin( CMD_FIRE_LOCK_GPIO_Port, CMD_FIRE_LOCK_Pin, GPIO_PIN_RESET );  
-  HAL_GPIO_WritePin( COMM_FIRE_GPIO_Port, COMM_FIRE_Pin, GPIO_PIN_RESET);  
-}
+  HAL_GPIO_WritePin( CMD_FIRE_LOCK_GPIO_Port, CMD_FIRE_LOCK_Pin, GPIO_PIN_RESET );
+}//FireOFF()
 
 /***
 *  Включаем CMD_FIRE_PWR  через 1 секунду  включаем CMD_FIRE_LOCK & CMD_FIRE_FIRE держим 3 секунды и выключаем все
@@ -81,7 +78,7 @@ void FireProcess( void )
     gStateSM.proc =   ST_FIRE_WAITE;
     WR_DEBUG("Fire Start \r\n");
     FireStart(); 
-    gStateSM.st.bFireStrat = 0;
+    
     gStateSM.st.bFireWaite = 1;
   break;
   case ST_FIRE_WAITE: 
@@ -99,11 +96,51 @@ void FireProcess( void )
     break;
   case ST_FIRE_OFF:WR_DEBUG("Fire OFF __ \r\n");
     FireOFF();
-    gStateSM.st.bFireOff = 0;
+    gStateSM.st.bFireOff = 0;  gStateSM.st.bFireStrat = 0; gStateSM.st.bCommFire = 0;
+    HAL_NVIC_EnableIRQ( EXTI4_IRQn );
     break;
   default:;    
   }
-}
+} // FireProcess()
+
+void CommandProcess( void )
+{
+  if ( gStateSM.st.bCommStart    == 1 )  gStateSM.proc = ST_COMM_START  ;
+  if ( gStateSM.st.bCommFire     == 1 )  gStateSM.proc = ST_COMM_FIRE   ;
+  if ( gStateSM.st.bMetalContact == 1 )  gStateSM.proc = ST_METAL_CONTACT; 
+  
+  switch( gStateSM.proc )
+  {
+    case ST_COMM_START  :
+      {
+      static int cnt1 = 0;
+      WR_DEBUG("COMM_START_Pin  cnt = %i\r\n", cnt1++);
+      gStateSM.st.bCommStart = 0;
+      }
+      break;
+    case ST_COMM_FIRE   : 
+      {
+//      HAL_NVIC_DisableIRQ(EXTI2_IRQn);
+//      HAL_NVIC_DisableIRQ(EXTI3_IRQn);
+//      HAL_NVIC_DisableIRQ(EXTI4_IRQn);
+        if ( 0 == gStateSM.st.bFireStrat )
+        {
+          static int cnt3 = 0;
+          WR_DEBUG("COMM_FIRE_Pin:  cnt = %i \r\n", cnt3++);              
+          gStateSM.st.bFireStrat = 1;          
+        }
+      }
+      break;
+    case ST_METAL_CONTACT:
+      {
+      static int cnt2 = 0;
+      WR_DEBUG("DI_METAL_CONTACT_Pin:  cnt = %i \r\n", cnt2++);      
+      gStateSM.st.bMetalContact = 0;
+      }
+      break;
+    default:;
+  }
+} // CommandProcess()
 
 
 // End of file -------------------------------

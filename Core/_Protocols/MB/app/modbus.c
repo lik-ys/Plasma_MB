@@ -1,5 +1,6 @@
 
-#include "modbus.h" 
+#include "modbus.h"
+#include "StateMashine.h"
 
 
 /**
@@ -29,6 +30,7 @@ void UpDateWriteRg( eMBReg_t numRg )
   switch( numRg )    // 
   {
     case REG_W_CNTRL:
+      GetMBRgS(numRg);
       break;
     case REG_W_CNC_OUT:
       break; 

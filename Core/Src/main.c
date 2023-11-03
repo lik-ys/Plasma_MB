@@ -649,7 +649,7 @@ static void MX_GPIO_Init(void)
 
   /*Configure GPIO pin Output Level */
   HAL_GPIO_WritePin(GPIOE, LED_WORK1_Pin|LED_WORK2_Pin|CMD_FIRE_FIRE_Pin|CMD_FIRE_LOCK_Pin
-                          |FIRE_DI_0_Pin, GPIO_PIN_RESET);
+                          |CMD_FIRE_PWR_Pin|FIRE_DI_0_Pin, GPIO_PIN_RESET);
 
   /*Configure GPIO pin Output Level */
   HAL_GPIO_WritePin(GPIOD, CNC_DO_0_Pin|CNC_DO_1_Pin|CNC_DO_2_Pin|CNC_DO_3_Pin
@@ -664,17 +664,17 @@ static void MX_GPIO_Init(void)
   /*Configure GPIO pin Output Level */
   HAL_GPIO_WritePin(GPIOB, CMD_GAS_Waiting_Pin|CMD_GAS_Extinction_Pin|CMD_GAS_Out_Pin|CMD_GAS_Fire_Pin, GPIO_PIN_RESET);
 
-  /*Configure GPIO pins : COMM_START_Pin DI_METAL_CONTACT_Pin CMD_FIRE_PWR_Pin */
-  GPIO_InitStruct.Pin = COMM_START_Pin|DI_METAL_CONTACT_Pin|CMD_FIRE_PWR_Pin;
+  /*Configure GPIO pins : COMM_START_Pin DI_METAL_CONTACT_Pin COMM_FIRE_Pin */
+  GPIO_InitStruct.Pin = COMM_START_Pin|DI_METAL_CONTACT_Pin|COMM_FIRE_Pin;
   GPIO_InitStruct.Mode = GPIO_MODE_IT_RISING;
   GPIO_InitStruct.Pull = GPIO_NOPULL;
   HAL_GPIO_Init(GPIOE, &GPIO_InitStruct);
 
-  /*Configure GPIO pins : COMM_FIRE_Pin CNC_DI_3_Pin */
-  GPIO_InitStruct.Pin = COMM_FIRE_Pin|CNC_DI_3_Pin;
+  /*Configure GPIO pin : CNC_DI_3_Pin */
+  GPIO_InitStruct.Pin = CNC_DI_3_Pin;
   GPIO_InitStruct.Mode = GPIO_MODE_INPUT;
   GPIO_InitStruct.Pull = GPIO_NOPULL;
-  HAL_GPIO_Init(GPIOE, &GPIO_InitStruct);
+  HAL_GPIO_Init(CNC_DI_3_GPIO_Port, &GPIO_InitStruct);
 
   /*Configure GPIO pins : CNC_DI_2_Pin CNC_DI_1_Pin CNC_DI_0_Pin */
   GPIO_InitStruct.Pin = CNC_DI_2_Pin|CNC_DI_1_Pin|CNC_DI_0_Pin;
@@ -683,9 +683,9 @@ static void MX_GPIO_Init(void)
   HAL_GPIO_Init(GPIOC, &GPIO_InitStruct);
 
   /*Configure GPIO pins : LED_WORK1_Pin LED_WORK2_Pin CMD_FIRE_FIRE_Pin CMD_FIRE_LOCK_Pin
-                           FIRE_DI_0_Pin */
+                           CMD_FIRE_PWR_Pin FIRE_DI_0_Pin */
   GPIO_InitStruct.Pin = LED_WORK1_Pin|LED_WORK2_Pin|CMD_FIRE_FIRE_Pin|CMD_FIRE_LOCK_Pin
-                          |FIRE_DI_0_Pin;
+                          |CMD_FIRE_PWR_Pin|FIRE_DI_0_Pin;
   GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
   GPIO_InitStruct.Pull = GPIO_NOPULL;
   GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
@@ -725,6 +725,16 @@ static void MX_GPIO_Init(void)
   GPIO_InitStruct.Pull = GPIO_PULLDOWN;
   GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_MEDIUM;
   HAL_GPIO_Init(GPIOB, &GPIO_InitStruct);
+
+  /* EXTI interrupt init*/
+  HAL_NVIC_SetPriority(EXTI2_IRQn, 0, 0);
+  HAL_NVIC_EnableIRQ(EXTI2_IRQn);
+
+  HAL_NVIC_SetPriority(EXTI3_IRQn, 0, 0);
+  HAL_NVIC_EnableIRQ(EXTI3_IRQn);
+
+  HAL_NVIC_SetPriority(EXTI4_IRQn, 0, 0);
+  HAL_NVIC_EnableIRQ(EXTI4_IRQn);
 
 }
 

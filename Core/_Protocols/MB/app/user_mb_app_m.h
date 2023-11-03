@@ -47,7 +47,7 @@ typedef enum _MB_REG_M
 	REG_R_OUT_VOLT			= 0x000B ,
 	REG_R_DC_LINE_VOLT		= 0x000C ,
 	REG_R_OUT_POWER		    = 0x000D ,
-	REG_R_STATUS			= 0x000E ,
+	REG_R_STATUS_M			= 0x000E ,
 	REG_R_TRIP_INFO			= 0x000F , // внутреннее состояние
 
 	REG_R_IN_SW_STATE		= 0x0010 ,

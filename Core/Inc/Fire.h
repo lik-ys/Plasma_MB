@@ -11,6 +11,7 @@ extern "C" {
 
 
 void FireProcess( void );
+void CommandProcess( void );
 
 #ifdef __cplusplus
 }

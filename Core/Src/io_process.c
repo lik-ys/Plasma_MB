@@ -103,5 +103,31 @@ __weak void HAL_UART_TxCpltCallback( UART_HandleTypeDef *huart)
   	__enable_irq();
 }
 
+/**
+  * @brief  EXTI line detection callbacks.
+  * @param  GPIO_Pin Specifies the pins connected EXTI line
+  * @retval None
+  */
+void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin)
+{
+  switch( GPIO_Pin )    //  todo дребезг
+  {
+    case COMM_START_Pin: 
+      gStateSM.st.bCommStart = 1;  
+      __HAL_GPIO_EXTI_CLEAR_IT(GPIO_Pin);
+      break;
+    case DI_METAL_CONTACT_Pin:     
+      gStateSM.st.bMetalContact = 1;     
+      __HAL_GPIO_EXTI_CLEAR_IT(GPIO_Pin);
+      break;
+    case COMM_FIRE_Pin:
+      gStateSM.st.bCommFire     = 1;
+      __HAL_GPIO_EXTI_CLEAR_IT(GPIO_Pin);
+      break;    
+    default:
+      break;
+  } // switch(  )
+}
+
 /** (END OF FILE  : io_process.c) 
 *******************************/ 

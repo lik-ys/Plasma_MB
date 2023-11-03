@@ -20,7 +20,7 @@
 #ifndef __STATE_MASHINE_HPP__ 
 #define __STATE_MASHINE_HPP__ 
 
-#include "main.h"
+#include "main.h"  
 
 #ifdef __cplusplus
 extern "C" {
@@ -46,7 +46,7 @@ typedef   enum
   eChanMax
 } ADC_Channels_t;
 
-  typedef struct
+typedef struct
 {
   uint16_t Current1  ;
   uint16_t Current2  ;
@@ -77,6 +77,10 @@ typedef enum
   ST_FIRE_WAITE,
   ST_FIRE_ON,
   ST_FIRE_OFF,
+  
+  ST_COMM_START     ,    
+  ST_METAL_CONTACT  ,
+  ST_COMM_FIRE      ,  
     
   ST_END    
 } eProcess_t;
@@ -94,6 +98,10 @@ typedef struct
   uint16_t bFireWaite   : 1;
   uint16_t bFireOn      : 1;
   uint16_t bFireOff     : 1;
+  
+  uint16_t bCommStart   : 1;         
+  uint16_t bMetalContact: 1;
+  uint16_t bCommFire    : 1;
   
 }bProcess_t;
 
@@ -123,8 +131,12 @@ typedef  enum
   EV_FIRE_WAITE,
   EV_FIRE_ON,
   EV_FIRE_OF,
+
+  EV_COMM_START     ,    
+  EV_METAL_CONTACT  ,
+  EV_COMM_FIRE      ,
   
-  PROC_EV_DEBUG   ,
+  PROC_EV_DEBUG     ,
   EV_COUNTS  
 }eProcessCom_t;
 
@@ -142,10 +154,26 @@ typedef struct
   
 }State_t;
 
-extern  eProcess_t eSM_proc;
-extern ADC_data_t ADCdata[ ADC_BUF_LENGHT ];
+
+// REG_W_CNTRL
+
+typedef union 
+{  
+  struct {
+    uint16_t bFireStart     : 1;
+    uint16_t bChopperStart  : 1;    
+  }bit;
+  uint16_t reg;  
+}RgCntrl_t;
+
+extern eProcess_t  eSM_proc;
+extern ADC_data_t  ADCdata[ ADC_BUF_LENGHT ];
+extern State_t     gStateSM;
+
+extern RgCntrl_t   gMbCntrl;
+extern RgCntrl_t   gMbStatus;
   
-void ProcessInit(void);
+void ProcessInit( void );
 
 void SM_loop( void );
 
