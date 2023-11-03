@@ -18,9 +18,9 @@
 TODO сделать поджиг 
 ********************************************************************************/
 
-#include "main.h"
-#include "Fire.h"
-#include  "StateMashine.h"//
+#include  "main.h"
+#include  "Fire.h"
+#include  "StateMachine.h"
 #include  "Timer.hpp"
 
 extern  State_t     gStateSM;
@@ -50,13 +50,14 @@ void FireON( void )
       gStateSM.st.bFireOff = 1;
     }else;
   }else;    
-}
+}// FireON()
+
 /***
 *
 */
 void FireOFF( void )
 { 
-  HAL_GPIO_WritePin( CMD_FIRE_PWR_GPIO_Port, CMD_FIRE_PWR_Pin, GPIO_PIN_RESET );  
+  HAL_GPIO_WritePin( CMD_FIRE_PWR_GPIO_Port,  CMD_FIRE_PWR_Pin, GPIO_PIN_RESET );  
   HAL_GPIO_WritePin( CMD_FIRE_FIRE_GPIO_Port, CMD_FIRE_FIRE_Pin,GPIO_PIN_RESET ) ;
   HAL_GPIO_WritePin( CMD_FIRE_LOCK_GPIO_Port, CMD_FIRE_LOCK_Pin, GPIO_PIN_RESET );
 }//FireOFF()

@@ -1,5 +1,5 @@
 
-#include "StateMashine.h"
+#include "StateMachine.h"
 #include "Timer.hpp"
 
 

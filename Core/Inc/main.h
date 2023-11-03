@@ -34,7 +34,7 @@ extern "C" {
 #include  <stdint.h>
 #include "arm_math.h"
 #include "Debug.h"
-#include "StateMashine.h"  
+#include "StateMachine.h"  
   
 extern ADC_HandleTypeDef hadc1;
 extern CAN_HandleTypeDef hcan1;

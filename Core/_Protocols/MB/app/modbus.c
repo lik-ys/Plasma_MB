@@ -1,6 +1,6 @@
 
 #include "modbus.h"
-#include "StateMashine.h"
+#include "StateMachine.h"
 
 
 /**

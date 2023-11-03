@@ -2,7 +2,7 @@
 *
 * Copyright (C) 2023 Sharopin Yuri
 *
-* File              : StateMashine.cpp
+* File              : StateMa—Åhine.cpp
 * Compiler          : IAR EWA 8.32
 * Version           : 0.0
 * Created File      : 01.06.2023
@@ -20,7 +20,7 @@ TODO Ò‰ÂÎ‡Ú¸ ÔÓ‰ÊË„
 
 #include  <stdint.h>
 
-#include  "StateMaÒhine.h"// 
+#include  "StateMachine.h"// 
 #include  "mb_com.hpp"
 #include  "mb_m.h"
 #include  "io_process.h"
@@ -245,5 +245,5 @@ void ADC_Process( void )
   }else;
 } // ADC_Process()
 
-/** (END OF FILE  : StateMashine.cpp) 
+/** (END OF FILE  : StateMa—Åhine.cpp) 
 *******************************/ 
