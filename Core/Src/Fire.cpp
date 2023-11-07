@@ -129,6 +129,8 @@ void CommandProcess( void )
     gStateSM.st.bCommFire = 1;     
   }else;
   
+  gMbStatus.bit.bFireIn = HAL_GPIO_ReadPin(FIRE_DI_0_GPIO_Port, FIRE_DI_0_Pin );
+  
   switch( gStateSM.proc )
   {
     case ST_COMM_START  :

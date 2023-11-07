@@ -114,6 +114,7 @@ void SM_loop( void )
       ToggleLed( &gLed );      
       FireProcess();
       CommandProcess();
+      
       break;
       
     case ST_START:

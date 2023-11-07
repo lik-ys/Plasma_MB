@@ -137,7 +137,7 @@ void Error_Handler(void);
 #define CMD_GAS_Out_GPIO_Port GPIOB
 #define CMD_GAS_Fire_Pin GPIO_PIN_9
 #define CMD_GAS_Fire_GPIO_Port GPIOB
-#define FIRE_DI_0_Pin GPIO_PIN_1
+#define FIRE_DI_0_Pin GPIO_PIN_0
 #define FIRE_DI_0_GPIO_Port GPIOE
 
 /* USER CODE BEGIN Private defines */

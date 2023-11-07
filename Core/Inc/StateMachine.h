@@ -159,7 +159,8 @@ typedef union
 {  
   struct {
     uint16_t bFireStart     : 1;
-    uint16_t bChopperStart  : 1;    
+    uint16_t bChopperStart  : 1;
+    uint16_t bFireIn        : 1;
 
   }bit;
   uint16_t reg;  
