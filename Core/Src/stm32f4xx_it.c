@@ -20,6 +20,7 @@
 /* Includes ------------------------------------------------------------------*/
 #include "main.h"
 #include "stm32f4xx_it.h"
+#include "io_process.h"
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
 /* USER CODE END Includes */
@@ -79,7 +80,7 @@ extern UART_HandleTypeDef huart3;
 void NMI_Handler(void)
 {
   /* USER CODE BEGIN NonMaskableInt_IRQn 0 */
-
+  HAL_NVIC_SystemReset();
   /* USER CODE END NonMaskableInt_IRQn 0 */
   /* USER CODE BEGIN NonMaskableInt_IRQn 1 */
   while (1)
@@ -94,11 +95,13 @@ void NMI_Handler(void)
 void HardFault_Handler(void)
 {
   /* USER CODE BEGIN HardFault_IRQn 0 */
-
+  HAL_NVIC_SystemReset();
+  gLed.led = led0_pin; 
   /* USER CODE END HardFault_IRQn 0 */
   while (1)
   {
     /* USER CODE BEGIN W1_HardFault_IRQn 0 */
+    ToggleLed( &gLed );
     /* USER CODE END W1_HardFault_IRQn 0 */
   }
 }
@@ -109,7 +112,7 @@ void HardFault_Handler(void)
 void MemManage_Handler(void)
 {
   /* USER CODE BEGIN MemoryManagement_IRQn 0 */
-
+  HAL_NVIC_SystemReset();
   /* USER CODE END MemoryManagement_IRQn 0 */
   while (1)
   {
@@ -124,7 +127,7 @@ void MemManage_Handler(void)
 void BusFault_Handler(void)
 {
   /* USER CODE BEGIN BusFault_IRQn 0 */
-
+  HAL_NVIC_SystemReset();
   /* USER CODE END BusFault_IRQn 0 */
   while (1)
   {
@@ -139,7 +142,7 @@ void BusFault_Handler(void)
 void UsageFault_Handler(void)
 {
   /* USER CODE BEGIN UsageFault_IRQn 0 */
-
+  HAL_NVIC_SystemReset();
   /* USER CODE END UsageFault_IRQn 0 */
   while (1)
   {
@@ -154,7 +157,7 @@ void UsageFault_Handler(void)
 void SVC_Handler(void)
 {
   /* USER CODE BEGIN SVCall_IRQn 0 */
-
+  HAL_NVIC_SystemReset();
   /* USER CODE END SVCall_IRQn 0 */
   /* USER CODE BEGIN SVCall_IRQn 1 */
 
@@ -167,7 +170,7 @@ void SVC_Handler(void)
 void DebugMon_Handler(void)
 {
   /* USER CODE BEGIN DebugMonitor_IRQn 0 */
-
+  HAL_NVIC_SystemReset();
   /* USER CODE END DebugMonitor_IRQn 0 */
   /* USER CODE BEGIN DebugMonitor_IRQn 1 */
 
@@ -180,7 +183,7 @@ void DebugMon_Handler(void)
 void PendSV_Handler(void)
 {
   /* USER CODE BEGIN PendSV_IRQn 0 */
-
+  HAL_NVIC_SystemReset();
   /* USER CODE END PendSV_IRQn 0 */
   /* USER CODE BEGIN PendSV_IRQn 1 */
 
@@ -258,7 +261,7 @@ void DMA1_Stream3_IRQHandler(void)
   /* USER CODE BEGIN DMA1_Stream3_IRQn 0 */
 
   /* USER CODE END DMA1_Stream3_IRQn 0 */
-  HAL_DMA_IRQHandler(&hdma_usart3_tx);
+  HAL_DMA_IRQHandler(&hdma_usart3_tx); ToggleLed( &gLed );
   /* USER CODE BEGIN DMA1_Stream3_IRQn 1 */
 
   /* USER CODE END DMA1_Stream3_IRQn 1 */
@@ -272,7 +275,7 @@ void DMA1_Stream4_IRQHandler(void)
   /* USER CODE BEGIN DMA1_Stream4_IRQn 0 */
 
   /* USER CODE END DMA1_Stream4_IRQn 0 */
-  HAL_DMA_IRQHandler(&hdma_uart4_tx);
+  HAL_DMA_IRQHandler(&hdma_uart4_tx);  ToggleLed( &gLed );
   /* USER CODE BEGIN DMA1_Stream4_IRQn 1 */
 
   /* USER CODE END DMA1_Stream4_IRQn 1 */
@@ -286,7 +289,7 @@ void DMA1_Stream6_IRQHandler(void)
   /* USER CODE BEGIN DMA1_Stream6_IRQn 0 */
 
   /* USER CODE END DMA1_Stream6_IRQn 0 */
-  HAL_DMA_IRQHandler(&hdma_usart2_tx);
+  HAL_DMA_IRQHandler(&hdma_usart2_tx); ToggleLed( &gLed );
   /* USER CODE BEGIN DMA1_Stream6_IRQn 1 */
 
   /* USER CODE END DMA1_Stream6_IRQn 1 */
@@ -300,7 +303,7 @@ void TIM3_IRQHandler(void)
   /* USER CODE BEGIN TIM3_IRQn 0 */
 
   /* USER CODE END TIM3_IRQn 0 */
-  HAL_TIM_IRQHandler(&htim3);
+  HAL_TIM_IRQHandler(&htim3);   ToggleLed( &gLed );
   /* USER CODE BEGIN TIM3_IRQn 1 */
 
   /* USER CODE END TIM3_IRQn 1 */
@@ -314,7 +317,7 @@ void TIM4_IRQHandler(void)
   /* USER CODE BEGIN TIM4_IRQn 0 */
 
   /* USER CODE END TIM4_IRQn 0 */
-  HAL_TIM_IRQHandler(&htim4);
+  HAL_TIM_IRQHandler(&htim4);    ToggleLed( &gLed );
   /* USER CODE BEGIN TIM4_IRQn 1 */
 
   /* USER CODE END TIM4_IRQn 1 */
@@ -385,7 +388,7 @@ void DMA2_Stream0_IRQHandler(void)
   /* USER CODE BEGIN DMA2_Stream0_IRQn 0 */
 
   /* USER CODE END DMA2_Stream0_IRQn 0 */
-  HAL_DMA_IRQHandler(&hdma_adc1);
+  HAL_DMA_IRQHandler(&hdma_adc1);      ToggleLed( &gLed );
   /* USER CODE BEGIN DMA2_Stream0_IRQn 1 */
 
   /* USER CODE END DMA2_Stream0_IRQn 1 */
@@ -399,7 +402,7 @@ void DMA2_Stream7_IRQHandler(void)
   /* USER CODE BEGIN DMA2_Stream7_IRQn 0 */
 
   /* USER CODE END DMA2_Stream7_IRQn 0 */
-  HAL_DMA_IRQHandler(&hdma_usart1_tx);
+  HAL_DMA_IRQHandler(&hdma_usart1_tx);     ToggleLed( &gLed );
   /* USER CODE BEGIN DMA2_Stream7_IRQn 1 */
 
   /* USER CODE END DMA2_Stream7_IRQn 1 */

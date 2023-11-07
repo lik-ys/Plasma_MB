@@ -81,10 +81,7 @@ void FireProcess( void )
     gMbStatus.bit.bFireStart = 0;
     SetMBRgS( REG_R_STATUS_S, gMbStatus.reg );
     WR_DEBUG("Fire Start \r\n");
-    gStateSM.st.bFireStrat = 0; gStateSM.proc = ST_IDLE;
-    return;
-    FireStart() ; 
-    
+    FireStart();        
     gStateSM.st.bFireWaite = 1;
   break;
   case ST_FIRE_WAITE: 
@@ -100,12 +97,14 @@ void FireProcess( void )
   case ST_FIRE_ON:        
     FireON();
     break;
-  case ST_FIRE_OFF:WR_DEBUG("Fire OFF __ \r\n");
+  case ST_FIRE_OFF:
+    WR_DEBUG("Fire OFF __ \r\n");
     FireOFF();
     gStateSM.st.bFireOff = 0;  gStateSM.st.bFireStrat = 0; gStateSM.st.bCommFire = 0;
     HAL_NVIC_EnableIRQ( EXTI4_IRQn );
     gMbStatus.bit.bFireStart = 1;
-    SetMBRgS( REG_R_STATUS_S, gMbStatus.reg );
+    SetMBRgS( REG_R_STATUS_S, gMbStatus.reg );  
+    ///hTimer->Time_Out( Timer::start, TIME_OUT_FIRE_OFF, EV_FIRE_OFF );
     break;
   default:;    
   }
@@ -123,9 +122,12 @@ void CommandProcess( void )
   if ( gMbCntrl.bit.bFireStart ) 
   {
     gMbCntrl.bit.bFireStart = 0;
+    SetMBRgS( REG_W_CNTRL, gMbCntrl.reg );
+    gMbStatus.bit.bFireStart= 1;
+    SetMBRgS( REG_R_STATUS_S, gMbStatus.reg );    
     
     gStateSM.st.bCommFire = 1;     
-  }
+  }else;
   
   switch( gStateSM.proc )
   {
@@ -145,8 +147,7 @@ void CommandProcess( void )
         {
           static int cnt3 = 0;
           WR_DEBUG("COMM_FIRE_Pin:  cnt = %i \r\n", cnt3++);              
-          //gStateSM.st.bFireStrat = 1; 
-          gStateSM.st.bCommFire =0;        
+          gStateSM.st.bFireStrat = 1;        
         }
       }
       break;

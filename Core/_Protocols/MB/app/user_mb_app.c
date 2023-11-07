@@ -66,7 +66,7 @@ void UpDateWriteRg( eMBRegS_t numRg )
   {
     case REG_W_CNTRL:
       gMbCntrl.reg = GetMBRgS( numRg );
-      SetMBRgS( numRg, 0 );
+      
       break;
     case REG_W_CNC_OUT:
       break; 

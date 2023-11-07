@@ -130,7 +130,7 @@ typedef  enum
   EV_FIRE_START,
   EV_FIRE_WAITE,
   EV_FIRE_ON,
-  EV_FIRE_OF,
+  EV_FIRE_OFF,
 
   EV_COMM_START     ,    
   EV_METAL_CONTACT  ,
@@ -160,6 +160,7 @@ typedef union
   struct {
     uint16_t bFireStart     : 1;
     uint16_t bChopperStart  : 1;    
+
   }bit;
   uint16_t reg;  
 }RgCntrl_t;

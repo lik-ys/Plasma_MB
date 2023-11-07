@@ -67,7 +67,7 @@ UART_HandleTypeDef* pUartDBG     = &huart3; // UART_DEBUG
 
 TIM_HandleTypeDef* pMBTimMaster = &htim3; // 
 TIM_HandleTypeDef* pMBTimSlave  = &htim4; // 
-TIM_HandleTypeDef* pExtSync     = &htim1;
+TIM_HandleTypeDef* pExtSync     = &htim1; //
 
 /* USER CODE END PV */
 

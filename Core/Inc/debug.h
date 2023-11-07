@@ -32,10 +32,10 @@
 //#include   "" // 
 /*===============================[ PUBLIC CONSTANTS ]=======================*/ 
 // Все частные #defines и constants должны быть объявлены в данном разделе. 
-#define __UART_DEBUG__  1
+#define __UART_DEBUG__  0
 
 #if ( 1 == __UART_DEBUG__ )
-  #define   WR_DEBUG(...)     {printf(__VA_ARGS__);  fflush(stdout);}  // Write Debuge
+#define   WR_DEBUG(...)     {printf(__VA_ARGS__);  };//fflush(stdout);}  // Write Debuge
   ///------- Отладка модуля ModBus
   #ifdef    __MB_DEBUG__
 #define   MB_DEBUG(...)     {printf("--MB--"__VA_ARGS__); }//delay_l(50000);}

@@ -87,10 +87,7 @@ void SM_loop( void )
 {  
   pMBhl->Loop( );
   pMBcntrl->Loop();
-  
-  FireProcess();
-  CommandProcess();
-  
+
   SM_Tick();
   
   CHAR data  = 0;
@@ -100,19 +97,23 @@ void SM_loop( void )
     gStateSM.proc = ST_ADC_CMPLT;
   }else;
   
+  if (1 == gStateSM.st.bToggleLed)  gStateSM.proc =  ST_TOGGLE_LED;
+  
   switch( gStateSM.proc )    // 
   {
     case ST_IDLE:
       break;
       
     case ST_TOGGLE_LED:
-      ToggleLed( &gLed );
       eSM_proc = ST_IDLE;
       RS485_Dir_m( tx );
       xMBMasterPortSerialPutByte(0x55); // работает 
       RS485_Dir_m( rx );
       xMBPortSerialGetByte(pdata);
       eSM_proc = ST_IDLE;
+      ToggleLed( &gLed );      
+      FireProcess();
+      CommandProcess();
       break;
       
     case ST_START:
@@ -175,6 +176,7 @@ void SM_Tick( void )
   {
     gStateSM.time.b10ms = 0;
     eSM_proc = ST_TOGGLE_LED;
+    gStateSM.st.bToggleLed = 1;
   }else;
   if ( 1 == gStateSM.time.b100ms )
   {
