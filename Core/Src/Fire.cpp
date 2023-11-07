@@ -81,7 +81,9 @@ void FireProcess( void )
     gMbStatus.bit.bFireStart = 0;
     SetMBRgS( REG_R_STATUS_S, gMbStatus.reg );
     WR_DEBUG("Fire Start \r\n");
-    FireStart(); 
+    gStateSM.st.bFireStrat = 0; gStateSM.proc = ST_IDLE;
+    return;
+    FireStart() ; 
     
     gStateSM.st.bFireWaite = 1;
   break;
@@ -143,7 +145,8 @@ void CommandProcess( void )
         {
           static int cnt3 = 0;
           WR_DEBUG("COMM_FIRE_Pin:  cnt = %i \r\n", cnt3++);              
-          gStateSM.st.bFireStrat = 1;          
+          //gStateSM.st.bFireStrat = 1; 
+          gStateSM.st.bCommFire =0;        
         }
       }
       break;
