@@ -76,26 +76,26 @@ typedef union STATUS
   }bit;  
 }RegStatus_t;
 
-typedef union CNC_IN
-{
-  uint16_t cnc_in;
-  struct{
-    uint16_t in0 : 1;
-    uint16_t in1 : 1;
-    uint16_t in2 : 1;
-  }bin;
-} CncIn_t;
+//typedef union CNC_IN
+//{
+//  uint16_t cnc_in;
+//  struct{
+//    uint16_t in0 : 1;
+//    uint16_t in1 : 1;
+//    uint16_t in2 : 1;
+//  }bin;
+//} CncIn_t;
 
-typedef union CNC_OUT
-{
-  uint16_t cnc_out;
-  struct {
-    uint16_t out0 : 1;
-    uint16_t out1 : 1;
-    uint16_t out2 : 1;
-    uint16_t out3 : 1;
-  }CncOut;
-} CncOut_t;
+//typedef union CNC_OUT
+//{
+//  uint16_t cnc_out;
+//  struct {
+//    uint16_t out0 : 1;
+//    uint16_t out1 : 1;
+//    uint16_t out2 : 1;
+//    uint16_t out3 : 1;
+//  }CncOut;
+//} CncOut_t;
 
 void UpDateReadRg( eMBRegS_t numRg );
 void UpDateWriteRg( eMBRegS_t numRg );

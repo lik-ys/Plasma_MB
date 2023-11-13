@@ -80,7 +80,11 @@ typedef enum
   
   ST_COMM_START     ,    
   ST_METAL_CONTACT  ,
-  ST_COMM_FIRE      ,  
+  ST_COMM_FIRE      , 
+  
+  ST_HIGHT_PROCESS,
+  ST_MEDIUM_PROCESS,
+  ST_SLOW_PROCESS,
     
   ST_END    
 } eProcess_t;
@@ -102,6 +106,10 @@ typedef struct
   uint16_t bCommStart   : 1;         
   uint16_t bMetalContact: 1;
   uint16_t bCommFire    : 1;
+  
+  uint16_t bHightProc   : 1;
+  uint16_t bMediumProc  : 1;
+  uint16_t bSlowProc    : 1;
   
 }bProcess_t;
 

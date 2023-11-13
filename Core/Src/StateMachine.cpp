@@ -87,8 +87,6 @@ void SM_loop( void )
 {  
   pMBhl->Loop( );
   pMBcntrl->Loop();
-
-  SM_Tick();
   
   CHAR data  = 0;
   CHAR * pdata = &data;
@@ -97,28 +95,25 @@ void SM_loop( void )
     gStateSM.proc = ST_ADC_CMPLT;
   }else;
   
-  if (1 == gStateSM.st.bToggleLed)  gStateSM.proc =  ST_TOGGLE_LED;
+  //if ( 1 == gStateSM.st.bToggleLed )  gStateSM.proc =  ST_TOGGLE_LED;
+  SM_Tick();
   
   switch( gStateSM.proc )    // 
   {
     case ST_IDLE:
+      break;      
+    case ST_START:
       break;
-      
     case ST_TOGGLE_LED:
-      eSM_proc = ST_IDLE;
       RS485_Dir_m( tx );
       xMBMasterPortSerialPutByte(0x55); // работает 
       RS485_Dir_m( rx );
       xMBPortSerialGetByte(pdata);
-      eSM_proc = ST_IDLE;
       ToggleLed( &gLed );      
       FireProcess();
-      CommandProcess();
-      
-      break;
-      
-    case ST_START:
-      break;
+      CommandProcess();  
+      gStateSM.proc = ST_IDLE;    
+    break;
       
     case ST_MB_MASTER:
       eSM_proc = ST_IDLE;
@@ -175,29 +170,55 @@ void SM_Tick( void )
 { 
   if ( 1 == gStateSM.time.b10ms )
   {
-    gStateSM.time.b10ms = 0;
-    eSM_proc = ST_TOGGLE_LED;
+    gStateSM.proc = ST_HIGHT_PROCESS;
     gStateSM.st.bToggleLed = 1;
   }else;
   if ( 1 == gStateSM.time.b100ms )
   {
-    gStateSM.time.b100ms = 0;
-    eSM_proc = ST_TX;
-    
+    gStateSM.proc = ST_MEDIUM_PROCESS;
+    gStateSM.proc = ST_TX;    
   }else;
   if ( 1 == gStateSM.time.b1000ms )
   {
-    gStateSM.time.b1000ms = 0;
-    
-    //static int i = 0;
-//    WR_DEBUG("__Debug__ cnt = %i \r\n", i++);
-        
+    gStateSM.proc = ST_SLOW_PROCESS;
     ClrLed( &gLed );
     if ( gLed.led == led1_pin ) 
          gLed.led = led0_pin;
     else gLed.led = led1_pin;    
-    
   }else;  
+
+  switch( gStateSM.proc )
+  {
+  case ST_HIGHT_PROCESS:
+    gStateSM.time.b10ms = 0;
+    gStateSM.proc = ST_IDLE;
+    break;
+  case ST_MEDIUM_PROCESS:
+    gStateSM.time.b100ms = 0;
+    gStateSM.proc = ST_IDLE;
+    break;
+  case ST_SLOW_PROCESS: 
+    gStateSM.time.b1000ms = 0; 
+    InRead();
+    {
+      static uint8_t out_pin = 0;
+      if ( gMbStatus.bit.bFireStart )
+      {
+        CncWrite( (eCnc_out_t)out_pin, GPIO_PIN_SET );
+        CmdWrite( (eCmd_t)out_pin,     GPIO_PIN_SET );
+      }else
+      {
+        CncWrite( (eCnc_out_t)out_pin, GPIO_PIN_RESET );
+        CmdWrite( (eCmd_t)out_pin,     GPIO_PIN_RESET );
+      }
+      if ( out_pin++ > cmd_last ) out_pin = 0;
+    }
+    gStateSM.time.b1000ms = 0; 
+    gStateSM.proc = ST_TOGGLE_LED;
+    break;
+  default:
+    gStateSM.proc = ST_IDLE;
+  }// switch();    
 } // SM_Tick()
 
 
