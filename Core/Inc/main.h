@@ -139,6 +139,7 @@ void Error_Handler(void);
 #define CMD_GAS_Fire_GPIO_Port GPIOB
 #define FIRE_DI_0_Pin GPIO_PIN_0
 #define FIRE_DI_0_GPIO_Port GPIOE
+#define FIRE_DI_0_EXTI_IRQn EXTI0_IRQn
 
 /* USER CODE BEGIN Private defines */
 

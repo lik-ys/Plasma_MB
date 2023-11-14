@@ -98,10 +98,12 @@ typedef struct
   uint16_t bMB_Slave    : 1;
   uint16_t bAdcCmplt    : 1;
   
+  uint16_t bExti        : 1;
   uint16_t bFireStrat   : 1;
   uint16_t bFireWaite   : 1;
   uint16_t bFireOn      : 1;
   uint16_t bFireOff     : 1;
+  uint16_t bFireIn      : 1;
   
   uint16_t bCommStart   : 1;         
   uint16_t bMetalContact: 1;
@@ -168,7 +170,7 @@ typedef union
   struct {
     uint16_t bFireStart     : 1;
     uint16_t bChopperStart  : 1;
-    uint16_t bFireIn        : 1;
+    uint16_t bFireIn        : 1;   // внешний поджиг
 
   }bit;
   uint16_t reg;  

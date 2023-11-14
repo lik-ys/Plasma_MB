@@ -40,13 +40,14 @@ typedef struct
 *
 */
 typedef enum
-{
-  cnc_in0 = 0,
-  cnc_in1 = 1,
-  cnc_in2 = 2,
-  cnc_in3 = 3,
-  Fire_in = 4,
+{            
+  cnc_in0    = 0,
+  cnc_in1    = 1,
+  cnc_in2    = 2,
+  cnc_in3    = 3,
+  Fire_in    = 4,
   MetContact = 5,
+  COM_Fire, 
   InLast  
 }eCntrlIn_t;
 
@@ -64,6 +65,7 @@ typedef struct
       uint8_t di_3 : 1;
       uint8_t fireIn : 1;
       uint8_t MetCont : 1;
+      uint8_t ComFire : 1;
     }bit;
   };  
   eCntrlIn_t In;  
@@ -169,6 +171,7 @@ void InRead( void );
 void CncWrite( eCnc_out_t out, GPIO_PinState st );
 void CmdWrite( eCmd_t out, GPIO_PinState st );
 
+extern io_t gIO;
 
 #ifdef __cplusplus
 }

@@ -91,12 +91,11 @@ void SM_loop( void )
   CHAR data  = 0;
   CHAR * pdata = &data;
   
+  SM_Tick();
   if ( 1 == gStateSM.st.bAdcCmplt){
     gStateSM.proc = ST_ADC_CMPLT;
-  }else;
-  
+  }else;  
   //if ( 1 == gStateSM.st.bToggleLed )  gStateSM.proc =  ST_TOGGLE_LED;
-  SM_Tick();
   
   switch( gStateSM.proc )    // 
   {
@@ -109,9 +108,9 @@ void SM_loop( void )
       xMBMasterPortSerialPutByte(0x55); // работает 
       RS485_Dir_m( rx );
       xMBPortSerialGetByte(pdata);
-      ToggleLed( &gLed );      
-      FireProcess();
-      CommandProcess();  
+      ToggleLed( &gLed );
+      
+      gStateSM.st.bToggleLed = 0;
       gStateSM.proc = ST_IDLE;    
     break;
       
@@ -175,8 +174,7 @@ void SM_Tick( void )
   }else;
   if ( 1 == gStateSM.time.b100ms )
   {
-    gStateSM.proc = ST_MEDIUM_PROCESS;
-    gStateSM.proc = ST_TX;    
+    gStateSM.proc = ST_MEDIUM_PROCESS;    
   }else;
   if ( 1 == gStateSM.time.b1000ms )
   {
@@ -194,12 +192,14 @@ void SM_Tick( void )
     gStateSM.proc = ST_IDLE;
     break;
   case ST_MEDIUM_PROCESS:
+    InRead();
+    FireProcess();
+    CommandProcess();    
     gStateSM.time.b100ms = 0;
     gStateSM.proc = ST_IDLE;
     break;
   case ST_SLOW_PROCESS: 
-    gStateSM.time.b1000ms = 0; 
-    InRead();
+    gStateSM.time.b1000ms = 0;     
     {
       static uint8_t out_pin = 0;
       if ( gMbStatus.bit.bFireStart )

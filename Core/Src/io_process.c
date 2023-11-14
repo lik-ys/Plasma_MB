@@ -10,7 +10,7 @@
 #include "main.h"
 #include "io_process.h"
 
-#define CNT_TO_DIR_RS485 1
+#define CNT_TO_DIR_RS485    1
 
 port_t  Input[ InLast ] = {
   { CNC_DI_0_Pin, CNC_DI_0_GPIO_Port},
@@ -18,7 +18,8 @@ port_t  Input[ InLast ] = {
   { CNC_DI_2_Pin, CNC_DI_2_GPIO_Port},
   { CNC_DI_3_Pin, CNC_DI_3_GPIO_Port},
   { FIRE_DI_0_Pin, FIRE_DI_0_GPIO_Port},
-  { DI_METAL_CONTACT_Pin, DI_METAL_CONTACT_GPIO_Port}
+  { DI_METAL_CONTACT_Pin, DI_METAL_CONTACT_GPIO_Port}, // todo CNC - умеет сама отпрыгивать от площадки
+  { COMM_FIRE_Pin, COMM_FIRE_GPIO_Port  }
 };
 
 port_t CncOut[ cnc_last ] = {
@@ -28,7 +29,7 @@ port_t CncOut[ cnc_last ] = {
   { CNC_DO_3_Pin, CNC_DO_3_GPIO_Port}
 };
 
-port_t CmdOut[ cmd_last ] = {
+port_t CmdOut[ cmd_last ] = {   // TODO
   { CMD_CHOPPER_FIRE_Pin,        CMD_CHOPPER_FIRE_GPIO_Port},
   { CMD_CHOPPER_CUT_Pin,         CMD_CHOPPER_CUT_GPIO_Port},
   { CMD_CHOPPER_EXTINCTION_Pin,  CMD_CHOPPER_EXTINCTION_GPIO_Port},
@@ -39,12 +40,13 @@ port_t CmdOut[ cmd_last ] = {
   { CMD_GAS_Fire_Pin,            CMD_GAS_Fire_GPIO_Port}  
 };
    
-//Input_t gInput = {0,0};
-io_t gIO;// = {0,0,0};
+
+io_t gIO;
 st_led_t gLed = { led0_pin, 0 };
-/*
- *
- */
+
+/**
+*
+*/
 void RS485_Dir( rs485_tx_rx_t tx_rx )
 {
 	if ( tx == tx_rx ){
@@ -59,9 +61,9 @@ void RS485_Dir( rs485_tx_rx_t tx_rx )
 	}
 }//RS485_Dir()
 
-/*
- *
- */
+/**
+*
+*/
 void RS485_Dir_m( rs485_tx_rx_t tx_rx )
 {
 	if ( tx == tx_rx ){
@@ -76,9 +78,9 @@ void RS485_Dir_m( rs485_tx_rx_t tx_rx )
 	}
 }//RS485_Dir()
 
-/*
- *
- */
+/**
+*
+*/
 void RS485_Dir2( rs485_tx_rx_t tx_rx )
 {
 	if ( tx == tx_rx ){
@@ -113,7 +115,7 @@ void ClrLed( st_led_t *sled )
 }
 /**
 *
-**/
+*/
 void ToggleLed( st_led_t *sled )
 {
   if ( sled->st )
@@ -128,7 +130,8 @@ void ToggleLed( st_led_t *sled )
   }
 }// ToggleLed()
 
-__weak void HAL_UART_TxCpltCallback( UART_HandleTypeDef *huart)
+__weak
+void HAL_UART_TxCpltCallback( UART_HandleTypeDef *huart)
 {
   	__enable_irq();
 }
@@ -140,41 +143,67 @@ __weak void HAL_UART_TxCpltCallback( UART_HandleTypeDef *huart)
   */
 void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin)
 {
-  switch( GPIO_Pin )    //  todo дребезг
+  __HAL_GPIO_EXTI_CLEAR_IT(GPIO_Pin);   
+  
+  switch( GPIO_Pin )
   {
-    case COMM_START_Pin: 
-      gStateSM.st.bCommStart = 1;  
-      __HAL_GPIO_EXTI_CLEAR_IT(GPIO_Pin);
+    case COMM_START_Pin:
+      gStateSM.st.bExti = 1;
+      gStateSM.st.bCommStart    = 1;  
       break;
     case DI_METAL_CONTACT_Pin:     
+      gStateSM.st.bExti = 1;
       gStateSM.st.bMetalContact = 1;     
-      __HAL_GPIO_EXTI_CLEAR_IT(GPIO_Pin);
       break;
     case COMM_FIRE_Pin:
+      gStateSM.st.bExti = 1;
       gStateSM.st.bCommFire     = 1;
-      __HAL_GPIO_EXTI_CLEAR_IT(GPIO_Pin);
-      break;    
+      gIO.in.bit.ComFire  = 1;
+      break; 
+    case FIRE_DI_0_Pin:
+      gStateSM.st.bExti = 1;
+      gStateSM.st.bFireIn = 1;      
+      break;
     default:
       break;
   } // switch(  )
 }// 
 
+#define CNT_IN_WRITE    5
 /**
 * TODO дребезг
 */
 void InRead( void )
 {
+  static uint16_t reg = 0;
+  static uint16_t cnt = 0;
+  static Input_t  in  = {0,};
+  
   for ( uint16_t i = 0; i < InLast ; i++ )
   {
     if ( GPIO_PIN_SET ==  HAL_GPIO_ReadPin( Input[ i ].hPort, Input[ i ].pin) )
     {
-      gIO.in.reg  |=  ( 1 << i );
+      in.reg  |=  ( 1 << i );
     }else{ 
-      gIO.in.reg  &= ~( 1 << i );
+      in.reg  &= ~( 1 << i );
     }
   }
+  if ( reg != in.reg )
+  {
+    reg = in.reg;    
+  }else
+  {
+    if ( cnt++ > CNT_IN_WRITE ) 
+    {
+      gIO.in.reg = in.reg;  
+      cnt = 0;
+    }else;
+  }  
 }// InRead( void )
 
+/**
+*
+*/
 void CncWrite( eCnc_out_t out, GPIO_PinState st )
 {
   if ( out >= cnc_last ) return;
@@ -190,8 +219,11 @@ void CncWrite( eCnc_out_t out, GPIO_PinState st )
     else return;
   }
   HAL_GPIO_WritePin( CncOut[ out ].hPort, CncOut[ out ].pin, st );  
-}
+} // CncWrite()
 
+/**
+*
+*/
 void CmdWrite( eCmd_t out, GPIO_PinState st )
 {
   if ( out >= cmd_last ) return;
@@ -207,7 +239,7 @@ void CmdWrite( eCmd_t out, GPIO_PinState st )
     else return;
   }
   HAL_GPIO_WritePin( CmdOut[ out ].hPort, CmdOut[ out ].pin, st );  
-}
+} // CmdWrite()
 
 /** (END OF FILE  : io_process.c) 
 *******************************/ 
