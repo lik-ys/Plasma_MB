@@ -50,7 +50,7 @@ public:
 
   typedef void (*pExecFunc_t)(void);
 
-  pExecFunc_t TableExcFunc[ NUMBERS_CNTL_BIT ] = { CmdFireStart, CmdPilotArc, MetalContact, NULL };
+  pExecFunc_t TableExcFunc[ NUMBERS_CNTL_BIT ] = { CmdFireStart, CmdPilotArc, MetalContact, NULL, };
 
 private:
   
