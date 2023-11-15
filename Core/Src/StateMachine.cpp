@@ -28,6 +28,10 @@ TODO сделать поджиг
 #include  "user_mb_app.h"
 #include  "Fire.h"
 #include  "Timer.hpp"
+#include  "CommandExec.hpp"
+
+Command  gCmd;
+Command* hCmd = &gCmd;
 
 Timer gTimer;
 Timer *hTimer = &gTimer;
@@ -37,8 +41,10 @@ extern void     SetMBRgS( eMBRegS_t numMBReg, uint16_t data );
 eProcess_t  eSM_proc;
 State_t     gStateSM = { TIME_10ms, TIME_100ms, TIME_1000ms, ST_IDLE, {0,0,0},{0,0,} };
 
-RgCntrl_t   gMbCntrl;
-RgCntrl_t   gMbStatus;
+RgCntrl_t   gMbCntrl = {0,};
+RgCntrl_t   preMbCntrl = {0,};
+RgCntrl_t   gMbActiveCntrl = {0,};
+RgCntrl_t   gMbStatus = {0,};
 
 ADC_data_t ADCdata[ ADC_BUF_LENGHT ] = {0,0,};
 ADC_data_t ADCdat =  {0,0,0};
@@ -193,26 +199,14 @@ void SM_Tick( void )
     break;
   case ST_MEDIUM_PROCESS:
     InRead();
-    FireProcess();
-    CommandProcess();    
+    FireProcess();   
+    hCmd->Proc();
     gStateSM.time.b100ms = 0;
     gStateSM.proc = ST_IDLE;
     break;
   case ST_SLOW_PROCESS: 
     gStateSM.time.b1000ms = 0;     
-    {
-      static uint8_t out_pin = 0;
-      if ( gMbStatus.bit.bFireStart )
-      {
-        CncWrite( (eCnc_out_t)out_pin, GPIO_PIN_SET );
-        CmdWrite( (eCmd_t)out_pin,     GPIO_PIN_SET );
-      }else
-      {
-        CncWrite( (eCnc_out_t)out_pin, GPIO_PIN_RESET );
-        CmdWrite( (eCmd_t)out_pin,     GPIO_PIN_RESET );
-      }
-      if ( out_pin++ > cmd_last ) out_pin = 0;
-    }
+    // TestOut();    
     gStateSM.time.b1000ms = 0; 
     gStateSM.proc = ST_TOGGLE_LED;
     break;
@@ -269,5 +263,23 @@ void ADC_Process( void )
   }else;
 } // ADC_Process()
 
+/**
+  * @brief  Изменилось управляющие слово - выполнить действие
+  *         Работает для 16р регистра
+  * @param
+  * @retval Bit Number, если время еще не прошло выдаем
+  */
+int8_t  FindActiveBit( uint16_t ActiveBitRg )
+{
+  uint8_t nb = 0;        // номер бита
+
+  for ( nb = 0; nb < NUMBERS_CNTL_BIT; nb ++ )
+  {
+    if ( ActiveBitRg & (1 << nb ) ) break;
+  }
+
+  if ( nb > 15 )     return -1;
+  else               return nb;
+} // FindActiveBit()
 /** (END OF FILE  : StateMaСЃhine.cpp) 
 *******************************/ 

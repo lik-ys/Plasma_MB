@@ -241,5 +241,23 @@ void CmdWrite( eCmd_t out, GPIO_PinState st )
   HAL_GPIO_WritePin( CmdOut[ out ].hPort, CmdOut[ out ].pin, st );  
 } // CmdWrite()
 
+/**
+*
+*/
+void TestOut( void )
+{
+  static uint8_t out_pin = 0;
+  if ( gMbStatus.bit.bFireStart )
+  {
+    CncWrite( (eCnc_out_t)out_pin, GPIO_PIN_SET );
+    CmdWrite( (eCmd_t)out_pin,     GPIO_PIN_SET );
+  }else
+  {
+    CncWrite( (eCnc_out_t)out_pin, GPIO_PIN_RESET );
+    CmdWrite( (eCmd_t)out_pin,     GPIO_PIN_RESET );
+  }
+  if ( out_pin++ > cmd_last ) out_pin = 0;
+}// TestOut()
+
 /** (END OF FILE  : io_process.c) 
 *******************************/ 

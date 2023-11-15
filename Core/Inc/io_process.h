@@ -12,11 +12,22 @@
 extern "C" {
 #endif
 
+#include "stm32f4xx_hal_gpio.h"  
+  
 #define  WR_PORT_BIT( PORT_BASE, BitNumber ) (*(__IO uint32_t *) (PERIPH_BB_BASE | ((PORT_BASE + 0x14 - PERIPH_BASE) << 5) | ((BitNumber) << 2))) // ODR
 #define  RD_PORT_BIT( PORT_BASE, BitNumber ) (*(__IO uint32_t *) (PERIPH_BB_BASE | ((PORT_BASE + 0x10 - PERIPH_BASE) << 5) | ((BitNumber) << 2))) // IDR
 
 #define  TEST_TOGGEL_BB()  WR_PORT_BIT( GPIOE_BASE, 9 ) ^= 1  
 
+/** 
+  * @brief  GPIO Bit SET and Bit RESET enumeration 
+  */
+//typedef enum
+//{
+//  RESET = GPIO_PIN_RESET,
+//  SET   = GPIO_PIN_SET
+//}PinState_t;  
+  
 typedef enum
 {
   led0_pin = LED_WORK1_Pin,
@@ -170,8 +181,10 @@ extern  port_t   CmdOut[ ];
 void InRead( void );
 void CncWrite( eCnc_out_t out, GPIO_PinState st );
 void CmdWrite( eCmd_t out, GPIO_PinState st );
+void TestOut( void );
 
 extern io_t gIO;
+
 
 #ifdef __cplusplus
 }

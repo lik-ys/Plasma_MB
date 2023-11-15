@@ -79,7 +79,7 @@ typedef enum
   ST_FIRE_OFF,
   
   ST_COMM_START     ,    
-  ST_METAL_CONTACT  ,
+  ST_METAL_CONTACT  , // TODO
   ST_COMM_FIRE      , 
   
   ST_HIGHT_PROCESS,
@@ -164,24 +164,39 @@ typedef struct
   
 }State_t;
 
+/**
+*
+*/
+typedef enum
+{
+  FIRE_START        ,
+  PILOT_ARC         ,
+  CHOPPER_START     , // TODO
+  FIRE_IN_START     , // TODO
+  
+  NUMBERS_CNTL_BIT
+}eCntrlRegBits_t;//
+
 // REG_W_CNTRL
 typedef union 
 {  
+  uint16_t reg;
   struct {
-    uint16_t bFireStart     : 1;
-    uint16_t bChopperStart  : 1;
-    uint16_t bFireIn        : 1;   // внешний поджиг
-
-  }bit;
-  uint16_t reg;  
+    uint16_t bFireStart     : 1;    // поджиг
+    uint16_t bPilotArc      : 1;    // вкл дежурной дуги 
+    uint16_t bChopperStart  : 1;    // todo 
+    uint16_t bFireIn        : 1;    // todo внешний поджиг
+  }bit;   
 }RgCntrl_t;
 
 extern eProcess_t  eSM_proc;
 extern ADC_data_t  ADCdata[ ADC_BUF_LENGHT ];
 extern State_t     gStateSM;
 
+extern RgCntrl_t   preMbCntrl;
 extern RgCntrl_t   gMbCntrl;
 extern RgCntrl_t   gMbStatus;
+extern RgCntrl_t   gMbActiveCntrl;
   
 void ProcessInit( void );
 

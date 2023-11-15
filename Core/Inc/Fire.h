@@ -18,7 +18,7 @@ typedef enum eCNTR_FIRE
   cmd_pwr  , // 
   cmd_lock , // == cmd_fire // работают вместе
   cmd_fire , // 
-
+  cmd_pilot_arc,    // выход дежурной дуги
   fire_last
 } eFire_t;
 
@@ -37,6 +37,9 @@ typedef enum eIN_FIRE
 
 void FireProcess( void );
 void CommandProcess( void );
+void CmdProc( void );
+void PilotArc( FlagStatus st );
+
 
 extern port_t gFireO[ fire_last ];
 extern port_t gFireI[ in_fire_last ];

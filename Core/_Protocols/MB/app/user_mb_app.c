@@ -61,12 +61,17 @@ void UpDateReadRg( eMBRegS_t numRg )
   * @retval
   */
 void UpDateWriteRg( eMBRegS_t numRg )
-{
+{  
   switch( numRg )    // 
   {
     case REG_W_CNTRL:
       gMbCntrl.reg = GetMBRgS( numRg );
       
+      if ( preMbCntrl.reg != gMbCntrl.reg )
+      {
+        gMbActiveCntrl.reg  = preMbCntrl.reg ^ gMbCntrl.reg;
+        preMbCntrl.reg = gMbCntrl.reg;
+      };
       break;
     case REG_W_CNC_OUT:
       break; 
