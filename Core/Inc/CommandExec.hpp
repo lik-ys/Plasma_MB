@@ -41,7 +41,7 @@ void CmdPilotArc( void );
 void CmdFireStart(void);
 void MetalContact( void );
 
-class Command : public Timer
+class Command// : public Timer
 {
 public:
   Command();

@@ -146,6 +146,8 @@ typedef  enum
   EV_METAL_CONTACT  ,
   EV_COMM_FIRE      ,
   
+  EV_PILOT_ARC_TO   ,
+  
   PROC_EV_DEBUG     ,
   EV_COUNTS  
 }eProcessCom_t;

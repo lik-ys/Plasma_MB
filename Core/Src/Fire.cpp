@@ -16,9 +16,7 @@
 * Hardware          : Motherboard v3.1
 *
 
-1. включение дежурной дуги
-   вкючаем выхoд CNC_DO_0 ждем измерения тока в шине "-" ( ADC_CURR2 ) 
-   ждем уровня 2/3 от уставки в течении 2 секунд
+
 2. COMM_START - старт от ЧПУ
    "1" - включаем: дежурку, поджиг
 3. DI_METAL_CONTACT - реализовано  на ЧПУ
@@ -42,8 +40,8 @@
 port_t gFireO[ fire_last ] = {
   { CMD_FIRE_PWR_Pin , CMD_FIRE_PWR_GPIO_Port  },
   { CMD_FIRE_LOCK_Pin, CMD_FIRE_LOCK_GPIO_Port },
-  { CMD_FIRE_FIRE_Pin, CMD_FIRE_FIRE_GPIO_Port },
-  { CNC_DO_0_Pin,      CNC_DO_0_GPIO_Port      } 
+  { CMD_FIRE_FIRE_Pin, CMD_FIRE_FIRE_GPIO_Port }
+  //{ CNC_DO_0_Pin,      CNC_DO_0_GPIO_Port      } 
 };
 
 port_t gFireI[ in_fire_last ] = {
@@ -252,8 +250,9 @@ static void ReadFireIn(void )
 /***
 *
 */
-void PilotArc( FlagStatus st )
-{
-  Write( cmd_pilot_arc, (GPIO_PinState)st ); 
-}
+//void PilotArcPort( FlagStatus st )
+//{
+//  Write( cmd_pilot_arc, (GPIO_PinState)st ); 
+//} // PilotArcPort()
+
 // End of file -------------------------------

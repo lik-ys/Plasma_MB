@@ -20,6 +20,10 @@
 /*===============================[ SPECIAL ]===================================*/ 
 
 #include  "CommandExec.hpp" 
+#include  "PilotArc.hpp"
+
+PilotArc gPilotArc;
+PilotArc *hPilotArc = &gPilotArc;
 
 Command::Command( void )
 {
@@ -48,12 +52,15 @@ void  CmdPilotArc(void )
   if ( gMbCntrl.bit.bPilotArc ) // cmd_pilot_arc
   {
     WR_DEBUG("PILOT_ARC SET \r\n");
-    PilotArc( SET );
-    gMbStatus.bit.bPilotArc = 1;        
+    //PilotArc( SET );
+    
+    gMbStatus.bit.bPilotArc = 1; 
+    // timer start
+    
   }else
   {
     WR_DEBUG("PILOT_ARC RESET \r\n");    
-    PilotArc( RESET );
+    //PilotArc( RESET );
     gMbStatus.bit.bPilotArc = 0;     
   } 
   SetMBRgS( REG_R_STATUS_S, gMbStatus.reg );

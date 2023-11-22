@@ -13,7 +13,7 @@ Timer::~Timer()
 /*
  *
  */
-Timer::Timer(void )
+Timer::Timer( )
 {
 	ev_timeout 	= Ev_timeout;
 	msec 		= MLmsec;

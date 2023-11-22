@@ -67,7 +67,7 @@ void ADC_Process( void );
 void SM_Tick( void );
 
 
-/*
+/***
 **
 */
 void ProcessInit( void )
@@ -81,7 +81,7 @@ void ProcessInit( void )
   pMBcntrl->Init();
   
   //HAL_TIM_Base_Start_IT( pExtSync );
-  HAL_TIM_OC_Start( pExtSync,TIM_CHANNEL_1 );
+  HAL_TIM_OC_Start( pExtSync, TIM_CHANNEL_1 );
   
   hTimer->Time_Out( Timer::start, TIME_OUT_TEST, PROC_EV_DEBUG );
 }// ProcessInit()
@@ -111,7 +111,7 @@ void SM_loop( void )
       break;
     case ST_TOGGLE_LED:
       RS485_Dir_m( tx );
-      xMBMasterPortSerialPutByte(0x55); // работает 
+      xMBMasterPortSerialPutByte( 0x55 ); // работает 
       RS485_Dir_m( rx );
       xMBPortSerialGetByte(pdata);
       ToggleLed( &gLed );
