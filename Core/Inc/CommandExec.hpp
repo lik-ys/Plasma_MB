@@ -39,7 +39,8 @@
 
 void CmdPilotArc( void );
 void CmdFireStart(void);
-void MetalContact( void );
+void CmdStartStopPwm( void );
+void CmdMetalContact( void );
 
 class Command// : public Timer
 {
@@ -50,7 +51,7 @@ public:
 
   typedef void (*pExecFunc_t)(void);
 
-  pExecFunc_t TableExcFunc[ NUMBERS_CNTL_BIT ] = { CmdFireStart, CmdPilotArc, MetalContact, NULL, };
+  pExecFunc_t TableExcFunc[ NUMBERS_CNTL_BIT ] = { CmdFireStart, CmdPilotArc, CmdStartStopPwm, NULL, };
 
 private:
   

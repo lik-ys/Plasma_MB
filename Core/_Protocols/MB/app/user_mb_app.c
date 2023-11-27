@@ -55,6 +55,19 @@ void UpDateReadRg( eMBRegS_t numRg )
       break;
   } // switch(  )
 }
+
+/***
+**
+*/
+void UpateActiveRg( void )
+{
+  if ( preMbCntrl.reg != gMbCntrl.reg )
+  {
+    gMbActiveCntrl.reg  = preMbCntrl.reg ^ gMbCntrl.reg;
+    preMbCntrl.reg = gMbCntrl.reg;
+  };  
+}// UpateActiveRg()
+
 /**
   * @brief  апдейт регистров записи
   * @param
@@ -66,12 +79,13 @@ void UpDateWriteRg( eMBRegS_t numRg )
   {
     case REG_W_CNTRL:
       gMbCntrl.reg = GetMBRgS( numRg );
-      
-      if ( preMbCntrl.reg != gMbCntrl.reg )
-      {
-        gMbActiveCntrl.reg  = preMbCntrl.reg ^ gMbCntrl.reg;
-        preMbCntrl.reg = gMbCntrl.reg;
-      };
+      UpateActiveRg();      
+      break;
+    case REG_W_CNTRL_START:
+      if ( GetMBRgS( numRg )&(1<<0) )
+            gMbCntrl.bit.bChopperStart = 1;
+      else  gMbCntrl.bit.bChopperStart = 0;      
+      UpateActiveRg();
       break;
     case REG_W_CNC_OUT:
       break; 
@@ -80,7 +94,7 @@ void UpDateWriteRg( eMBRegS_t numRg )
     default:
       break;
   } // switch(  )
-}
+}// UpDateWriteRg()
 
 /**
   * @brief

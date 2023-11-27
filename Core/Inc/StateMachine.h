@@ -173,7 +173,7 @@ typedef enum
 {
   FIRE_START        ,
   PILOT_ARC         ,
-  CHOPPER_START     , // TODO
+  CHOPPER_START     , // синхронное выключение €чеек от команды  bit0 в  REG_W_CNTRL_START
   FIRE_IN_START     , // TODO
   
   NUMBERS_CNTL_BIT
@@ -186,7 +186,7 @@ typedef union
   struct {
     uint16_t bFireStart     : 1;    // поджиг
     uint16_t bPilotArc      : 1;    // вкл дежурной дуги 
-    uint16_t bChopperStart  : 1;    // todo 
+    uint16_t bChopperStart  : 1;    // синхронное выключение €чеек от команды  bit0 в  REG_W_CNTRL_START
     uint16_t bFireIn        : 1;    // todo внешний поджиг
   }bit;   
 }RgCntrl_t;

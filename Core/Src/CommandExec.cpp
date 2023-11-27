@@ -82,17 +82,42 @@ void  CmdFireStart( void )
     gStateSM.st.bFireStrat = 1;
   }else;
   gMbActiveCntrl.bit.bFireStart = 0;  
-}
+}// CmdFireStart()
+
 
 /**
 *  TODO
 */
-void MetalContact( void )
+void CmdMetalContact( void )
 {
   static int cnt2 = 0;
   WR_DEBUG("DI_METAL_CONTACT_Pin:  cnt = %i \r\n", cnt2++);      
   gStateSM.st.bMetalContact = 0;
-} // MetalContact( )
- 
+} // CmdMetalContact( )
+
+extern  TIM_HandleTypeDef htim10;
+extern  TIM_HandleTypeDef htim2;
+/**
+* включение-выключение синхрочастоты
+*/
+void CmdStartStopPwm( void )
+{
+  if ( gMbCntrl.bit.bChopperStart )
+  {
+    pExtSync->Instance->CNT = 0;
+    HAL_TIM_OC_Start( pExtSync, TIM_CHANNEL_1 ); 
+  // TIM1 -APB1
+  HAL_TIM_PWM_Start( &htim10, TIM_CHANNEL_1 ); // APB2
+  HAL_TIM_PWM_Start( &htim2, TIM_CHANNEL_3 );  // APB1    
+  }else
+  {
+    pExtSync->Instance->CNT = 0;
+    HAL_TIM_OC_Stop( pExtSync, TIM_CHANNEL_1 );
+  // TIM1 -APB1
+  HAL_TIM_PWM_Stop( &htim10, TIM_CHANNEL_1 ); // APB2
+  HAL_TIM_PWM_Stop( &htim2, TIM_CHANNEL_3 );  // APB1    
+  }  
+}//StartPwm()
+
 /** (END OF FILE  : CommandExec.cpp.cpp) 
 *******************************/ 

@@ -41,10 +41,11 @@ extern void     SetMBRgS( eMBRegS_t numMBReg, uint16_t data );
 eProcess_t  eSM_proc;
 State_t     gStateSM = { TIME_10ms, TIME_100ms, TIME_1000ms, ST_IDLE, {0,0,0},{0,0,} };
 
-RgCntrl_t   gMbCntrl = {0,};
+RgCntrl_t   gMbCntrl   = {0,};
+RegStatus_t gMbSt      = {0,};
 RgCntrl_t   preMbCntrl = {0,};
 RgCntrl_t   gMbActiveCntrl = {0,};
-RgCntrl_t   gMbStatus = {0,};
+RgCntrl_t   gMbStatus  = {0,};
 
 ADC_data_t ADCdata[ ADC_BUF_LENGHT ] = {0,0,};
 ADC_data_t ADCdat =  {0,0,0};
@@ -79,9 +80,6 @@ void ProcessInit( void )
   
   pMBhl->Init();
   pMBcntrl->Init();
-  
-  //HAL_TIM_Base_Start_IT( pExtSync );
-  HAL_TIM_OC_Start( pExtSync, TIM_CHANNEL_1 );
   
   hTimer->Time_Out( Timer::start, TIME_OUT_TEST, PROC_EV_DEBUG );
 }// ProcessInit()

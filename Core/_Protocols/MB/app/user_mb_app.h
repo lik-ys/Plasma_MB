@@ -19,13 +19,13 @@ typedef enum _MB_REG_S
 	REG_R_CURR_1		= 0x0000 ,
 	REG_R_CURR_2		= 0x0001 ,
 	REG_R_VOLT			= 0x0002 ,
-    REG_R_CNC_IN  ,     // дискретные входы 
-    REG_R_STATUS_S  ,   // 
+    REG_R_CNC_IN                 ,     // дискретные входы 
+    REG_R_STATUS_S               ,   // 
     
     REG_W_CNTRL         = 15 ,//
     REG_W_CNC_OUT ,     // дискретные выходы  
     REG_W_FREQ    ,     // „астота синхронизации 12345 √ц      
-    
+    REG_W_CNTRL_START   = 50,
 	REG_S_LAST                               //
 } eMBRegS_t;
 
@@ -56,12 +56,11 @@ typedef enum _MB_REG_S
 extern void     SetMBRgS( eMBRegS_t numMBReg, uint16_t data );
 extern uint16_t GetMBRgS( eMBRegS_t numMBReg );
 
-
+//REG_R_STATUS_S
 typedef union STATUS
 {
   uint16_t reg;
-  struct {
-    //FREG_ON,
+  struct {    
     uint16_t CMD_FIRE               :1;
     uint16_t CMD_FIRE_PWR           :1;
     uint16_t CMD_FIRE_LOCK          :1;
@@ -73,6 +72,7 @@ typedef union STATUS
     uint16_t CMD_CHOPPER_OUT        :1;
     uint16_t CMD_CHOPPER_EXTINCTION :1;
     uint16_t CMD_CHOPPER_WAITING    :1;
+    uint16_t CMD_FREG_ON            :1;
   }bit;  
 }RegStatus_t;
 

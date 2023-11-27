@@ -37,7 +37,6 @@ extern "C" {
 #include "StateMachine.h"  
   
 extern ADC_HandleTypeDef hadc1;
-extern CAN_HandleTypeDef hcan1;
 //extern ETH_HandleTypeDef heth;
 extern TIM_HandleTypeDef htim3;
 extern TIM_HandleTypeDef htim4;
@@ -109,6 +108,8 @@ void Error_Handler(void);
 #define CMD_FIRE_LOCK_GPIO_Port GPIOE
 #define CMD_FIRE_PWR_Pin GPIO_PIN_15
 #define CMD_FIRE_PWR_GPIO_Port GPIOE
+#define PWM_SYNC2_Pin GPIO_PIN_10
+#define PWM_SYNC2_GPIO_Port GPIOB
 #define CNC_DO_0_Pin GPIO_PIN_12
 #define CNC_DO_0_GPIO_Port GPIOD
 #define CNC_DO_1_Pin GPIO_PIN_13

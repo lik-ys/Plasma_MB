@@ -37,6 +37,7 @@
 #define SLAVE_BAUD_RATE     57600 //15200//
 #define MB_ADDR_MASTER      85
 #define MASTER_BAUD_RATE    57600 // 15200//
+#define MASTER_SYN_FREQ     10240 // TODO!!!
 
 /*===============================[ TYPE DEFINITIONS ]==========================*/ 
 //typedef   int   new_type_t 
