@@ -39,6 +39,7 @@ void Command :: Proc( void )
   if ( gMbActiveCntrl.reg & (1 << num ) )
   { 
     if ( NULL != TableExcFunc[num] ) TableExcFunc[num]();
+    gMbActiveCntrl.reg  &= ~( 1 << num );
   }else;
   if ( num++ >= NUMBERS_CNTL_BIT ) num = 0;  
 }
@@ -84,7 +85,6 @@ void  CmdFireStart( void )
   gMbActiveCntrl.bit.bFireStart = 0;  
 }// CmdFireStart()
 
-
 /**
 *  TODO
 */
@@ -95,8 +95,6 @@ void CmdMetalContact( void )
   gStateSM.st.bMetalContact = 0;
 } // CmdMetalContact( )
 
-extern  TIM_HandleTypeDef htim10;
-extern  TIM_HandleTypeDef htim2;
 /**
 * включение-выключение синхрочастоты
 */
@@ -106,16 +104,10 @@ void CmdStartStopPwm( void )
   {
     pExtSync->Instance->CNT = 0;
     HAL_TIM_PWM_Start( pExtSync, TIM_CHANNEL_1 ); 
-  // TIM1 -APB1
-  HAL_TIM_PWM_Start( &htim10, TIM_CHANNEL_1 ); // APB2
-  HAL_TIM_PWM_Start( &htim2, TIM_CHANNEL_3 );  // APB1    
   }else
   {
     pExtSync->Instance->CNT = 0;
     HAL_TIM_PWM_Stop( pExtSync, TIM_CHANNEL_1 );
-  // TIM1 -APB1
-  HAL_TIM_PWM_Stop( &htim10, TIM_CHANNEL_1 ); // APB2
-  HAL_TIM_PWM_Stop( &htim2, TIM_CHANNEL_3 );  // APB1    
   }  
 }//StartPwm()
 
