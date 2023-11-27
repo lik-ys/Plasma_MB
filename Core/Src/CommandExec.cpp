@@ -105,14 +105,14 @@ void CmdStartStopPwm( void )
   if ( gMbCntrl.bit.bChopperStart )
   {
     pExtSync->Instance->CNT = 0;
-    HAL_TIM_OC_Start( pExtSync, TIM_CHANNEL_1 ); 
+    HAL_TIM_PWM_Start( pExtSync, TIM_CHANNEL_1 ); 
   // TIM1 -APB1
   HAL_TIM_PWM_Start( &htim10, TIM_CHANNEL_1 ); // APB2
   HAL_TIM_PWM_Start( &htim2, TIM_CHANNEL_3 );  // APB1    
   }else
   {
     pExtSync->Instance->CNT = 0;
-    HAL_TIM_OC_Stop( pExtSync, TIM_CHANNEL_1 );
+    HAL_TIM_PWM_Stop( pExtSync, TIM_CHANNEL_1 );
   // TIM1 -APB1
   HAL_TIM_PWM_Stop( &htim10, TIM_CHANNEL_1 ); // APB2
   HAL_TIM_PWM_Stop( &htim2, TIM_CHANNEL_3 );  // APB1    
