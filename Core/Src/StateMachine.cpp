@@ -82,6 +82,11 @@ void ProcessInit( void )
   pMBcntrl->Init();
   
   hTimer->Time_Out( Timer::start, TIME_OUT_TEST, PROC_EV_DEBUG );
+  
+ //gMbCntrl.bit.bChopperStart = 1;
+  //CmdStartStopPwm( );
+
+    
 }// ProcessInit()
 
 /**
