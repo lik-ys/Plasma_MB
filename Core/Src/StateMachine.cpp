@@ -230,6 +230,8 @@ void HAL_ADC_ConvCpltCallback(ADC_HandleTypeDef* hadc)
     //getADC( );
 }
 
+#define  ADC_ZERO 7
+#define  CURR1_COEF (float)8.4
 /**
   * @brief  
   * @param
@@ -258,8 +260,14 @@ void ADC_Process( void )
     ADCdat.Current2  = stAdc_cur2;
     ADCdat.Voltage   = stAdc_volt;
     
-    SetMBRgS( REG_R_CURR_1, stAdc_cur1 );
-    SetMBRgS( REG_R_CURR_2, stAdc_cur2 );
+    uint16_t adc_zero = ADC_ZERO; 
+    
+    if ( stAdc_cur1 < ADC_ZERO) adc_zero = 0;
+    if ( stAdc_cur2 < ADC_ZERO) adc_zero = 0;
+    
+    SetMBRgS( REG_R_CURR_1, (uint16_t)floor(10*(stAdc_cur1 - adc_zero) / CURR1_COEF));   // TODO  
+    SetMBRgS( REG_R_CURR_2, (uint16_t)floor(10*(stAdc_cur2 - adc_zero) / CURR1_COEF));   // 50A - 424 ///  22.5 - 192// 0 - 7
+    
     SetMBRgS( REG_R_VOLT,   stAdc_volt );
     
     DBG_ITM_Event(ITM_CH1, stAdc_cur1);

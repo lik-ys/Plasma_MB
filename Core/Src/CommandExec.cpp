@@ -55,6 +55,7 @@ void  CmdPilotArc(void )
     WR_DEBUG("PILOT_ARC SET \r\n");
     //PilotArc( SET );
     
+    hPilotArc->On();
     gMbStatus.bit.bPilotArc = 1; 
     // timer start
     
@@ -62,7 +63,8 @@ void  CmdPilotArc(void )
   {
     WR_DEBUG("PILOT_ARC RESET \r\n");    
     //PilotArc( RESET );
-    gMbStatus.bit.bPilotArc = 0;     
+    gMbStatus.bit.bPilotArc = 0; 
+    hPilotArc->Off();
   } 
   SetMBRgS( REG_R_STATUS_S, gMbStatus.reg );
   gMbActiveCntrl.bit.bPilotArc = 0;
