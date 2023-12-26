@@ -174,6 +174,7 @@ static void IrqProc( void )
         cnt = 0;
         gStateSM.proc = ST_COMM_START  ;
         gStateSM.st.bExti = 0;
+        gStateSM.st.bStart = 1;
       }else;
     }else;
   }else;

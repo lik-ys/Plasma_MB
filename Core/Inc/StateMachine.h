@@ -142,7 +142,7 @@ typedef  enum
   EV_FIRE_ON,
   EV_FIRE_OFF,
 
-  EV_COMM_START     ,    
+  EV_COMM_START     , // ЧПУ -> START -> состояние СТАРТ. Леха, камандует ПОДЖИГ, ожидаем тока 20мс, выключаем поджиг
   EV_METAL_CONTACT  ,
   EV_COMM_FIRE      ,
   
@@ -188,6 +188,7 @@ typedef union
     uint16_t bPilotArc      : 1;    // вкл дежурной дуги 
     uint16_t bChopperStart  : 1;    // синхронное выключение ячеек от команды  bit0 в  REG_W_CNTRL_START
     uint16_t bFireIn        : 1;    // todo внешний поджиг
+    uint16_t bStartCNC      : 1;    // 
   }bit;   
 }RgCntrl_t;
 

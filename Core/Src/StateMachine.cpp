@@ -194,6 +194,14 @@ void SM_Tick( void )
     else gLed.led = led1_pin;    
   }else;  
 
+  if (1  == gStateSM.st.bStart )    gStateSM.proc = ST_COMM_START;
+  
+  if ( gMbStatus.bit.bStartCNC && hTimer->IsTimeOut( EV_COMM_START ) )
+  {
+    gMbStatus.bit.bStartCNC = 0;
+    SetMBRgS( REG_R_STATUS_S, gMbStatus.reg );
+  }else;
+  
   switch( gStateSM.proc )
   {
   case ST_HIGHT_PROCESS:
@@ -212,6 +220,13 @@ void SM_Tick( void )
     // TestOut();    
     gStateSM.time.b1000ms = 0; 
     gStateSM.proc = ST_TOGGLE_LED;
+    break;
+  case ST_COMM_START:  
+    gMbStatus.bit.bStartCNC = 1;
+    SetMBRgS( REG_R_STATUS_S, gMbStatus.reg );
+    gStateSM.st.bStart = 0;
+    hTimer->Time_Out( Timer::start, TIME_START, EV_COMM_START);
+    
     break;
   default:
     gStateSM.proc = ST_IDLE;
@@ -232,6 +247,23 @@ void HAL_ADC_ConvCpltCallback(ADC_HandleTypeDef* hadc)
 
 #define  ADC_ZERO 7
 #define  CURR1_COEF (float)8.4
+#define  CURR2_COEF (float)8.4
+#define  ADC_VOLT_COEF  (float)5.17
+
+/*
+Храрактеристика датчика напряжения  LV25-P
+Uin V     Uout  V
+101         1.1
+200         2.2
+300         3.3
+400         4.44
+500         5.6
+600         6.8
+*/
+
+float VoltCoef =  ADC_VOLT_COEF;
+int16_t adc_zero = ADC_ZERO; 
+int16_t adc_v_zero = 17; 
 /**
   * @brief  
   * @param
@@ -239,9 +271,9 @@ void HAL_ADC_ConvCpltCallback(ADC_HandleTypeDef* hadc)
   */
 void ADC_Process( void ) 
 {
-  static uint32_t stAdc_cur1 = 0;
-  static uint32_t stAdc_cur2 = 0;
-  static uint32_t stAdc_volt = 0;
+  static int32_t stAdc_cur1 = 0;
+  static int32_t stAdc_cur2 = 0;
+  static int32_t stAdc_volt = 0;
   
   if ( gStateSM.st.bAdcCmplt )
   {
@@ -259,16 +291,16 @@ void ADC_Process( void )
     ADCdat.Current1  = stAdc_cur1;
     ADCdat.Current2  = stAdc_cur2;
     ADCdat.Voltage   = stAdc_volt;
-    
-    uint16_t adc_zero = ADC_ZERO; 
-    
+     
     if ( stAdc_cur1 < ADC_ZERO) adc_zero = 0;
     if ( stAdc_cur2 < ADC_ZERO) adc_zero = 0;
     
     SetMBRgS( REG_R_CURR_1, (uint16_t)floor(10*(stAdc_cur1 - adc_zero) / CURR1_COEF));   // TODO  
-    SetMBRgS( REG_R_CURR_2, (uint16_t)floor(10*(stAdc_cur2 - adc_zero) / CURR1_COEF));   // 50A - 424 ///  22.5 - 192// 0 - 7
+    SetMBRgS( REG_R_CURR_2, (uint16_t)floor(10*(stAdc_cur2 - adc_zero) / CURR2_COEF));   // 50A - 424 ///  22.5 - 192// 0 - 7
+    int16_t voltage  = (int16_t)floor(1*(stAdc_volt + adc_v_zero) / VoltCoef);
+    if ( voltage < 0 ) voltage = 0;
     
-    SetMBRgS( REG_R_VOLT,   stAdc_volt );
+    SetMBRgS( REG_R_VOLT, voltage );   //
     
     DBG_ITM_Event(ITM_CH1, stAdc_cur1);
   }else;
