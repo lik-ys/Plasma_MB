@@ -40,7 +40,7 @@ extern Timer *hTimer;
 */
 PilotArc::PilotArc( )
 {
-  port = { CNC_DO_0_Pin, CNC_DO_0_GPIO_Port };
+  port = { CMD_FIRE_FIRE_Pin, CMD_FIRE_FIRE_GPIO_Port };
   TimeOut = 0;
   curr = 0;
   htim = hTimer;

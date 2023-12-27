@@ -195,11 +195,12 @@ void SM_Tick( void )
   }else;  
 
   if (1  == gStateSM.st.bStart )    gStateSM.proc = ST_COMM_START;
+  if (1  == gStateSM.st.bStop )    gStateSM.proc = ST_COMM_STOP;
   
   if ( gMbStatus.bit.bStartCNC && hTimer->IsTimeOut( EV_COMM_START ) )
   {
-    gMbStatus.bit.bStartCNC = 0;
-    SetMBRgS( REG_R_STATUS_S, gMbStatus.reg );
+//    gMbStatus.bit.bStartCNC = 0;
+//    SetMBRgS( REG_R_STATUS_S, gMbStatus.reg );
   }else;
   
   switch( gStateSM.proc )
@@ -227,6 +228,11 @@ void SM_Tick( void )
     gStateSM.st.bStart = 0;
     hTimer->Time_Out( Timer::start, TIME_START, EV_COMM_START);
     
+    break;
+  case ST_COMM_STOP:
+    gStateSM.st.bStop = 0;
+    gMbStatus.bit.bStartCNC = 0;
+    SetMBRgS( REG_R_STATUS_S, gMbStatus.reg );
     break;
   default:
     gStateSM.proc = ST_IDLE;

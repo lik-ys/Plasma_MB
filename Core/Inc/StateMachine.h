@@ -78,7 +78,8 @@ typedef enum
   ST_FIRE_ON,
   ST_FIRE_OFF,
   
-  ST_COMM_START     ,    
+  ST_COMM_START     , 
+  ST_COMM_STOP  ,
   ST_METAL_CONTACT  , // TODO
   ST_COMM_FIRE      , 
   
@@ -94,6 +95,7 @@ typedef struct
   uint16_t bIdle        : 1;
   uint16_t bToggleLed   : 1;
   uint16_t bStart       : 1;
+  uint16_t bStop        : 1;
   uint16_t bMB_Master   : 1;
   uint16_t bMB_Slave    : 1;
   uint16_t bAdcCmplt    : 1;
@@ -189,6 +191,7 @@ typedef union
     uint16_t bChopperStart  : 1;    // синхронное выключение €чеек от команды  bit0 в  REG_W_CNTRL_START
     uint16_t bFireIn        : 1;    // todo внешний поджиг
     uint16_t bStartCNC      : 1;    // 
+    //uint16_t bStopCNC       : 1;    //
   }bit;   
 }RgCntrl_t;
 

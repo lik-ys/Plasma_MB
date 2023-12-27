@@ -81,7 +81,7 @@ static void FireON( void )
 {
   if ( gStateSM.st.bFireOn )
   {
-    Write( cmd_fire, GPIO_PIN_SET );
+    //Write( cmd_fire, GPIO_PIN_SET );
     Write( cmd_lock, GPIO_PIN_SET );    
     if ( hTimer->IsTimeOut( EV_FIRE_ON ) )
     {
@@ -98,7 +98,7 @@ static void FireON( void )
 void FireOFF( void )
 {  
   Write( cmd_pwr,  GPIO_PIN_RESET );
-  Write( cmd_fire, GPIO_PIN_RESET );
+  ///Write( cmd_fire, GPIO_PIN_RESET );
   Write( cmd_lock, GPIO_PIN_RESET );  
 }//FireOFF()
 
@@ -167,7 +167,7 @@ static void IrqProc( void )
   if ( 1 == gStateSM.st.bCommStart    )   // Set in HAL_GPIO_EXTI_Callback()
   {
     static uint16_t cnt = 0;
-    if ( GPIO_PIN_RESET == Read( comm_start )) 
+    if ( GPIO_PIN_SET == Read( comm_start )) 
     {
       if ( cnt++ > CNT_FIRE_READ )
       {
@@ -176,7 +176,16 @@ static void IrqProc( void )
         gStateSM.st.bExti = 0;
         gStateSM.st.bStart = 1;
       }else;
-    }else;
+    }else
+    {
+      if ( cnt++ > CNT_FIRE_READ )
+      {
+        cnt = 0;
+        gStateSM.st.bExti = 0;
+        gStateSM.proc = ST_COMM_STOP;
+        gStateSM.st.bStop = 1;
+      }
+    };
   }else;
   if ( 1 == gStateSM.st.bCommFire     )  
   {
