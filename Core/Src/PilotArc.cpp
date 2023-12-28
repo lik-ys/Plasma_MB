@@ -63,17 +63,33 @@ void PilotArc::Off( void )
   htim->Time_Out( Timer::clr , PA_TIME_OUT, EV_PILOT_ARC_TO );
 }
 
+#define THRESHOLD_CURR_2    500 
+
 /***
-*
+*  ∆дем роста тока 
 */
 void PilotArc::Proc( void )
 {   
-  if ( gMbCntrl.bit.bPilotArc ) // cmd_pilot_arc
+  if ( 0 ==  gStateSM.st.bIgnitionOk && gStateSM.st.bTestCurr2 )
   {
-    if ( curr > (2/3)*(1))  // todo
-      htim->Time_Out( Timer::start, PA_TIME_OUT, EV_PILOT_ARC_TO );
-  }
-}
+    if ( ADCdat.Current2 > THRESHOLD_CURR_2)  //
+    {
+      gStateSM.st.bIgnitionOk = 1;
+      CncWrite( cnc_out0, GPIO_PIN_SET );
+      // htim->Time_Out( Timer::start, PA_TIME_OUT, EV_PILOT_ARC_TO );
+    }else;
+  };
+  
+  if ( gStateSM.st.bIgnitionOk )
+  {
+    if ( ADCdat.Current2 < THRESHOLD_CURR_2 / 3)
+    {
+      gStateSM.st.bIgnitionOk = 0;
+      gStateSM.st.bTestCurr2  = 0;
+      CncWrite( cnc_out0, GPIO_PIN_RESET );
+    }
+  }  
+}// Proc()
 
 PilotArc::~PilotArc()
 {}

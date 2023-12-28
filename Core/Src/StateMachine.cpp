@@ -194,8 +194,8 @@ void SM_Tick( void )
     else gLed.led = led1_pin;    
   }else;  
 
-  if (1  == gStateSM.st.bStart )    gStateSM.proc = ST_COMM_START;
-  if (1  == gStateSM.st.bStop )    gStateSM.proc = ST_COMM_STOP;
+  if (     1 == gStateSM.st.bStart )  gStateSM.proc = ST_COMM_START;
+  else if (1  == gStateSM.st.bStop )  gStateSM.proc = ST_COMM_STOP;
   
   if ( gMbStatus.bit.bStartCNC && hTimer->IsTimeOut( EV_COMM_START ) )
   {

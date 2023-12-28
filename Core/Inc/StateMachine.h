@@ -48,8 +48,8 @@ typedef   enum
 
 typedef struct
 {
-  uint16_t Current1  ;
-  uint16_t Current2  ;
+  uint16_t Current1  ; // ток возврата
+  uint16_t Current2  ; // ток прямой 
   uint16_t Voltage   ;
 } ADC_data_t;
 /*===============================[ FORWARD REFERENCES ]========================*/ 
@@ -110,6 +110,9 @@ typedef struct
   uint16_t bCommStart   : 1;         
   uint16_t bMetalContact: 1;
   uint16_t bCommFire    : 1;
+  
+  uint16_t bTestCurr2   : 1; // Начать проверять рост тока дуги
+  uint16_t bIgnitionOk  : 1; // Поджиг сработал - выдать на ЧПУ сигнал готовоность
   
   uint16_t bHightProc   : 1;
   uint16_t bMediumProc  : 1;
@@ -190,13 +193,13 @@ typedef union
     uint16_t bPilotArc      : 1;    // вкл дежурной дуги 
     uint16_t bChopperStart  : 1;    // синхронное выключение ячеек от команды  bit0 в  REG_W_CNTRL_START
     uint16_t bFireIn        : 1;    // todo внешний поджиг
-    uint16_t bStartCNC      : 1;    // 
-    //uint16_t bStopCNC       : 1;    //
+    uint16_t bStartCNC      : 1;    //  1 - Start, 0 - Stop CNC
   }bit;   
 }RgCntrl_t;
 
 extern eProcess_t  eSM_proc;
 extern ADC_data_t  ADCdata[ ADC_BUF_LENGHT ];
+extern ADC_data_t  ADCdat;
 extern State_t     gStateSM;
 
 extern RgCntrl_t   preMbCntrl;

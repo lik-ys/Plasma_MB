@@ -129,6 +129,7 @@ void FireProcess( void )
     SetMBRgS( REG_R_STATUS_S, gMbStatus.reg );    
     FireStart();        
     gStateSM.st.bFireWaite = 1;
+    gStateSM.st.bTestCurr2 = 1;
   break;
   case ST_FIRE_WAITE: 
     if ( hTimer->IsTimeOut( EV_FIRE_START ) ) 
