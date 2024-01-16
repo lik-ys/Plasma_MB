@@ -29,6 +29,7 @@ TODO сделать поджиг
 #include  "Fire.h"
 #include  "Timer.hpp"
 #include  "CommandExec.hpp"
+#include  "PilotArc.hpp"
 
 Command  gCmd;
 Command* hCmd = &gCmd;
@@ -37,6 +38,7 @@ Timer gTimer;
 Timer *hTimer = &gTimer;
 
 extern void     SetMBRgS( eMBRegS_t numMBReg, uint16_t data );
+extern PilotArc *hPilotArc;
 
 eProcess_t  eSM_proc;
 State_t     gStateSM = { TIME_10ms, TIME_100ms, TIME_1000ms, ST_IDLE, {0,0,0},{0,0,} };
@@ -105,6 +107,8 @@ void SM_loop( void )
     gStateSM.proc = ST_ADC_CMPLT;
   }else;  
   //if ( 1 == gStateSM.st.bToggleLed )  gStateSM.proc =  ST_TOGGLE_LED;
+  
+  hPilotArc->Proc();
   
   switch( gStateSM.proc )    // 
   {
