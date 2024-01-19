@@ -78,8 +78,8 @@ typedef enum
   ST_FIRE_ON,
   ST_FIRE_OFF,
   
-  ST_COMM_START     , 
-  ST_COMM_STOP  ,
+  ST_COMM_START     , // на зымыкание Устанавливаю состояние START на размыкание выключаем реле cnc0
+  ST_COMM_STOP      ,
   ST_METAL_CONTACT  , // TODO
   ST_COMM_FIRE      , 
   

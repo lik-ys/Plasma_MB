@@ -80,14 +80,11 @@ void PilotArc::Proc( void )
     }else;
   };
   
-  if ( gStateSM.st.bIgnitionOk )
+  if ( 0 == gMbStatus.bit.bStartCNC )
   {
-    if ( ADCdat.Current2 < THRESHOLD_CURR_2 / 3)
-    {
       gStateSM.st.bIgnitionOk = 0;
       gStateSM.st.bTestCurr2  = 0;
       CncWrite( cnc_out0, GPIO_PIN_RESET );
-    }
   }  
 }// Proc()
 

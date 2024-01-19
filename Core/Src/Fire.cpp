@@ -159,14 +159,9 @@ void FireProcess( void )
 } // FireProcess()
 
 #define  CNT_FIRE_READ 5
-/***
-*  Обработка дребезга входов прерываний
-*  
-*/
-static void IrqProc( void )
+void ReadStart( void )
 {
-  if ( 1 == gStateSM.st.bCommStart    )   // Set in HAL_GPIO_EXTI_Callback()
-  {
+
     static uint16_t cnt = 0;
     if ( GPIO_PIN_SET == Read( comm_start )) 
     {
@@ -185,9 +180,19 @@ static void IrqProc( void )
         gStateSM.st.bExti = 0;
         gStateSM.proc = ST_COMM_STOP;
         gStateSM.st.bStop = 1;
+        //gStateSM.st.bCommStart = 0;
       }
     };
-  }else;
+}//ReadStart()
+
+/***
+*  Обработка дребезга входов прерываний
+*  
+*/
+static void IrqProc( void )
+{
+
+  ReadStart();
   if ( 1 == gStateSM.st.bCommFire     )  
   {
     static uint16_t cnt = 0;

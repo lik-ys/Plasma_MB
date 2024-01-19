@@ -169,7 +169,7 @@ void HAL_IncTick( void )
   if ( 0 == gStateSM.div1000 )
   {
     gStateSM.div1000 = TIME_1000ms;
-    gStateSM.time.b1000ms = 1;    
+    gStateSM.time.b1000ms = 1;  
   }else {
     gStateSM.div1000--;    
   }  
@@ -217,6 +217,7 @@ void SM_Tick( void )
     InRead();
     FireProcess();   
     hCmd->Proc();
+    ReadStart( );
     gStateSM.time.b100ms = 0;
     gStateSM.proc = ST_IDLE;
     break;
@@ -226,17 +227,26 @@ void SM_Tick( void )
     gStateSM.time.b1000ms = 0; 
     gStateSM.proc = ST_TOGGLE_LED;
     break;
-  case ST_COMM_START:  
-    gMbStatus.bit.bStartCNC = 1;
-    SetMBRgS( REG_R_STATUS_S, gMbStatus.reg );
-    gStateSM.st.bStart = 0;
-    hTimer->Time_Out( Timer::start, TIME_START, EV_COMM_START);
-    
+  case ST_COMM_START:          
+      //hTimer->Time_Out( Timer::start, TIME_START, EV_COMM_START);      
+      if (1 == gStateSM.st.bCommStart ) 
+      {     
+        gStateSM.st.bCommStart = 0;
+        gMbStatus.bit.bStartCNC = 1;
+        SetMBRgS( REG_R_STATUS_S, gMbStatus.reg );          
+        WR_DEBUG("Start from CNC \r\n");    
+      }
+      gStateSM.st.bStart = 0;
     break;
-  case ST_COMM_STOP:
-    gStateSM.st.bStop = 0;
-    gMbStatus.bit.bStartCNC = 0;
-    SetMBRgS( REG_R_STATUS_S, gMbStatus.reg );
+  case ST_COMM_STOP:      
+      if ( 1 == gStateSM.st.bCommStart )
+      {         
+        gStateSM.st.bCommStart = 0;
+        gMbStatus.bit.bStartCNC = 0;
+        SetMBRgS( REG_R_STATUS_S, gMbStatus.reg );                
+        WR_DEBUG("Stop from CNC \r\n");    
+      }
+      gStateSM.st.bStop = 0;
     break;
   default:
     gStateSM.proc = ST_IDLE;

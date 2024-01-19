@@ -40,7 +40,7 @@ void FireProcess( void );
 void CommandProcess( void );
 void CmdProc( void );
 void PilotArcPort( FlagStatus st );
-
+void ReadStart( void );
 
 extern port_t gFireO[ fire_last ];
 extern port_t gFireI[ in_fire_last ];
