@@ -22,6 +22,8 @@ extern "C" {
 #include "mb_m.h"
 /* ----------------------- Modbus includes ----------------------------------*/
 
+#define MB_RG_OFF_SET  (eMBReg_t)1 // все адреса пришлось уменьшить на 1
+  
 class ModBusCom
 {  
 public:
@@ -39,7 +41,8 @@ public:
   bool connected;
   eMBMasterReqErrCode   gMBMasterReqErrCode;
   eMBErrorCode		    gMBErrorCode;
-  eMBMasterEventType	gMBEvent;  
+  eMBMasterEventType	gMBEvent; 
+  bool Hr_query( mb_addr_t mb_addr, eMBRegM_t saddr_rg );
   
 private:
   type_t type;  

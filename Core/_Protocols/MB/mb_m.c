@@ -510,7 +510,7 @@ eMBErrorCode MBErrorCodConvert( eMBMasterReqErrCode err_code )
  */
 uint16_t GetDataMBRg( USHORT slave_addr, uint16_t reg )
 {
-	if ((slave_addr < MB_Addr_last) && (slave_addr > 0) )
+	if ((slave_addr <= MB_cell_6) && (slave_addr >= MB_cell_1 ) )
 		return usMRegHoldBuf[ slave_addr-1 ][ reg ];
 	else return -1;
 } // GetDataMBRg()

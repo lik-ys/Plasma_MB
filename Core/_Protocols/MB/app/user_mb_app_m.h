@@ -13,13 +13,16 @@ PR_BEGIN_EXTERN_C
 
 
 /*
- * address of VFD
+ * address of slave devices
  */
 typedef enum _MB_ADDR
 {
-	MB_Addr_reel	 = 0x01	,
-	MB_Addr_platform = 0x02 ,
-	MB_Addr_last
+	MB_cell_1 = 0x01 ,
+	MB_cell_2 = 0x02 ,
+	MB_cell_3,
+    MB_cell_4,
+    MB_cell_5,
+    MB_cell_6
 }mb_addr_t;
 
 #define CNT_MB_ERROR_THR	20
