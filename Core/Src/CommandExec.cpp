@@ -66,7 +66,7 @@ void  CmdPilotArc(void )
     gMbStatus.bit.bPilotArc = 0; 
     hPilotArc->Off();
   } 
-  SetMBRgS( REG_R_STATUS_S, gMbStatus.reg );
+  SetMBRgS( REG_R_STATUS, gMbStatus.reg );
   gMbActiveCntrl.bit.bPilotArc = 0;
 } //CmdPilotArc()
 

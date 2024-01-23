@@ -91,7 +91,7 @@ bool ModBusCom :: Hr_query( mb_addr_t mb_addr, eMBRegM_t saddr_rg )
 	if ( mb_act.response )
 	{
 		mb_act.response = 0;
-		// error//gMBMasterReqErrCode = eMBMasterReqReadHoldingRegister( mb_addr, saddr_rg - MB_RG_OFF_SET, 8, MB_TIME_OUT );
+		//gMBMasterReqErrCode = eMBMasterReqReadHoldingRegister( mb_addr, saddr_rg - MB_RG_OFF_SET, 8, MB_TIME_OUT );
 	}else ret = false;
 	return ret;
 }// Hr_query(); 

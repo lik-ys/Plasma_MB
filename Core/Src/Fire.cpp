@@ -126,7 +126,7 @@ void FireProcess( void )
     gStateSM.proc =   ST_FIRE_WAITE;
     WR_DEBUG("Fire Start \r\n");
     gMbStatus.bit.bFireStart = 1;
-    SetMBRgS( REG_R_STATUS_S, gMbStatus.reg );    
+    SetMBRgS( REG_R_STATUS, gMbStatus.reg );    
     FireStart();        
     gStateSM.st.bFireWaite = 1;
     gStateSM.st.bTestCurr2 = 1;
@@ -151,7 +151,7 @@ void FireProcess( void )
     HAL_NVIC_EnableIRQ( EXTI4_IRQn );
     gMbStatus.bit.bFireStart = 0;
     preMbCntrl.bit.bFireStart = 0;
-    SetMBRgS( REG_R_STATUS_S, gMbStatus.reg );  
+    SetMBRgS( REG_R_STATUS, gMbStatus.reg );  
     ///hTimer->Time_Out( Timer::start, TIME_OUT_FIRE_OFF, EV_FIRE_OFF );
     break;
   default:;    
@@ -246,7 +246,7 @@ static void ReadFireIn(void )
   if ( gStateSM.st.bFireIn )
   {
     gMbStatus.bit.bFireIn = 1;
-    SetMBRgS( REG_R_STATUS_S, gMbStatus.reg ); // TODO
+    SetMBRgS( REG_R_STATUS, gMbStatus.reg ); // TODO
     gStateSM.st.bFireIn =0;
   }else
   {
@@ -257,7 +257,7 @@ static void ReadFireIn(void )
       {
         cnt = 0;
         gMbStatus.bit.bFireIn = 0;
-        SetMBRgS( REG_R_STATUS_S, gMbStatus.reg );        
+        SetMBRgS( REG_R_STATUS, gMbStatus.reg );        
       }else;
     }else;
   }	

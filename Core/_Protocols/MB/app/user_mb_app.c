@@ -49,7 +49,7 @@ void UpDateReadRg( eMBRegS_t numRg )
   {
     case REG_R_CNC_IN:
       break;
-    case REG_R_STATUS_S:
+    case REG_R_STATUS:
       break;    
     default:
       break;
@@ -80,8 +80,8 @@ void UpDateWriteRg( eMBRegS_t numRg )
     case REG_W_CNTRL:
       gMbCntrl.reg = GetMBRgS( numRg );
       UpateActiveRg();      
-      break;
-    case REG_W_CNTRL_START:
+//      break;
+//    case REG_W_CNTRL:
       if ( GetMBRgS( numRg )&(1<<0) )
             gMbCntrl.bit.bChopperStart = 1;
       else  gMbCntrl.bit.bChopperStart = 0;      

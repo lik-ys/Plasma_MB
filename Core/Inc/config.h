@@ -33,7 +33,7 @@
 /*===============================[ PUBLIC CONSTANTS ]=======================*/ 
 // Все частные #defines и constants должны быть объявлены в данном разделе. 
 
-#define MB_ADDR_SLAVE       55
+#define MB_ADDR_SLAVE       1
 #define SLAVE_BAUD_RATE     57600 //15200//
 #define MB_ADDR_MASTER      85
 #define MASTER_BAUD_RATE    57600 // 15200//

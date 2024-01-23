@@ -16,16 +16,25 @@ extern "C" {
  */
 typedef enum _MB_REG_S
 {
-	REG_R_CURR_1		= 0x0000 ,
-	REG_R_CURR_2		= 0x0001 ,
-	REG_R_VOLT			= 0x0002 ,
-    REG_R_CNC_IN                 ,     // дискретные входы 
-    REG_R_STATUS_S               ,   // 
+	REG_W_CNTRL		= 1,
+	REG_W_PWM		= 2,
+	REG_W_CURR		= 3, 
+    REG_W_SLOP_1    = 4, 
+    REG_W_SLOP_2    = 5,
+    REG_W_P         = 6,
+    REG_W_I         = 7,
+    REG_W_D         = 8,
     
-    REG_W_CNTRL         = 15 ,//
-    REG_W_CNC_OUT ,     // дискретные выходы  
-    REG_W_FREQ    ,     // „астота синхронизации 12345 √ц      
-    REG_W_CNTRL_START   = 50,
+    
+    REG_W_CNC_OUT       = 16,// дискретные выходы  
+    REG_W_FREQ          = 17,// „астота синхронизации 12345 √ц      
+    // reserv  
+    REG_R_STATUS       = 50,//
+    REG_R_VOLT         = 51,
+    REG_R_CURR_1       = 52,
+    REG_R_CURR_2       = 53, //
+    REG_R_CNC_IN    ,
+    REG_R_CNC_OUT   ,
 	REG_S_LAST                               //
 } eMBRegS_t;
 

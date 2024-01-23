@@ -23,6 +23,7 @@ extern "C" {
 /* ----------------------- Modbus includes ----------------------------------*/
 
 #define MB_RG_OFF_SET  (eMBReg_t)1 // все адреса пришлось уменьшить на 1
+#define MB_TIME_OUT     100   
   
 class ModBusCom
 {  

@@ -233,7 +233,7 @@ void SM_Tick( void )
       {     
         gStateSM.st.bCommStart = 0;
         gMbStatus.bit.bStartCNC = 1;
-        SetMBRgS( REG_R_STATUS_S, gMbStatus.reg );          
+        SetMBRgS( REG_R_STATUS, gMbStatus.reg );          
         WR_DEBUG("Start from CNC \r\n");    
       }
       gStateSM.st.bStart = 0;
@@ -243,7 +243,7 @@ void SM_Tick( void )
       {         
         gStateSM.st.bCommStart = 0;
         gMbStatus.bit.bStartCNC = 0;
-        SetMBRgS( REG_R_STATUS_S, gMbStatus.reg );                
+        SetMBRgS( REG_R_STATUS, gMbStatus.reg );                
         WR_DEBUG("Stop from CNC \r\n");    
       }
       gStateSM.st.bStop = 0;
