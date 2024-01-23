@@ -47,8 +47,8 @@ void UpDateReadRg( eMBRegS_t numRg )
 {
   switch( numRg )    // 
   {
-    case REG_R_CNC_IN:
-      break;
+//    case REG_R_CNC_IN:
+//      break;
     case REG_R_STATUS:
       break;    
     default:

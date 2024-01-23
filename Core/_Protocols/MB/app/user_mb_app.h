@@ -30,11 +30,11 @@ typedef enum _MB_REG_S
     REG_W_FREQ          = 17,// Частота синхронизации 12345 Гц      
     // reserv  
     REG_R_STATUS       = 50,//
-    REG_R_VOLT         = 51,
-    REG_R_CURR_1       = 52,
-    REG_R_CURR_2       = 53, //
-    REG_R_CNC_IN    ,
-    REG_R_CNC_OUT   ,
+    REG_R_STATUS1      = 51,//    
+    REG_R_VOLT         = 52,
+    REG_R_CURR_1       = 53,
+    REG_R_CURR_2       = 54, //
+
 	REG_S_LAST                               //
 } eMBRegS_t;
 
