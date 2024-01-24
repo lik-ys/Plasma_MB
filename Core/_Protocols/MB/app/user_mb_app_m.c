@@ -98,12 +98,12 @@ void MBMasterExec(void )
   * @param  
   * @retval 
   */
-void SetMBRgM( uint16_t slave, eMBRegM_t numMBReg, uint16_t data )
+void SetMBRgM( uint16_t slave, eMBReg_t numMBReg, uint16_t data )
 {
   
-  if ( numMBReg >= REG_M_LAST ) 
+  if ( numMBReg >= REG_LASTs ) 
   {
-    assert(numMBReg >= REG_M_LAST);
+    assert(numMBReg >= REG_LASTs);
   }
   
   usMRegHoldBuf[slave][ numMBReg ] = data;  
@@ -114,11 +114,11 @@ void SetMBRgM( uint16_t slave, eMBRegM_t numMBReg, uint16_t data )
   * @param  
   * @retval 
   */
-uint16_t GetMBRgM( uint16_t slave,eMBRegM_t numMBReg )
+uint16_t GetMBRgM( uint16_t slave, eMBReg_t numMBReg )
 {
-  if ( numMBReg >= REG_M_LAST ) 
+  if ( numMBReg >= REG_LASTs ) 
   {
-    assert(numMBReg >= REG_M_LAST);
+    assert(numMBReg >= REG_LASTs);
   }
   
   return usMRegHoldBuf[slave][ numMBReg ];
@@ -184,7 +184,7 @@ eMBErrorCode eMBMasterRegInputCB( UCHAR * pucRegBuffer, USHORT usAddress, USHORT
  */
 eMBErrorCode eMBMasterRegHoldingCB(UCHAR * pucRegBuffer, USHORT usAddress, USHORT usNRegs, eMBRegisterMode eMode)
 {
-#if M_REG_HOLDING_NREGS > 0
+//#if (M_REG_HOLDING_NREGS > 0)
     eMBErrorCode    eStatus = MB_ENOERR;
     USHORT          iRegIndex;
     USHORT *        pusRegHoldingBuf;
@@ -238,9 +238,9 @@ eMBErrorCode eMBMasterRegHoldingCB(UCHAR * pucRegBuffer, USHORT usAddress, USHOR
         eStatus = MB_ENOREG;
     }
     return eStatus;
-#else
-	return MB_ENOREG;
-#endif
+//#else
+//	return MB_ENOREG;
+//#endif
 }
 
 /**

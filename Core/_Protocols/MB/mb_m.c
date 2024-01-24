@@ -323,7 +323,7 @@ eMBMasterPoll( void )
     /* Check if there is a event available. If not return control to caller.
      * Otherwise we will handle the event. */
     if( xMBMasterPortEventGet( &eEvent ) == TRUE )
-    { /// TODO BUG Р·Р°РІРёСЃР°РЅРёРµ  РІСЃРµРіРґР° FALSE
+    { /// TODO  BUG зависание  всегда FALSE
         switch ( eEvent )
         {
         case EV_MASTER_READY:mb_cnt1.ready++;

@@ -15,7 +15,7 @@
 #include "main.h"
 
 /* ----------------------- Modbus includes ----------------------------------*/
-
+#include "mbport.h"
 #include "mb.h"
 #include "mb_m.h"
 #include "mbconfig.h"
@@ -25,7 +25,10 @@
 
 #include "mb_com.hpp"
 
-#include "mbport.h"
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 #if MB_MASTER_RTU_ENABLED == 1
 #include "mbrtu.h"
 #endif
@@ -44,6 +47,14 @@ ModBusCom MB_hl( ModBusCom::slave );  // связь с ПК
 ModBusCom *pMBcntrl = &MB_cntrl;
 ModBusCom *pMBhl = &MB_hl;
 
+
+//
+//__weak
+//void xSetMAsterEvent(eMBMasterEventType eEvent)
+//{
+//	eQueuedEvent = eEvent;
+//}
+
 ModBusCom :: ModBusCom( type_t t )
 {
   type = t;
@@ -56,7 +67,6 @@ void ModBusCom::Init(void )
     eMBInit( MB_RTU,MB_ADDR_SLAVE, pMBSlave, SLAVE_BAUD_RATE, &htim3 );
     eMBEnable();
     RS485_Dir( rx );
-
   }
   else 
   if (type == master)
@@ -67,7 +77,10 @@ void ModBusCom::Init(void )
   }  
 }// Init()
 
-void ModBusCom::Loop()
+/*
+*
+*/
+bool ModBusCom::Loop( void )
 {
   if ( type == slave )
   {
@@ -76,28 +89,79 @@ void ModBusCom::Loop()
   else 
   if ( type == master )
   {
-    if ( false == eMBMasterIsEnabled()) return ;
+    if ( 0 == eMBMasterIsEnabled()) return false;
     gMBErrorCode = eMBMasterPoll( );
-    
+	xGetMasterEvent( &gMBEvent);
+
+	switch( gMBEvent )
+	{
+	case EV_MASTER_INIT:
+	case EV_MASTER_READY                  :
+		return TRUE;
+		break;
+	case EV_MASTER_FRAME_RECEIVED         : //mb_cnt.rx++;
+		addr = ucMBMasterGetDestAddress();
+        //get_status( (mb_addr_t)addr );
+		return TRUE;
+		break;
+	case EV_MASTER_EXECUTE                :
+	case EV_MASTER_FRAME_SENT             : //mb_cnt.tx++;
+		gMBEvent = EV_MASTER_READY;
+	case EV_MASTER_ERROR_PROCESS          : //mb_cnt.error++;
+		gMBEvent = EV_MASTER_READY;
+	case EV_MASTER_PROCESS_SUCESS         : //mb_cnt.ex++;
+		gMBEvent = EV_MASTER_READY;		
+	case EV_MASTER_ERROR_EXECUTE_FUNCTION ://mb_cnt.error++;
+		gMBEvent = EV_MASTER_READY;
+		return TRUE;        
+        
+	case EV_MASTER_ERROR_RESPOND_TIMEOUT  ://mb_cnt.error++;
+		gMBEvent = EV_MASTER_READY;
+	case EV_MASTER_ERROR_RECEIVE_DATA     ://mb_cnt.error++;
+		gMBEvent = EV_MASTER_READY;
+		return FALSE;
+	}    
   }
+  return FALSE;  
 } // Loop()
 
 /*
 **
 */
-bool ModBusCom :: Hr_query( mb_addr_t mb_addr, eMBRegM_t saddr_rg )
+bool ModBusCom::Hr_query( mb_addr_t mb_addr, eMBReg_t saddr_rg )
 {
 	bool ret = true;
 	if ( mb_act.response )
 	{
 		mb_act.response = 0;
-		//gMBMasterReqErrCode = eMBMasterReqReadHoldingRegister( mb_addr, saddr_rg - MB_RG_OFF_SET, 8, MB_TIME_OUT );
+		gMBMasterReqErrCode = eMBMasterReqReadHoldingRegister( mb_addr, saddr_rg - MB_RG_OFF_SET, 8, MB_TIME_OUT );
 	}else ret = false;
 	return ret;
 }// Hr_query(); 
 
+/*
+ *
+ */
+bool ModBusCom::Hr_write( mb_addr_t mb_addr, eMBReg_t rg, uint16_t data)
+{
+  gMBMasterReqErrCode = eMBMasterReqWriteHoldingRegister( mb_addr, rg - MB_RG_OFF_SET, data, MB_TIME_OUT );
+  return TRUE;
+}// write()
+
+/*
+**
+*/
+bool ModBusCom::Read(mb_addr_t mb_addr)
+{
+   return Hr_query( mb_addr, static_cast<eMBReg_t>(REG_R_CURR_1s) );
+}
+
 ModBusCom::~ModBusCom(){}
 
+
+#ifdef __cplusplus
+}
+#endif
 /* --------------------------- End of file ------------------------------------ */
 
 

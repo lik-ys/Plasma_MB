@@ -1,18 +1,19 @@
 
 #include "modbus_m.h" 
+#include "user_mb_app_m.h"
 
 /**
   * @brief  апдейт регистров чтения
   * @param
   * @retval
   */
-void UpDateReadRgM( eMBRegM_t numRg )
+void UpDateReadRgM( eMBReg_t numRg )
 {
   switch( numRg )    // 
   {
-    case REG_M_W_CNTRL:
+    case REG_R_STATE_UNIT:
       break;
-    case REG_M_R_STATUS:
+    case REG_R_STATE_PROCESS:
       break;    
     default:
       break;
@@ -23,13 +24,13 @@ void UpDateReadRgM( eMBRegM_t numRg )
   * @param
   * @retval
   */
-void UpDateWriteRgM( eMBRegM_t numRg )
+void UpDateWriteRgM( eMBReg_t numRg )
 {
   switch( numRg )    // 
   {
-    case REG_M_W_CNTRL:
+    case REG_R_STATE_UNIT:
       break;
-    case REG_M_R_STATUS:
+    case REG_R_STATE_PROCESS:
       break;    
     default:
       break;

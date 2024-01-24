@@ -33,18 +33,21 @@ public:
     master = 1
   } type_t;
   
+  uint16_t addr; // slave MB_addr
+  
   ModBusCom( type_t  t);
   virtual ~ModBusCom();
   
   void Init(void);
-  void Loop(void); 
+  bool Loop(void); 
   
   bool connected;
   eMBMasterReqErrCode   gMBMasterReqErrCode;
   eMBErrorCode		    gMBErrorCode;
   eMBMasterEventType	gMBEvent; 
-  bool Hr_query( mb_addr_t mb_addr, eMBRegM_t saddr_rg );
-  
+  bool Hr_query( mb_addr_t mb_addr, eMBReg_t saddr_rg );
+  bool Hr_write( mb_addr_t mb_addr, eMBReg_t rg, uint16_t data);
+  bool Read(mb_addr_t mb_addr);
 private:
   type_t type;  
 };

@@ -3,11 +3,8 @@
 #include "mb_m.h"
 #include "mbport.h"
 
-#ifdef __cplusplus
-extern "C" {
-#endif
   
-#if c > 0 || MB_MASTER_ASCII_ENABLED > 0
+#if MB_MASTER_RTU_ENABLED > 0 || MB_MASTER_ASCII_ENABLED > 0
 
 /* ----------------------- Defines ------------------------------------------*/
 
@@ -47,7 +44,6 @@ void xGetMasterEvent(eMBMasterEventType * eEvent)
 {
 	*eEvent = (eMBMasterEventType)eQueuedEvent;
 }
-
 void xSetMAsterEvent(eMBMasterEventType eEvent)
 {
 	eQueuedEvent = eEvent;
@@ -191,7 +187,4 @@ eMBMasterReqErrCode eMBMasterWaitRequestFinish( void )
 	return eErrStatus;
 }
 
-#ifdef __cplusplus
-}
-#endif
 #endif

@@ -207,6 +207,7 @@ void 			MBMasterPortCBTimerExpired(TIM_HandleTypeDef *htim);
 
 void 			xGetMasterEvent(eMBMasterEventType * eEvent);
 void 			xSetMAsterEvent(eMBMasterEventType eEvent);
+void            GetMasterEvent(eMBMasterEventType * eEvent);
 
 #ifdef __cplusplus
 PR_END_EXTERN_C

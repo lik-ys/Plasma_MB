@@ -26,47 +26,59 @@ typedef enum _MB_ADDR
 }mb_addr_t;
 
 #define CNT_MB_ERROR_THR	20
-
-//
 /*
- * MB_MASTER_TOTAL_SLAVE_NUM
- * https://plc247.com/fx3u-modbus-rtu-ls-ig5a-vfd-tutorial/
- * ЧП отдает только по 8 регистров
+ * регистры подчиненных одинаковы
  */
-typedef enum _MB_REG_M
+typedef enum _MB_REG_SLAVE
 {
-	REG_R_MODEL_INF			= 0x0000 ,
-	REG_R_INV_POW			= 0x0001 ,
-	REG_R_INV_VOLT			= 0x0002 ,
-	REG_R_SW_VER			= 0x0003 ,
-	REG_RW_LOCK				= 0x0004 ,
-	REG_RW_FREQ				= 0x0005 ,
-	REG_WR_RUN_CMD			= 0x0006 , // 0 - Stop, 1 - Forward, 2 - Reverse
-	REG_RW_ACC_TIME			= 0x0007 ,
+  REG_R_CURR_1s          = 0,   // Токи двух каналов
+  REG_R_CURR_2s          ,      // Уставка тока  REG_W_SET_OUT_CURRENT должна быть равна сумме токов вв двух каналах
+  REG_R_IN_VOLTs         ,
+  REG_R_STATE_UNIT      = 3,   // (Вкл/Выкл, обрыв фаз, перегрев, тип управления, пепрегрузка по току, защита драйвера)
+  REG_R_STATE_PROCESS   = 4,   // соотвествует REG_W_CNTRL_PROCESS (Ожидание, поджиг, Резка, Тушение, True Hole)
+  
+  REG_R_PWM1            ,
+  REG_R_PWM2            ,
+  REW_R_RESERV0         = 7 ,
+  
+  REG_W_PID_P           = 40,
+  REG_W_PID_I           = 41,
+  REG_W_PID_D           = 42,
+  
+  REG_W_SET_OUT_PWM     = 48,  // 0-100%
+  REG_W_SET_OUT_CURRENT = 49,  // 0..300 А 
+  REG_W_CONTROL         = 50,
+  REG_W_CNTRL_PROCESS   = 51,  // соотвествует REG_R_STATE_PROCESS
+  REG_W_CURRENT0        = 80,  // Таблица ID 80..92 Значение тока (12 значений) 
+  REG_W_CURRENT1          ,    // 
+  REG_W_CURRENT2          ,
+  REG_W_CURRENT3          ,
+  REG_W_CURRENT4          ,
+  REG_W_CURRENT5          ,
+  REG_W_CURRENT6          , 
+  REG_W_CURRENT7          ,
+  REG_W_CURRENT8          ,
+  REG_W_CURRENT9          ,
+  REG_W_CURRENT10         ,
+  REG_W_CURRENT12         ,  
+  REG_W_TIME0            = 93, // Таблица 93..104 Значение времени (12 значений)
+  REG_W_TIME1             , 
+  REG_W_TIME2             ,
+  REG_W_TIME3             ,
+  REG_W_TIME4             ,
+  REG_W_TIME5             ,
+  REG_W_TIME6             ,  
+  REG_W_TIME7             ,//100
+  REG_W_TIME8             ,
+  REG_W_TIME9             ,
+  REG_W_TIME10            ,
+  REG_W_TIME12            ,//104  
 
-	REG_RW_DEC_TIME			= 0x0008 ,
-	REG_R_OUT_CUR			= 0x0009 ,
-	REG_R_OUT_FREQ			= 0x000A ,
-	REG_R_OUT_VOLT			= 0x000B ,
-	REG_R_DC_LINE_VOLT		= 0x000C ,
-	REG_R_OUT_POWER		    = 0x000D ,
-	REG_R_STATUS_M			= 0x000E ,
-	REG_R_TRIP_INFO			= 0x000F , // внутреннее состояние
-
-	REG_R_IN_SW_STATE		= 0x0010 ,
-	REG_R_OUT_SW_STATE		= 0x0011 ,
-	REG_R_ANI_V1			= 0x0012 ,
-	REG_R_ANI_V2			= 0x0013 , // Not Used (с ростом V1 растёст и V2)
-	REG_R_ANI_I				= 0x0014 , //
-	REG_R_PRM				= 0x0015 ,
-
-	REG_R_LAST_READ 		= 0x0016 ,
-	// TODO
-	REG_READ_ADDR_RG		= 0x0100 ,
-	REG_WRITE_ADDR_RG		= 0x0108 ,
-	// ...
-	REG_M_LAST                               //
-} eMBRegM_t;
+  REG_W_FIRST_DAC         ,//105 точки начала и конца пилы ЦАП
+  REG_W_LAST_DAC          ,//104
+  
+  REG_LASTs = REG_W_LAST_DAC + 40         //
+} eMBReg_t;// _MB_REG
 
 
 typedef struct
@@ -102,7 +114,7 @@ extern mb_cnt_t 	mb_cnt;
 #define M_REG_INPUT_NREGS             0// REG_R_LAST_READ
 
 #define M_REG_HOLDING_START           0
-#define M_REG_HOLDING_NREGS           REG_M_LAST
+#define M_REG_HOLDING_NREGS           REG_LASTs
 
 /* master mode: holding register's all address */
 #define          M_HD_RESERVE                     0
