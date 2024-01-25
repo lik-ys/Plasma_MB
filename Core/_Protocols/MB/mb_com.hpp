@@ -22,7 +22,9 @@ extern "C" {
 #include "mb_m.h"
 /* ----------------------- Modbus includes ----------------------------------*/
 
-#define MB_RG_OFF_SET  (eMBReg_t)1 // все адреса пришлось уменьшить на 1
+  using namespace std;
+  
+#define MB_RG_OFF_SET  (eMBReg_t)0
 #define MB_TIME_OUT     100   
   
 class ModBusCom
@@ -33,7 +35,7 @@ public:
     master = 1
   } type_t;
   
-  uint16_t addr; // slave MB_addr
+  mb_addr_t addr; // slave MB_addr
   
   ModBusCom( type_t  t);
   virtual ~ModBusCom();
@@ -48,9 +50,25 @@ public:
   bool Hr_query( mb_addr_t mb_addr, eMBReg_t saddr_rg );
   bool Hr_write( mb_addr_t mb_addr, eMBReg_t rg, uint16_t data);
   bool Read(mb_addr_t mb_addr);
+  void Inc( void );
+  
 private:
   type_t type;  
 };
+
+// Special behavior for ++_MB_ADDR
+inline _MB_ADDR operator++( _MB_ADDR c ) {
+
+  const int i = static_cast<int>(c);
+  return static_cast<_MB_ADDR>(i+1);
+}
+// Special behavior for _MB_ADDR++
+//inline _MB_ADDR operator++( _MB_ADDR &c, int ) {
+//
+//  _MB_ADDR res = c;
+//  ++c;
+//  return res;
+//}
 
 #ifdef __cplusplus
 }

@@ -58,6 +58,7 @@ ModBusCom *pMBhl = &MB_hl;
 ModBusCom :: ModBusCom( type_t t )
 {
   type = t;
+  addr = MB_cell_1;
 } // ModBusCom
 
 void ModBusCom::Init(void )
@@ -90,6 +91,11 @@ bool ModBusCom::Loop( void )
   if ( type == master )
   {
     if ( 0 == eMBMasterIsEnabled()) return false;
+    
+    
+    Read(addr);
+    Inc();
+    
     gMBErrorCode = eMBMasterPoll( );
 	xGetMasterEvent( &gMBEvent);
 
@@ -100,7 +106,7 @@ bool ModBusCom::Loop( void )
 		return TRUE;
 		break;
 	case EV_MASTER_FRAME_RECEIVED         : //mb_cnt.rx++;
-		addr = ucMBMasterGetDestAddress();
+		addr = (mb_addr_t)ucMBMasterGetDestAddress();
         //get_status( (mb_addr_t)addr );
 		return TRUE;
 		break;
@@ -154,6 +160,12 @@ bool ModBusCom::Hr_write( mb_addr_t mb_addr, eMBReg_t rg, uint16_t data)
 bool ModBusCom::Read(mb_addr_t mb_addr)
 {
    return Hr_query( mb_addr, static_cast<eMBReg_t>(REG_R_CURR_1s) );
+}
+
+void ModBusCom::Inc( void ) 
+{
+    if ( ++addr > MB_cell_end ) 
+      addr = MB_cell_1;
 }
 
 ModBusCom::~ModBusCom(){}

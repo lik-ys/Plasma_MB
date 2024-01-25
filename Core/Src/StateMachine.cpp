@@ -117,10 +117,10 @@ void SM_loop( void )
     case ST_START:
       break;
     case ST_TOGGLE_LED:
-       RS485_Dir_m( tx );
-      xMBMasterPortSerialPutByte( 0x55 ); // работает 
-      RS485_Dir_m( rx );
-      xMBPortSerialGetByte(pdata);
+      //RS485_Dir_m( tx );
+      //xMBMasterPortSerialPutByte( 0x55 ); // работает 
+     // RS485_Dir_m( rx );
+     // xMBPortSerialGetByte(pdata);
       ToggleLed( &gLed );
       
       xMBMasterPortEventPost( EV_MASTER_READY );

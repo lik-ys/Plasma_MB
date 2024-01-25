@@ -184,7 +184,7 @@ eMBErrorCode eMBMasterRegInputCB( UCHAR * pucRegBuffer, USHORT usAddress, USHORT
  */
 eMBErrorCode eMBMasterRegHoldingCB(UCHAR * pucRegBuffer, USHORT usAddress, USHORT usNRegs, eMBRegisterMode eMode)
 {
-//#if (M_REG_HOLDING_NREGS > 0)
+#if (M_REG_HOLDING_NREGS > 0)
     eMBErrorCode    eStatus = MB_ENOERR;
     USHORT          iRegIndex;
     USHORT *        pusRegHoldingBuf;
@@ -238,9 +238,9 @@ eMBErrorCode eMBMasterRegHoldingCB(UCHAR * pucRegBuffer, USHORT usAddress, USHOR
         eStatus = MB_ENOREG;
     }
     return eStatus;
-//#else
-//	return MB_ENOREG;
-//#endif
+#else
+	return MB_ENOREG;
+#endif
 }
 
 /**

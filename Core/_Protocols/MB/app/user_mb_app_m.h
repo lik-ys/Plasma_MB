@@ -22,7 +22,8 @@ typedef enum _MB_ADDR
 	MB_cell_3,
     MB_cell_4,
     MB_cell_5,
-    MB_cell_6
+    MB_cell_6,
+    MB_cell_end
 }mb_addr_t;
 
 #define CNT_MB_ERROR_THR	20
@@ -77,7 +78,7 @@ typedef enum _MB_REG_SLAVE
   REG_W_FIRST_DAC         ,//105 точки начала и конца пилы ЦАП
   REG_W_LAST_DAC          ,//104
   
-  REG_LASTs = REG_W_LAST_DAC + 40         //
+  REG_LASTs         //
 } eMBReg_t;// _MB_REG
 
 
@@ -113,8 +114,8 @@ extern mb_cnt_t 	mb_cnt;
 #define M_REG_INPUT_START             0
 #define M_REG_INPUT_NREGS             0// REG_R_LAST_READ
 
-#define M_REG_HOLDING_START           0
-#define M_REG_HOLDING_NREGS           REG_LASTs
+#define M_REG_HOLDING_START           1
+#define M_REG_HOLDING_NREGS           104 // REG_LASTs 
 
 /* master mode: holding register's all address */
 #define          M_HD_RESERVE                     0
