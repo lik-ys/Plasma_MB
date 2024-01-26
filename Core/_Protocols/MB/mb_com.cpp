@@ -58,7 +58,7 @@ ModBusCom *pMBhl = &MB_hl;
 ModBusCom :: ModBusCom( type_t t )
 {
   type = t;
-  addr = MB_cell_1;
+  addr = MB_cell_4;
 } // ModBusCom
 
 void ModBusCom::Init(void )
@@ -140,7 +140,7 @@ bool ModBusCom::Hr_query( mb_addr_t mb_addr, eMBReg_t saddr_rg )
 	if ( mb_act.response )
 	{
 		mb_act.response = 0;
-		gMBMasterReqErrCode = eMBMasterReqReadHoldingRegister( mb_addr, saddr_rg - MB_RG_OFF_SET, 8, MB_TIME_OUT );
+		gMBMasterReqErrCode = eMBMasterReqReadHoldingRegister( mb_addr, saddr_rg - MB_RG_OFF_SET, 2, MB_TIME_OUT );
 	}else ret = false;
 	return ret;
 }// Hr_query(); 

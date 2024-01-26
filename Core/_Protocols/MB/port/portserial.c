@@ -3,11 +3,12 @@
 #include "mbport.h"
 
 #if MB_SLAVE_RTU_ENABLED > 0 || MB_SLAVE_ASCII_ENABLED > 0
-
+/*-------------------------- For Master -------------------------------------*/
+extern uint8_t singlechar_m;
+extern UART_HandleTypeDef *uart_m;
 /* ----------------------- Static variables ---------------------------------*/
-UART_HandleTypeDef *uart;
+static UART_HandleTypeDef *uart;
 static uint8_t singlechar;
-
 /* ----------------------- User defenitions ---------------------------------*/
 #define RS485_RTS_LOW	 HAL_GPIO_WritePin(DIR_RS1_GPIO_Port, DIR_RS1_Pin, GPIO_PIN_RESET)
 #define RS485_RTS_HIGH 	 HAL_GPIO_WritePin(DIR_RS1_GPIO_Port, DIR_RS1_Pin, GPIO_PIN_SET)
@@ -68,21 +69,30 @@ BOOL xMBPortSerialGetByte(CHAR * pucByte)
 	return TRUE;
 }
 
-void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart)
+void HAL_UART_RxCpltCallback( UART_HandleTypeDef *huart )
 {
 	if(huart->Instance == uart->Instance)
 	{
 		pxMBFrameCBByteReceived();
 		HAL_UART_Receive_IT(uart, &singlechar, 1);
 	}
+	if(huart->Instance == uart_m->Instance)
+	{
+		pxMBMasterFrameCBByteReceived();
+		HAL_UART_Receive_IT(uart_m, &singlechar_m, 1);
+	}    
 }
 
-void HAL_UART_TxCpltCallback(UART_HandleTypeDef *huart)
+void HAL_UART_TxCpltCallback( UART_HandleTypeDef *huart )
 {
 	if(huart->Instance == uart->Instance)
 	{
 		pxMBFrameCBTransmitterEmpty();
 	}
+	if( huart->Instance == uart_m->Instance )
+	{
+		pxMBMasterFrameCBTransmitterEmpty();
+	}    
 }
 
 #endif

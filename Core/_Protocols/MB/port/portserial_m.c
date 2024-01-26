@@ -15,7 +15,7 @@
 
 /* ----------------------- Static variables ---------------------------------*/
 UART_HandleTypeDef *uart_m;
-static uint8_t singlechar_m;
+uint8_t singlechar_m;
 
 /* ----------------------- User defenitions ---------------------------------*/
 #define RS485_MASTER_RTS_LOW	{}//HAL_GPIO_WritePin(RS485_RTS_GPIO_Port, RS485_RTS_Pin, GPIO_PIN_RESET)
@@ -76,22 +76,6 @@ BOOL xMBMasterPortSerialGetByte(CHAR * pucByte)
 	*pucByte = (uint8_t)(singlechar_m);
 	return TRUE;
 }
-//
-//void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart_m)
-//{
-//	if(huart->Instance == uart_m->Instance)
-//	{
-//		pxMBMasterFrameCBByteReceived();
-//		HAL_UART_Receive_IT(uart_m, &singlechar_m, 1);
-//	}
-//}
-//
-//void HAL_UART_TxCpltCallback(UART_HandleTypeDef *huart)
-//{
-//	if(huart->Instance == uart_m->Instance)
-//	{
-//		pxMBMasterFrameCBTransmitterEmpty();
-//	}
-//}
+
 
 #endif
