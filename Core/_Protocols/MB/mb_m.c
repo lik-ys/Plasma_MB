@@ -66,9 +66,9 @@ eMBErrorCode    eMBMasterPoll( void ){return MB_ENOERR;}
 
 #include "io_process.h"
 
-static eMBMasterEventType eQueuedEvent;
-static BOOL     xEventInQueue;
-static BOOL xNeedPoll;
+eMBMasterEventType eQueuedEvent;
+BOOL               xEventInQueue;
+BOOL               xNeedPoll;
 
 /* ----------------------- Static variables ---------------------------------*/
 
@@ -336,7 +336,8 @@ eMBMasterPoll( void )
             if ( ( eStatus == MB_ENOERR ) && ( ucRcvAddress == ucMBMasterGetDestAddress() ) )
             {
                 ( void ) xMBMasterPortEventPost( EV_MASTER_EXECUTE );
-                MBMasterRecieved(); cntErr = MB_CNT_ERROR;
+                //MBMasterRecieved(); 
+                cntErr = MB_CNT_ERROR;
             	//xMBMasterPortEventGet( &eEvent );
             	eStatus = MB_ENOERR;
             }

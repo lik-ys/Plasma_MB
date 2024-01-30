@@ -191,8 +191,9 @@ eMBErrorCode eMBMasterRegHoldingCB(UCHAR * pucRegBuffer, USHORT usAddress, USHOR
     USHORT          REG_HOLDING_START;
     USHORT          REG_HOLDING_NREGS;
     USHORT          usRegHoldStart;
-
-    pusRegHoldingBuf = usMRegHoldBuf[ucMBMasterGetDestAddress() - 1];
+    uint16_t addr_slave;
+    
+    pusRegHoldingBuf = usMRegHoldBuf[ addr_slave = ucMBMasterGetDestAddress() - 1];
     REG_HOLDING_START = M_REG_HOLDING_START;
     REG_HOLDING_NREGS = M_REG_HOLDING_NREGS;
     usRegHoldStart = usMRegHoldStart;
@@ -211,7 +212,7 @@ eMBErrorCode eMBMasterRegHoldingCB(UCHAR * pucRegBuffer, USHORT usAddress, USHOR
         case MB_REG_READ:
             while (usNRegs > 0)
             {
-                UpDateReadRgM(iRegIndex);
+                UpDateReadRgM(addr_slave, iRegIndex );
                 *pucRegBuffer++ = (UCHAR) (pusRegHoldingBuf[iRegIndex] >> 8);
                 *pucRegBuffer++ = (UCHAR) (pusRegHoldingBuf[iRegIndex] & 0xFF);
                 iRegIndex++;
@@ -222,10 +223,10 @@ eMBErrorCode eMBMasterRegHoldingCB(UCHAR * pucRegBuffer, USHORT usAddress, USHOR
         case MB_REG_WRITE:
             while (usNRegs > 0)
             {
-                pusRegHoldingBuf[iRegIndex] = *pucRegBuffer++ << 8;
-                pusRegHoldingBuf[iRegIndex] |= *pucRegBuffer++;
+                pusRegHoldingBuf[ iRegIndex ]  = *pucRegBuffer++ << 8;
+                pusRegHoldingBuf[ iRegIndex ] |= *pucRegBuffer++;
                 
-                UpDateWriteRgM(iRegIndex);
+                UpDateWriteRgM(addr_slave, iRegIndex );
                 
                 iRegIndex++;
                 usNRegs--;
@@ -236,6 +237,7 @@ eMBErrorCode eMBMasterRegHoldingCB(UCHAR * pucRegBuffer, USHORT usAddress, USHOR
     else
     {
         eStatus = MB_ENOREG;
+        WR_DEBUG ("MB_ENOREG \r\n");
     }
     return eStatus;
 #else

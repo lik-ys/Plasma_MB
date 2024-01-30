@@ -26,7 +26,6 @@ typedef enum _MB_REG_S
     REG_W_I         = 7,
     REG_W_D         = 8,
     
-    
     REG_W_CNC_OUT       = 16,// дискретные выходы  
     REG_W_FREQ          = 17,// „астота синхронизации 12345 √ц      
     // reserv  
@@ -34,7 +33,7 @@ typedef enum _MB_REG_S
     REG_R_STATUS1      = 51,//    
     REG_R_VOLT         = 52,
     REG_R_CURR_1       = 53,
-    REG_R_CURR_2       = 54, //
+    REG_R_CURR_2       = 54,//
 
 	REG_S_LAST                               //
 } eMBRegS_t;

@@ -251,6 +251,8 @@ xMBMasterRTUReceiveFSM( void )
          */
     case STATE_M_RX_INIT:
         vMBMasterPortTimersT35Enable( );
+        ucMasterRTURcvBuf[usMasterRcvBufferPos++] = ucByte;
+        eRcvState = STATE_M_RX_RCV;
         break;
 
         /* In the error state we wait until all characters in the

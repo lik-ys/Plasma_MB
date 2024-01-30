@@ -65,14 +65,14 @@ void ModBusCom::Init(void )
 {
   if (type == slave )
   {
-    eMBInit( MB_RTU,MB_ADDR_SLAVE, pMBSlave, SLAVE_BAUD_RATE, &htim3 );
+    eMBInit( MB_RTU,MB_ADDR_SLAVE, pMBSlave, SLAVE_BAUD_RATE, pMBTimSlave );
     eMBEnable();
     RS485_Dir( rx );
   }
   else 
   if (type == master)
   {
-    eMBMasterInit( MB_RTU, pMBMaster, MASTER_BAUD_RATE, &htim4 );
+    eMBMasterInit( MB_RTU, pMBMaster, MASTER_BAUD_RATE, pMBTimMaster );
     eMBMasterEnable( );
 	RS485_Dir_m( tx );
   }  
@@ -111,6 +111,7 @@ bool ModBusCom::Loop( void )
 		return TRUE;
 		break;
 	case EV_MASTER_EXECUTE                :
+      WR_DEBUG("EV_MASTER_EXECUTE \r\n");
 	case EV_MASTER_FRAME_SENT             : //mb_cnt.tx++;
 		gMBEvent = EV_MASTER_READY;
 	case EV_MASTER_ERROR_PROCESS          : //mb_cnt.error++;
@@ -140,7 +141,7 @@ bool ModBusCom::Hr_query( mb_addr_t mb_addr, eMBReg_t saddr_rg )
 	if ( mb_act.response )
 	{
 		mb_act.response = 0;
-		gMBMasterReqErrCode = eMBMasterReqReadHoldingRegister( mb_addr, saddr_rg - MB_RG_OFF_SET, 2, MB_TIME_OUT );
+		gMBMasterReqErrCode = eMBMasterReqReadHoldingRegister( mb_addr, saddr_rg - MB_RG_OFF_SET, 8, MB_TIME_OUT );
 	}else ret = false;
 	return ret;
 }// Hr_query(); 

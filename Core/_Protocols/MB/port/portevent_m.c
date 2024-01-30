@@ -9,9 +9,9 @@
 /* ----------------------- Defines ------------------------------------------*/
 
 /* ----------------------- Variables ----------------------------------------*/
-static eMBMasterEventType eQueuedEvent;
-static BOOL     xEventInQueue;
-static BOOL xNeedPoll;
+extern eMBMasterEventType eQueuedEvent;
+extern BOOL     xEventInQueue;
+extern BOOL xNeedPoll;
 /* ----------------------- Start implementation -----------------------------*/
 __weak BOOL xMBMasterPortEventInit( void )
 {

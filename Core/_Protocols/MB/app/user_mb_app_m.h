@@ -32,15 +32,15 @@ typedef enum _MB_ADDR
  */
 typedef enum _MB_REG_SLAVE
 {
-  REG_R_CURR_1s          = 0,   // Токи двух каналов
-  REG_R_CURR_2s          ,      // Уставка тока  REG_W_SET_OUT_CURRENT должна быть равна сумме токов вв двух каналах
-  REG_R_IN_VOLTs         ,
+  REG_R_CURR_1s         = 0,   // Токи двух каналов
+  REG_R_CURR_2s         = 1,   // Уставка тока  REG_W_SET_OUT_CURRENT должна быть равна сумме токов вв двух каналах
+  REG_R_IN_VOLTs        = 2,
   REG_R_STATE_UNIT      = 3,   // (Вкл/Выкл, обрыв фаз, перегрев, тип управления, пепрегрузка по току, защита драйвера)
   REG_R_STATE_PROCESS   = 4,   // соотвествует REG_W_CNTRL_PROCESS (Ожидание, поджиг, Резка, Тушение, True Hole)
   
-  REG_R_PWM1            ,
-  REG_R_PWM2            ,
-  REW_R_RESERV0         = 7 ,
+  REG_R_PWM1            = 5,
+  REG_R_PWM2            = 6,
+  REW_R_RESERV0         = 7,
   
   REG_W_PID_P           = 40,
   REG_W_PID_I           = 41,
@@ -76,12 +76,12 @@ typedef enum _MB_REG_SLAVE
   REG_W_TIME12            ,//104  
 
   REG_W_FIRST_DAC         ,//105 точки начала и конца пилы ЦАП
-  REG_W_LAST_DAC          ,//104
+  REG_W_LAST_DAC          ,//106
   
-  REG_LASTs         //
+  REG_LASTs                // 107
 } eMBReg_t;// _MB_REG
 
-
+#define NUM_MASTER_RGs  REG_LASTs
 typedef struct
 {
 	uint32_t error;
@@ -114,8 +114,8 @@ extern mb_cnt_t 	mb_cnt;
 #define M_REG_INPUT_START             0
 #define M_REG_INPUT_NREGS             0// REG_R_LAST_READ
 
-#define M_REG_HOLDING_START           1
-#define M_REG_HOLDING_NREGS           104 // REG_LASTs 
+#define M_REG_HOLDING_START           0
+#define M_REG_HOLDING_NREGS           NUM_MASTER_RGs // REG_LASTs 
 
 /* master mode: holding register's all address */
 #define          M_HD_RESERVE                     0
@@ -126,7 +126,7 @@ extern mb_cnt_t 	mb_cnt;
 /* master mode: discrete's all address */
 #define          M_DI_RESERVE                     0
 
-extern uint16_t   usMRegHoldBuf[MB_MASTER_TOTAL_SLAVE_NUM][M_REG_HOLDING_NREGS];
+extern uint16_t   usMRegHoldBuf[ MB_MASTER_TOTAL_SLAVE_NUM ][ M_REG_HOLDING_NREGS ];
 
 void MBMasterRecieved(void );
 void MBMasterTransmite(void );
