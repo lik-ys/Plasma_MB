@@ -58,7 +58,8 @@ ModBusCom *pMBhl = &MB_hl;
 ModBusCom :: ModBusCom( type_t t )
 {
   type = t;
-  addr = MB_cell_4;
+  if (t == slave ) addr = MB_cell_1; // адрес подчиненного для опроса ВУ
+  if (t == master) addr = MB_cell_5;
 } // ModBusCom
 
 void ModBusCom::Init(void )
@@ -92,9 +93,7 @@ bool ModBusCom::Loop( void )
   {
     if ( 0 == eMBMasterIsEnabled()) return false;
     
-    
-    Read(addr);
-    Inc();
+    Read();
     
     gMBErrorCode = eMBMasterPoll( );
 	xGetMasterEvent( &gMBEvent);
@@ -138,11 +137,10 @@ bool ModBusCom::Loop( void )
 bool ModBusCom::Hr_query( mb_addr_t mb_addr, eMBReg_t saddr_rg )
 {
 	bool ret = true;
-	if ( mb_act.response )
-	{
-		mb_act.response = 0;
-		gMBMasterReqErrCode = eMBMasterReqReadHoldingRegister( mb_addr, saddr_rg - MB_RG_OFF_SET, 8, MB_TIME_OUT );
-	}else ret = false;
+
+    gMBMasterReqErrCode = eMBMasterReqReadHoldingRegister( mb_addr, saddr_rg, 8, MB_TIME_OUT );
+    // if (gMBMasterReqErrCode )...
+
 	return ret;
 }// Hr_query(); 
 
@@ -151,26 +149,29 @@ bool ModBusCom::Hr_query( mb_addr_t mb_addr, eMBReg_t saddr_rg )
  */
 bool ModBusCom::Hr_write( mb_addr_t mb_addr, eMBReg_t rg, uint16_t data)
 {
-  gMBMasterReqErrCode = eMBMasterReqWriteHoldingRegister( mb_addr, rg - MB_RG_OFF_SET, data, MB_TIME_OUT );
+  gMBMasterReqErrCode = eMBMasterReqWriteHoldingRegister( mb_addr, rg , data, MB_TIME_OUT );
   return TRUE;
 }// write()
 
 /*
 **
 */
-bool ModBusCom::Read(mb_addr_t mb_addr)
+bool ModBusCom::Read( void )
 {
-   return Hr_query( mb_addr, static_cast<eMBReg_t>(REG_R_CURR_1s) );
-}
-
-void ModBusCom::Inc( void ) 
-{
-    if ( ++addr > MB_cell_end ) 
-      addr = MB_cell_1;
+  static uint16_t saddr = 0;
+  bool res = false;
+  if ( mb_act.response )
+  {
+    mb_act.response = 0;
+    
+    if ( saddr++ >= 6 )  saddr = 1;
+    this->addr  = static_cast<mb_addr_t>(saddr);
+    res = Hr_query( this->addr, static_cast<eMBReg_t>(REG_R_CURR_1s) );
+  }else;// ret = false;  
+  return res;
 }
 
 ModBusCom::~ModBusCom(){}
-
 
 #ifdef __cplusplus
 }

@@ -36,6 +36,10 @@ USHORT   usSRegInBuf[S_REG_INPUT_NREGS]               ;
 USHORT   usSRegHoldStart                              = S_REG_HOLDING_START;
 USHORT   usSRegHoldBuf[S_REG_HOLDING_NREGS]           ;
 //#endif
+
+StatProc_t gStatus = {0, };
+StatCell_t gCells  = {0, };
+
 /*------------------------Slave user code----------------------*/
 
 /**

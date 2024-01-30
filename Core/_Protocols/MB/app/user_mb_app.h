@@ -30,7 +30,7 @@ typedef enum _MB_REG_S
     REG_W_FREQ          = 17,// „астота синхронизации 12345 √ц      
     // reserv  
     REG_R_STATUS       = 50,//
-    REG_R_STATUS1      = 51,//    
+    REG_R_ST_CELLS     = 51,//    
     REG_R_VOLT         = 52,
     REG_R_CURR_1       = 53,
     REG_R_CURR_2       = 54,//
@@ -65,8 +65,52 @@ typedef enum _MB_REG_S
 extern void     SetMBRgS( eMBRegS_t numMBReg, uint16_t data );
 extern uint16_t GetMBRgS( eMBRegS_t numMBReg );
 
-//REG_R_STATUS_S
+/* REG_R_STATUS  == 50
+*/
 typedef union STATUS
+{
+  uint16_t reg;
+  struct
+  {
+    uint16_t bPwr          : 1;    // 0 бит-¬кл/выкл источника.
+    uint16_t bArc          : 1;    // 1 бит- ¬кл/выкл дежурной дуги.
+    uint16_t bFire         : 1;    // 2 бит- ¬кл/выкл поджига.
+    uint16_t bAutoManual   : 1;    // 3 бит- режим уставки тока автомат/ручной
+    uint16_t bOverHeat     : 1;    // 4 бит Ц перегрев
+    uint16_t bPhaseFailure : 1;    // 5 бит Ц обрыв фазы
+    uint16_t bChillerErr   : 1;    // 6 бит Ц ошибка чиллера   
+    uint16_t bReserv7      : 1;
+    uint16_t bReserv8      : 1;
+    uint16_t bReserv9      : 1;
+    uint16_t bReserv10     : 1;
+    uint16_t bReserv11     : 1;
+    uint16_t bReserv12     : 1;
+    uint16_t bReserv13     : 1;
+    uint16_t bReserv14     : 1;
+    uint16_t bEepromWr     : 1;     // 15 бит - «апись в EEpprom
+  }bit;
+}StatProc_t;
+
+/* REG_R_STATUS1 = 51
+*/
+typedef union STATUS_1
+{
+  uint16_t reg;
+  struct
+  {
+    uint16_t bReserv    : 1; // 0 бит- не используетс€
+    uint16_t bCell_1    : 1; // 1 бит- ¬кл/выкл €чейки 1.
+    uint16_t bCell_2    : 1; // 2 бит- ¬кл/выкл €чейки 2.
+    uint16_t bCell_3    : 1; // 3 бит- ¬кл/выкл €чейки 3.
+    uint16_t bCell_4    : 1; // 4 бит- ¬кл/выкл €чейки 4.
+    uint16_t bCell_5    : 1; // 5 бит- ¬кл/выкл €чейки 5.
+    uint16_t bCell_6    : 1; // 6 бит- ¬кл/выкл €чейки 6.
+    uint16_t bReserv1   : 1; // 7 бит- не используетс€     
+  }bit;
+} StatCell_t;
+
+//REG_R_STATUS_S
+typedef union STATUS_0
 {
   uint16_t reg;
   struct {    
@@ -108,6 +152,9 @@ typedef union STATUS
 
 void UpDateReadRg( eMBRegS_t numRg );
 void UpDateWriteRg( eMBRegS_t numRg );
+
+extern StatProc_t gStatus;
+extern StatCell_t gCells ;
 
 #ifdef __cplusplus
 }

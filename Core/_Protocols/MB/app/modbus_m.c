@@ -1,7 +1,10 @@
 
 #include "modbus_m.h" 
+#include "user_mb_app.h"
 #include "user_mb_app_m.h"
 
+RegStatusM_t         RgStatus[ MB_MASTER_TOTAL_SLAVE_NUM];
+RegStatusProces_t   RgProcess[MB_MASTER_TOTAL_SLAVE_NUM ];
 /**
   * @brief  апдейт регистров чтения
   * @param
@@ -26,6 +29,10 @@ void UpDateReadRgM( uint16_t addr, eMBReg_t numRg )
   */
 void UpDateWriteRgM( uint16_t addr, eMBReg_t numRg )
 {
+  
+  gCells.reg |= 1 << (addr + 1) ; // TODO reset bit  
+  SetMBRgS( REG_R_ST_CELLS, gCells.reg);
+  
   switch( numRg )    // 
   {
     case REG_R_CURR_1s:

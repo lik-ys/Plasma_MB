@@ -81,7 +81,7 @@ typedef enum _MB_REG_SLAVE
   REG_LASTs                // 107
 } eMBReg_t;// _MB_REG
 
-#define NUM_MASTER_RGs  REG_LASTs
+#define NUM_MASTER_RGs  107//REG_LASTs
 typedef struct
 {
 	uint32_t error;

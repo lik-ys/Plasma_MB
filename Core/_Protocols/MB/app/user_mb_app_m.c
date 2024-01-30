@@ -1,5 +1,6 @@
 
 #include "user_mb_app_m.h"
+#include "user_mb_app.h"
 
 mb_action_t mb_act  = { 0, 1, 0,0 };
 mb_cnt_t 	mb_cnt  = { 0, 0, 0 };

@@ -28,7 +28,7 @@ typedef union
     uint16_t    event7       : 1; //11:    
     uint16_t    error_jmp_cfg: 1; //12:
   }status;                           
-}RegStatus_t;  
+}RegStatusM_t;  
 
 /*
 * (51)REG_W_CNTRL_PROCESS // рег. сост. процесса соотвествует (4)REG_R_STATE_PROCESS  или регистр режима работы

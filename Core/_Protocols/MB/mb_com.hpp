@@ -49,8 +49,8 @@ public:
   eMBMasterEventType	gMBEvent; 
   bool Hr_query( mb_addr_t mb_addr, eMBReg_t saddr_rg );
   bool Hr_write( mb_addr_t mb_addr, eMBReg_t rg, uint16_t data);
-  bool Read(mb_addr_t mb_addr);
-  void Inc( void );
+  bool Read(void);
+
   
 private:
   type_t type;  

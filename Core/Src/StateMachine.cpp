@@ -80,7 +80,7 @@ void ProcessInit( void )
   eSM_proc = ST_IDLE;
   gLed.led = led1_pin;
   
-  pMBhl->Init();
+  pMBhl->Init(); 
   pMBcntrl->Init();
   
   hTimer->Time_Out( Timer::start, TIME_OUT_TEST, PROC_EV_DEBUG );

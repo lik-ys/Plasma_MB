@@ -336,7 +336,7 @@ eMBMasterPoll( void )
             if ( ( eStatus == MB_ENOERR ) && ( ucRcvAddress == ucMBMasterGetDestAddress() ) )
             {
                 ( void ) xMBMasterPortEventPost( EV_MASTER_EXECUTE );
-                //MBMasterRecieved(); 
+                MBMasterRecieved(); 
                 cntErr = MB_CNT_ERROR;
             	//xMBMasterPortEventGet( &eEvent );
             	eStatus = MB_ENOERR;
