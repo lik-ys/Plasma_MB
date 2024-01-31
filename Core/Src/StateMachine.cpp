@@ -97,7 +97,8 @@ void ProcessInit( void )
 void SM_loop( void )
 {  
   pMBhl->Loop( );
-  pMBcntrl->Loop();
+  if (gStateSM.time.b1000ms) 
+    pMBcntrl->Loop();
   
   CHAR data  = 0;
   CHAR * pdata = &data;

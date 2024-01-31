@@ -167,7 +167,7 @@ eMBMasterRTUReceive( UCHAR * pucRcvAddress, UCHAR ** pucFrame, USHORT * pusLengt
 
     /* Length and CRC check */
     if( ( usMasterRcvBufferPos >= MB_SER_PDU_SIZE_MIN )
-        && ( usMBCRC16( ( UCHAR * ) ucMasterRTURcvBuf, usMasterRcvBufferPos ) == 0 ) )
+        && ( usMBCRC16( ( UCHAR * ) (ucMasterRTURcvBuf[1]), usMasterRcvBufferPos ) == 0 ) )
     {
         /* Save the address field. All frames are passed to the upper layed
          * and the decision if a frame is used is done there.
@@ -252,8 +252,8 @@ xMBMasterRTUReceiveFSM( void )
          */
     case STATE_M_RX_INIT:
         vMBMasterPortTimersT35Enable( );
-        //ucMasterRTURcvBuf[usMasterRcvBufferPos++] = ucByte;
-        //eRcvState = STATE_M_RX_RCV;
+        ucMasterRTURcvBuf[usMasterRcvBufferPos++] = ucByte;
+        eRcvState = STATE_M_RX_RCV;
         break;
 
         /* In the error state we wait until all characters in the

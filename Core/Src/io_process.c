@@ -10,7 +10,7 @@
 #include "main.h"
 #include "io_process.h"
 
-#define CNT_TO_DIR_RS485    1
+#define CNT_TO_DIR_RS485    200
 
 port_t  Input[ InLast ] = {
   { CNC_DI_0_Pin, CNC_DI_0_GPIO_Port},
@@ -67,12 +67,12 @@ void RS485_Dir( rs485_tx_rx_t tx_rx )
 void RS485_Dir_m( rs485_tx_rx_t tx_rx )
 {
 	if ( tx == tx_rx ){
-		for (uint32_t i = CNT_TO_DIR_RS485; i>1; i--)__NOP();
+		//for (uint32_t i = CNT_TO_DIR_RS485; i>1; i--)__NOP();
 		HAL_GPIO_WritePin( DIR_RS2_GPIO_Port, DIR_RS2_Pin, GPIO_PIN_SET );
 		for (uint32_t i = CNT_TO_DIR_RS485; i>1; i--)__NOP();
 	}
 	else{
-		for (uint32_t i = CNT_TO_DIR_RS485; i>1; i--)__NOP();
+		//for (uint32_t i = CNT_TO_DIR_RS485; i>1; i--)__NOP();
 		HAL_GPIO_WritePin( DIR_RS2_GPIO_Port, DIR_RS2_Pin, GPIO_PIN_RESET );
 		for (uint32_t i = CNT_TO_DIR_RS485; i>1; i--)__NOP();
 	}

@@ -555,6 +555,7 @@ void vMBMasterErrorCBRespondTimeout(UCHAR ucDestAddress, const UCHAR* pucPDUData
 	RS485_Dir_m(tx);
 	xMBMasterPortEventPost(EV_MASTER_ERROR_RESPOND_TIMEOUT);
 	HAL_Delay(10);
+    WR_DEBUG("_vMBMasterErrorCBRespondTimeout\r\n");
 	RS485_Dir_m(rx);
 }
 void vMBMasterErrorCBReceiveData(UCHAR ucDestAddress, const UCHAR* pucPDUData, USHORT ucPDULength)
