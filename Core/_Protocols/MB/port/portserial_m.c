@@ -34,8 +34,11 @@ void vMBMasterPortSerialEnable(BOOL xRxEnable, BOOL xTxEnable)
 {
 	if(xRxEnable)
 	{
-		RS485_Dir_m(rx);
+        HAL_UART_AbortReceive_IT(uart_m);
+		RS485_Dir_m(rx);  
+        HAL_UART_AbortReceive_IT(uart_m);
 		HAL_UART_Receive_IT(uart_m, &singlechar_m, 1);
+        //HAL_UART_AbortReceive_IT(uart_m);
 	}	
 	else
 	{

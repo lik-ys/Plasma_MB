@@ -66,7 +66,7 @@ eMBErrorCode    eMBMasterPoll( void ){return MB_ENOERR;}
 
 #include "io_process.h"
 
-eMBMasterEventType eQueuedEvent;
+eMBMasterEventType eQueuedEvent_m;
 BOOL               xEventInQueue;
 BOOL               xNeedPoll;
 
@@ -527,7 +527,7 @@ BOOL xMBMasterPortEventGet( eMBMasterEventType * eEvent )
 
 	if( xEventInQueue )
 	{
-		*eEvent = (eMBMasterEventType)eQueuedEvent;
+		*eEvent = (eMBMasterEventType)eQueuedEvent_m;
 		xEventInQueue = FALSE;
 		xEventHappened = TRUE;
 	}
@@ -537,7 +537,7 @@ BOOL xMBMasterPortEventGet( eMBMasterEventType * eEvent )
 BOOL xMBMasterPortEventPost( eMBMasterEventType eEvent )
 {
 	xEventInQueue = TRUE;
-	eQueuedEvent = (eMBMasterEventType)eEvent;
+	eQueuedEvent_m = (eMBMasterEventType)eEvent;
 	return TRUE;
 }
 

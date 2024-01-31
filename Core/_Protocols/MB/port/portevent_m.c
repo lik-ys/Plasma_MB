@@ -9,7 +9,7 @@
 /* ----------------------- Defines ------------------------------------------*/
 
 /* ----------------------- Variables ----------------------------------------*/
-extern eMBMasterEventType eQueuedEvent;
+extern eMBMasterEventType eQueuedEvent_m;
 extern BOOL     xEventInQueue;
 extern BOOL xNeedPoll;
 /* ----------------------- Start implementation -----------------------------*/
@@ -23,7 +23,7 @@ BOOL
 xMBMasterPortEventPost( eMBMasterEventType eEvent )
 {
 	xEventInQueue = TRUE;
-	eQueuedEvent = (eMBMasterEventType)eEvent;
+	eQueuedEvent_m = (eMBMasterEventType)eEvent;
 	return TRUE;
 }
 
@@ -33,7 +33,7 @@ __weak BOOL xMBMasterPortEventGet( eMBMasterEventType * eEvent )
 
 	if( xEventInQueue )
 	{
-		*eEvent = (eMBMasterEventType)eQueuedEvent;
+		*eEvent = (eMBMasterEventType)eQueuedEvent_m;
 		xEventInQueue = FALSE;
 		xEventHappened = TRUE;
 	}
@@ -42,11 +42,11 @@ __weak BOOL xMBMasterPortEventGet( eMBMasterEventType * eEvent )
 
 void xGetMasterEvent(eMBMasterEventType * eEvent)
 {
-	*eEvent = (eMBMasterEventType)eQueuedEvent;
+	*eEvent = (eMBMasterEventType)eQueuedEvent_m;
 }
 void xSetMAsterEvent(eMBMasterEventType eEvent)
 {
-	eQueuedEvent = eEvent;
+	eQueuedEvent_m = eEvent;
 }
 
 /**
@@ -166,7 +166,7 @@ eMBMasterReqErrCode eMBMasterWaitRequestFinish( void )
 
 	//xMBMasterPortEventGet(&recvedEvent);
 
-	switch (eQueuedEvent)
+	switch (eQueuedEvent_m)
 	{
 		case EV_MASTER_ERROR_RESPOND_TIMEOUT:
 			eErrStatus = MB_MRE_TIMEDOUT;

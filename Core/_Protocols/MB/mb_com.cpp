@@ -76,6 +76,7 @@ void ModBusCom::Init(void )
     eMBMasterInit( MB_RTU, pMBMaster, MASTER_BAUD_RATE, pMBTimMaster );
     eMBMasterEnable( );
 	RS485_Dir_m( tx );
+    SetRcvIdleState();
   }  
 }// Init()
 

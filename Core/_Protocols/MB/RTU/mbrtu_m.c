@@ -141,8 +141,9 @@ eMBMasterRTUStart( void )
      * modbus protocol stack until the bus is free.
      */
     eRcvState = STATE_M_RX_INIT;
-    vMBMasterPortSerialEnable( TRUE, FALSE );
-    vMBMasterPortTimersT35Enable(  );
+    eSndState = STATE_M_TX_IDLE;
+    vMBMasterPortSerialEnable( FALSE, TRUE);
+    //vMBMasterPortTimersT35Enable(  );
 
     EXIT_CRITICAL_SECTION(  );
 }
@@ -251,8 +252,8 @@ xMBMasterRTUReceiveFSM( void )
          */
     case STATE_M_RX_INIT:
         vMBMasterPortTimersT35Enable( );
-        ucMasterRTURcvBuf[usMasterRcvBufferPos++] = ucByte;
-        eRcvState = STATE_M_RX_RCV;
+        //ucMasterRTURcvBuf[usMasterRcvBufferPos++] = ucByte;
+        //eRcvState = STATE_M_RX_RCV;
         break;
 
         /* In the error state we wait until all characters in the
@@ -315,7 +316,7 @@ xMBMasterRTUTransmitFSM( void )
          * idle state.  */
     case STATE_M_TX_IDLE:
         /* enable receiver/disable transmitter. */
-        vMBMasterPortSerialEnable( TRUE, FALSE );
+        //vMBMasterPortSerialEnable( TRUE, FALSE );
         break;
 
     case STATE_M_TX_XMIT:
