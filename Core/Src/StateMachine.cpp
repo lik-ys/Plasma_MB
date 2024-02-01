@@ -220,7 +220,7 @@ void SM_Tick( void )
     gStateSM.time.b100ms = 0;
 
     xMBMasterPortEventPost( EV_MASTER_READY );
-    MBMasterRecieved();    
+    //MBMasterRecieved();    
     
     gStateSM.proc = ST_IDLE;
     break;

@@ -77,6 +77,7 @@ void ModBusCom::Init(void )
     eMBMasterEnable( );
 	RS485_Dir_m( tx );
     SetRcvIdleState();
+    MBMasterRecieved();
   }  
 }// Init()
 
@@ -111,7 +112,7 @@ bool ModBusCom::Loop( void )
 		return TRUE;
 		break;
 	case EV_MASTER_EXECUTE                :
-      WR_DEBUG("EV_MASTER_EXECUTE \r\n");
+      //WR_DEBUG("EV_MASTER_EXECUTE \r\n");
 	case EV_MASTER_FRAME_SENT             : //mb_cnt.tx++;
 		gMBEvent = EV_MASTER_READY;
 	case EV_MASTER_ERROR_PROCESS          : //mb_cnt.error++;

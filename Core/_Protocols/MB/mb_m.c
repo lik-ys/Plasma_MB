@@ -335,8 +335,7 @@ eMBMasterPoll( void )
             /* Check if the frame is for us. If not ,send an error process event. */
             if ( ( eStatus == MB_ENOERR ) && ( ucRcvAddress == ucMBMasterGetDestAddress() ) )
             {
-                ( void ) xMBMasterPortEventPost( EV_MASTER_EXECUTE );
-                //MBMasterRecieved(); 
+                ( void ) xMBMasterPortEventPost( EV_MASTER_EXECUTE ); 
                 cntErr = MB_CNT_ERROR;
             	//xMBMasterPortEventGet( &eEvent );
             	eStatus = MB_ENOERR;  
@@ -350,7 +349,8 @@ eMBMasterPoll( void )
             break;
 
         case EV_MASTER_EXECUTE:
-            ucFunctionCode = ucMBFrame[MB_PDU_FUNC_OFF+1];
+            MBMasterRecieved();
+            ucFunctionCode = ucMBFrame[MB_PDU_FUNC_OFF];
             eException = MB_EX_ILLEGAL_FUNCTION;
             /* If receive frame has exception .The receive function code highest bit is 1.*/
             if(ucFunctionCode >> 7) {
