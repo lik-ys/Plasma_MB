@@ -286,6 +286,18 @@ eMBMasterIsEnabled( void )
     }
 }
 
+static struct {
+    uint16_t EILLSTATE;
+    uint16_t ready;
+    uint16_t rcvd;
+    uint16_t execute;
+
+    uint16_t frame_send;
+    uint16_t error;
+    uint16_t def;
+    uint16_t ev_false;
+}MBMcnt = { 0,0,0,0, 0,0,0,0 };
+
 eMBErrorCode
 eMBMasterPoll( void )
 {
@@ -300,22 +312,10 @@ eMBMasterPoll( void )
     eMBMasterEventType   	eEvent;
     eMBMasterErrorEventType errorType = eMBMasterGetErrorType();
 
-    static struct {
-    	uint16_t EILLSTATE;
-    	uint16_t ready;
-    	uint16_t rcvd;
-    	uint16_t execute;
-
-    	uint16_t frame_send;
-    	uint16_t error;
-		uint16_t def;
-		uint16_t ev_false;
-    }mb_cnt1 = { 0,0,0,0, 0,0,0,0 };
-
     /* Check if the protocol stack is ready. */
     if(( eMBState != STATE_ENABLED ) && ( eMBState != STATE_ESTABLISHED))
     {
-    	mb_cnt1.EILLSTATE++;
+    	MBMcnt.EILLSTATE++;
         return MB_EILLSTATE;
     }else;
 
@@ -326,34 +326,35 @@ eMBMasterPoll( void )
     { /// TODO  BUG зависание  всегда FALSE
         switch ( eEvent )
         {
-        case EV_MASTER_READY:mb_cnt1.ready++;
+        case EV_MASTER_READY:MBMcnt.ready++;
             eMBState = STATE_ESTABLISHED;
             break;
 
-        case EV_MASTER_FRAME_RECEIVED: mb_cnt1.rcvd++;
+        case EV_MASTER_FRAME_RECEIVED: 
             eStatus = peMBMasterFrameReceiveCur( &ucRcvAddress, &ucMBFrame, &usLength );
             /* Check if the frame is for us. If not ,send an error process event. */
             if ( ( eStatus == MB_ENOERR ) && ( ucRcvAddress == ucMBMasterGetDestAddress() ) )
             {
                 ( void ) xMBMasterPortEventPost( EV_MASTER_EXECUTE );
-                MBMasterRecieved(); 
+                //MBMasterRecieved(); 
                 cntErr = MB_CNT_ERROR;
             	//xMBMasterPortEventGet( &eEvent );
-            	eStatus = MB_ENOERR;
+            	eStatus = MB_ENOERR;  
+                MBMcnt.rcvd++;
             }
             else
-            {
+            {   MBMcnt.error++;
                 vMBMasterSetErrorType(EV_ERROR_RECEIVE_DATA);
                 ( void ) xMBMasterPortEventPost( EV_MASTER_ERROR_PROCESS );
             }
             break;
 
-        case EV_MASTER_EXECUTE:	mb_cnt1.execute++;
-            ucFunctionCode = ucMBFrame[MB_PDU_FUNC_OFF];
+        case EV_MASTER_EXECUTE:
+            ucFunctionCode = ucMBFrame[MB_PDU_FUNC_OFF+1];
             eException = MB_EX_ILLEGAL_FUNCTION;
             /* If receive frame has exception .The receive function code highest bit is 1.*/
             if(ucFunctionCode >> 7) {
-            	eException = (eMBException)ucMBFrame[MB_PDU_DATA_OFF];
+            	eException = (eMBException)ucMBFrame[MB_PDU_DATA_OFF+1];
             }
 			else
 			{
@@ -395,10 +396,11 @@ eMBMasterPoll( void )
             	//xMBMasterPortEventGet( &eEvent );
             	eStatus = MB_ENOERR;
             	MBMasterExec();
+                MBMcnt.execute++;
             }
             break;
 
-        case EV_MASTER_FRAME_SENT: mb_cnt1.frame_send++;
+        case EV_MASTER_FRAME_SENT: MBMcnt.frame_send++;
         	/* Master is busy now. */
         	vMBMasterGetPDUSndBuf( &ucMBFrame );
 			eStatus = peMBMasterFrameSendCur( ucMBMasterGetDestAddress(), ucMBFrame, usMBMasterGetPDUSndLength() );
@@ -429,12 +431,12 @@ eMBMasterPoll( void )
 			}
 			vMBMasterRunResRelease();
         	break;
-        default:mb_cnt1.def++;
+        default:MBMcnt.def++;
             break;
         }
     }else
     {
-    	mb_cnt1.ev_false++;
+    	MBMcnt.ev_false++;
 		if ( cntErr-- < 0 )
 		{
 			eMBMasterEnable( );
@@ -552,11 +554,11 @@ void vMBMasterRunResRelease( void )
 }
 void vMBMasterErrorCBRespondTimeout(UCHAR ucDestAddress, const UCHAR* pucPDUData, USHORT ucPDULength)
 {
-	RS485_Dir_m(tx);
+	//RS485_Dir_m(tx);
 	xMBMasterPortEventPost(EV_MASTER_ERROR_RESPOND_TIMEOUT);
-	HAL_Delay(10);
+	HAL_Delay(1);
     WR_DEBUG("_vMBMasterErrorCBRespondTimeout\r\n");
-	RS485_Dir_m(rx);
+	//RS485_Dir_m(rx);
 }
 void vMBMasterErrorCBReceiveData(UCHAR ucDestAddress, const UCHAR* pucPDUData, USHORT ucPDULength)
 {

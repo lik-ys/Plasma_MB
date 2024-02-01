@@ -97,8 +97,7 @@ void ProcessInit( void )
 void SM_loop( void )
 {  
   pMBhl->Loop( );
-  if (gStateSM.time.b1000ms) 
-    pMBcntrl->Loop();
+  pMBcntrl->Loop();
   
   CHAR data  = 0;
   CHAR * pdata = &data;
@@ -122,10 +121,7 @@ void SM_loop( void )
       //xMBMasterPortSerialPutByte( 0x55 ); // работает 
      // RS485_Dir_m( rx );
      // xMBPortSerialGetByte(pdata);
-      ToggleLed( &gLed );
-      
-      xMBMasterPortEventPost( EV_MASTER_READY );
-      
+      ToggleLed( &gLed );      
       gStateSM.st.bToggleLed = 0;
       gStateSM.proc = ST_IDLE;    
     break;
@@ -222,6 +218,10 @@ void SM_Tick( void )
     hCmd->Proc();
     ReadStart( );
     gStateSM.time.b100ms = 0;
+
+    xMBMasterPortEventPost( EV_MASTER_READY );
+    MBMasterRecieved();    
+    
     gStateSM.proc = ST_IDLE;
     break;
   case ST_SLOW_PROCESS: 

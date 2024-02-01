@@ -337,6 +337,18 @@ eMBDisable( void )
     return eStatus;
 }
 
+    static struct {
+    	uint16_t EILLSTATE;
+    	uint16_t ready;
+    	uint16_t rcvd;
+    	uint16_t execute;
+
+    	uint16_t frame_send;
+    	uint16_t error;
+		uint16_t def;
+		uint16_t ev_false;
+    }MBScnt = { 0,0,0,0, 0,0,0,0 };
+
 eMBErrorCode eMBPoll( void )
 {
     static UCHAR   *ucMBFrame;
@@ -347,7 +359,7 @@ eMBErrorCode eMBPoll( void )
 
     int             i;
     eMBErrorCode    eStatus = MB_ENOERR;
-    eMBEventType    eEvent;
+    eMBEventType    eEvent;   
 
     /* Check if the protocol stack is ready. */
     if( eMBState != STATE_ENABLED )
@@ -373,6 +385,10 @@ eMBErrorCode eMBPoll( void )
                 {
                     ( void )xMBPortEventPost( EV_EXECUTE );
                 }
+                MBScnt.rcvd++;
+            }
+            else {
+              MBScnt.error++;
             }
             break;
 
@@ -388,11 +404,12 @@ eMBErrorCode eMBPoll( void )
                 }
                 else if( xFuncHandlers[i].ucFunctionCode == ucFunctionCode )
                 {
-                    eException = xFuncHandlers[i].pxHandler( ucMBFrame, &usLength );
+                    eException = xFuncHandlers[i].pxHandler( ucMBFrame, &usLength ); MBScnt.execute++;
                     break;
                 }
             }
 
+            ///memset(ucMBFrame,0,usLength);
             /* If the request was not sent to the broadcast address we
              * return a reply. */
             if( ucRcvAddress != MB_ADDRESS_BROADCAST )

@@ -20,9 +20,18 @@ BOOL xMBMasterPortTimersInit( USHORT usTimeOut50us, void *dHTIM )
 
 void vMBMasterPortTimersT35Enable()
 {
-    vMBMasterSetCurTimerMode(MB_TMODE_T35);
-	counter_m=0;
-	HAL_TIM_Base_Start_IT(tim_m);
+  __HAL_TIM_SET_COUNTER( tim_m, 1);  
+
+  __HAL_TIM_CLEAR_FLAG( tim_m, TIM_FLAG_UPDATE );
+  
+  if ( HAL_OK != HAL_TIM_Base_Stop( tim_m ) )
+  {
+    Error_Handler();
+  }else;
+  
+  vMBMasterSetCurTimerMode(MB_TMODE_T35);
+  counter_m=0;
+  HAL_TIM_Base_Start_IT(tim_m);
 }
 
 void vMBMasterPortTimersConvertDelayEnable()
@@ -48,8 +57,11 @@ void MBMasterPortCBTimerExpired(TIM_HandleTypeDef *htim)
 {
 	if(htim->Instance == tim_m->Instance)
 	{
-		if((++counter_m) >= timeout)
+      if((++counter_m) >= timeout)
+      {
 			pxMBMasterPortCBTimerExpired();
+            counter_m = 0;
+      }
 	}
 }
 

@@ -1,6 +1,7 @@
 #include "port.h"
 #include "mb.h"
 #include "mbport.h"
+#include "io_process.h"
 
 #if MB_SLAVE_RTU_ENABLED > 0 || MB_SLAVE_ASCII_ENABLED > 0
 /*-------------------------- For Master -------------------------------------*/
@@ -26,22 +27,23 @@ void vMBPortSerialEnable(BOOL xRxEnable, BOOL xTxEnable)
 {
 	if(xRxEnable)
 	{
-		RS485_RTS_LOW;
-		HAL_UART_Receive_IT(uart, &singlechar, 1);
+        HAL_UART_AbortReceive_IT(uart);
+        RS485_Dir(rx);
+        HAL_UART_Receive_IT(uart, &singlechar, 1); 
 	}	
 	else
 	{
-		//HAL_UART_AbortReceive_IT(uart);
+		HAL_UART_AbortReceive_IT(uart);
 	}
 
 	if(xTxEnable)
 	{
-		RS485_RTS_HIGH;
+		RS485_Dir(tx);
 		pxMBFrameCBTransmitterEmpty();
 	}
 	else
 	{
-		//HAL_UART_AbortTransmit_IT(uart);
+		HAL_UART_AbortTransmit_IT(uart);
 	}
 }
 

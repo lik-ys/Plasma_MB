@@ -115,7 +115,7 @@ extern mb_cnt_t 	mb_cnt;
 #define M_REG_INPUT_NREGS             0// REG_R_LAST_READ
 
 #define M_REG_HOLDING_START           0
-#define M_REG_HOLDING_NREGS           NUM_MASTER_RGs // REG_LASTs 
+#define M_REG_HOLDING_NREGS           107//NUM_MASTER_RGs // REG_LASTs 
 
 /* master mode: holding register's all address */
 #define          M_HD_RESERVE                     0

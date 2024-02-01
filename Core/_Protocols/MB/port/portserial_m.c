@@ -36,7 +36,7 @@ void vMBMasterPortSerialEnable(BOOL xRxEnable, BOOL xTxEnable)
 	{
         HAL_UART_AbortReceive_IT(uart_m);
 		RS485_Dir_m(rx);  
-        HAL_UART_AbortReceive_IT(uart_m);
+        //HAL_UART_AbortReceive_IT(uart_m);
 		HAL_UART_Receive_IT(uart_m, &singlechar_m, 1); // прерывание срабатывает при его разрешении
         //HAL_UART_AbortReceive_IT(uart_m);  // 
 	}	

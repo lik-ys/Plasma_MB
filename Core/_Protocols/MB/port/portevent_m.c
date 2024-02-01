@@ -97,10 +97,10 @@ __weak void vMBMasterRunResRelease( void )
 __weak
 void vMBMasterErrorCBRespondTimeout(UCHAR ucDestAddress, const UCHAR* pucPDUData, USHORT ucPDULength)
 {
-	RS485_Dir_m(tx);
+	//RS485_Dir_m(tx);
 	xMBMasterPortEventPost(EV_MASTER_ERROR_RESPOND_TIMEOUT);
-	HAL_Delay(10);
-	RS485_Dir_m(rx);
+	//HAL_Delay(10);
+	//RS485_Dir_m(rx);
 }
 
 /**
