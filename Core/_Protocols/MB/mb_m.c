@@ -442,6 +442,7 @@ eMBMasterPoll( void )
 			eMBMasterEnable( );
 			cntErr = MB_CNT_ERROR;
 			MBMasterErrorTO( );
+            MBMasterRecieved();
 			SetRcvIdleState( );
 		}else{}
     }
@@ -545,7 +546,7 @@ BOOL xMBMasterPortEventPost( eMBMasterEventType eEvent )
 
 void vMBMasterCBRequestSucess( void )
 {
-	xMBMasterPortEventPost(EV_MASTER_PROCESS_SUCESS);
+	xMBMasterPortEventPost(EV_MASTER_PROCESS_SUCESS);    // TODO  Если нет ответа -> vMBMasterErrorCBRespondTimeout
 }
 
 void vMBMasterRunResRelease( void )
