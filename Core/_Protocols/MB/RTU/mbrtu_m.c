@@ -327,7 +327,7 @@ xMBMasterRTUTransmitFSM( void )
         {
 #if SEND_ALL_BYTES_IN_ONE_CALL > 0
 			xMBMasterPortSerialPutBytes(pucMasterSndBufferCur, usMasterSndBufferCount);
-			usMasterSndBufferCount = 0;   vMBMasterPortTimersRespondTimeoutEnable();
+			usMasterSndBufferCount = 0;  // vMBMasterPortTimersRespondTimeoutEnable();
 #else
             xMBMasterPortSerialPutByte( ( CHAR )*pucMasterSndBufferCur );
             pucMasterSndBufferCur++;  /* next byte in sendbuffer. */
@@ -378,7 +378,8 @@ xMBMasterRTUTimerExpired(void)
 		 * a new frame was received. */
 	case STATE_M_RX_RCV:
         HAL_GPIO_WritePin( Test0_GPIO_Port, Test0_Pin, GPIO_PIN_RESET );
-		xNeedPoll = xMBMasterPortEventPost(EV_MASTER_FRAME_RECEIVED);
+		if (usMasterRcvBufferPos > 5 ) // отсекаем ложное срабатывание выхода RO драйвера
+          xNeedPoll = xMBMasterPortEventPost(EV_MASTER_FRAME_RECEIVED);
 		vMBMasterSetErrorType(EV_NO_ERROR_EVENT);
 		break;
 

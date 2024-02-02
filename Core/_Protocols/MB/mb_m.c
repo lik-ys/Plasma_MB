@@ -393,7 +393,7 @@ eMBMasterPoll( void )
             if (eException != MB_EX_NONE) {
             	vMBMasterSetErrorType(EV_ERROR_EXECUTE_FUNCTION);
             	( void ) xMBMasterPortEventPost( EV_MASTER_ERROR_PROCESS );
-                CntSucsses[ucRcvAddress-1]--;
+                CntSucsses[ucMBMasterGetDestAddress()-1]--;
 
             }
             else {
@@ -403,7 +403,7 @@ eMBMasterPoll( void )
             	eStatus = MB_ENOERR;
             	MBMasterExec();
                 MBMcnt.execute++;
-                CntSucsses[ucRcvAddress-1]++;
+                CntSucsses[ucMBMasterGetDestAddress()-1]++;
             }
             break;
 
@@ -417,6 +417,7 @@ eMBMasterPoll( void )
         case EV_MASTER_ERROR_PROCESS:
         	mb_cnt.error++;
         	MBMasterError();
+            CntSucsses[ucMBMasterGetDestAddress()-1]--;
         	/* Execute specified error process callback function. */
 			errorType = eMBMasterGetErrorType();
 			vMBMasterGetPDUSndBuf( &ucMBFrame );
