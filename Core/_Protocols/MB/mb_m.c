@@ -299,6 +299,8 @@ static struct {
     uint16_t ev_false;
 }MBMcnt = { 0,0,0,0, 0,0,0,0,0 };
 
+int32_t CntSucsses[ MB_MASTER_TOTAL_SLAVE_NUM ] = {0,};
+
 eMBErrorCode
 eMBMasterPoll( void )
 {
@@ -343,7 +345,9 @@ eMBMasterPoll( void )
                 MBMcnt.rcvd++;
             }
             else
-            {   MBMcnt.error++;
+            {   
+                CntSucsses[ ucMBMasterGetDestAddress()-1 ]--;
+                MBMcnt.error++;
                 vMBMasterSetErrorType(EV_ERROR_RECEIVE_DATA);
                 ( void ) xMBMasterPortEventPost( EV_MASTER_ERROR_PROCESS );
             }
@@ -389,6 +393,7 @@ eMBMasterPoll( void )
             if (eException != MB_EX_NONE) {
             	vMBMasterSetErrorType(EV_ERROR_EXECUTE_FUNCTION);
             	( void ) xMBMasterPortEventPost( EV_MASTER_ERROR_PROCESS );
+                CntSucsses[ucRcvAddress-1]--;
 
             }
             else {
@@ -398,6 +403,7 @@ eMBMasterPoll( void )
             	eStatus = MB_ENOERR;
             	MBMasterExec();
                 MBMcnt.execute++;
+                CntSucsses[ucRcvAddress-1]++;
             }
             break;
 

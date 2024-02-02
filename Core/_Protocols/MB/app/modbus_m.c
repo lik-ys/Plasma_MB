@@ -5,6 +5,7 @@
 
 RegStatusM_t         RgStatus[ MB_MASTER_TOTAL_SLAVE_NUM];
 RegStatusProces_t   RgProcess[MB_MASTER_TOTAL_SLAVE_NUM ];
+static int CntMBRg[6] = {0,};
 /**
   * @brief  апдейт регистров чтения
   * @param
@@ -12,6 +13,7 @@ RegStatusProces_t   RgProcess[MB_MASTER_TOTAL_SLAVE_NUM ];
   */
 void UpDateReadRgM( uint16_t addr, eMBReg_t numRg )
 {
+  CntMBRg[addr]++;
   switch( numRg )    // 
   {
     case REG_R_STATE_UNIT:

@@ -53,7 +53,7 @@
 #define MB_SER_PDU_SIZE_CRC     2       /*!< Size of CRC field in PDU. */
 #define MBM_SER_PDU_ADDR_OFF    0       /*!< Offset of slave address in Ser-PDU. */
 #define MB_SER_PDU_PDU_OFF      1       /*!< Offset of Modbus-PDU in Ser-PDU. */
-#define MB_RTU_TO_M             45      //  55: 0 error on 3000 responds
+#define MB_RTU_TO_M             85      //  55: 0 error on 3000 responds
                                         //  45: 0 error on 3000 responds
                                         //  40: 1 error on 1900 responds, period 50ms
 /* ----------------------- Type definitions ---------------------------------*/

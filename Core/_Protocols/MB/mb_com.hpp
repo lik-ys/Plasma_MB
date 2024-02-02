@@ -25,7 +25,7 @@ extern "C" {
   using namespace std;
   
 #define MB_RG_OFF_SET  (eMBReg_t)0
-#define MB_TIME_OUT     20  
+#define MB_TIME_OUT     20  // NOT USE
   
 class ModBusCom
 {  
