@@ -53,7 +53,9 @@
 #define MB_SER_PDU_SIZE_CRC     2       /*!< Size of CRC field in PDU. */
 #define MBM_SER_PDU_ADDR_OFF    0       /*!< Offset of slave address in Ser-PDU. */
 #define MB_SER_PDU_PDU_OFF      1       /*!< Offset of Modbus-PDU in Ser-PDU. */
-
+#define MB_RTU_TO_M             45      //  55: 0 error on 3000 responds
+                                        //  45: 0 error on 3000 responds
+                                        //  40: 1 error on 1900 responds, period 50ms
 /* ----------------------- Type definitions ---------------------------------*/
 typedef enum
 {
@@ -107,7 +109,7 @@ eMBMasterRTUInit( void *dHUART, ULONG ulBaudRate, void *dHTIM )
          */
         if( ulBaudRate > 19200 )
         {
-            usTimerT35_50us = 35;       /* 1800us. */
+            usTimerT35_50us = MB_RTU_TO_M;       /* 1800us. */
         }
         else
         {
@@ -325,7 +327,7 @@ xMBMasterRTUTransmitFSM( void )
         {
 #if SEND_ALL_BYTES_IN_ONE_CALL > 0
 			xMBMasterPortSerialPutBytes(pucMasterSndBufferCur, usMasterSndBufferCount);
-			usMasterSndBufferCount = 0;
+			usMasterSndBufferCount = 0;   vMBMasterPortTimersRespondTimeoutEnable();
 #else
             xMBMasterPortSerialPutByte( ( CHAR )*pucMasterSndBufferCur );
             pucMasterSndBufferCur++;  /* next byte in sendbuffer. */
@@ -375,7 +377,7 @@ xMBMasterRTUTimerExpired(void)
 		/* A frame was received and t35 expired. Notify the listener that
 		 * a new frame was received. */
 	case STATE_M_RX_RCV:
-
+        HAL_GPIO_WritePin( Test0_GPIO_Port, Test0_Pin, GPIO_PIN_RESET );
 		xNeedPoll = xMBMasterPortEventPost(EV_MASTER_FRAME_RECEIVED);
 		vMBMasterSetErrorType(EV_NO_ERROR_EVENT);
 		break;
@@ -419,7 +421,10 @@ xMBMasterRTUTimerExpired(void)
 	if (eMasterCurTimerMode == MB_TMODE_CONVERT_DELAY) {
 		xNeedPoll = xMBMasterPortEventPost( EV_MASTER_EXECUTE );
 	}
-
+    if (eMasterCurTimerMode == MB_TMODE_RESPOND_TIMEOUT)
+    {
+      xMBMasterPortEventPost( EV_MASTER_ERROR_RESPOND_TIMEOUT );
+    }
 	return xNeedPoll;
 }
 

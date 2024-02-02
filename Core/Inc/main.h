@@ -106,6 +106,8 @@ void Error_Handler(void);
 #define CMD_FIRE_FIRE_GPIO_Port GPIOE
 #define CMD_FIRE_LOCK_Pin GPIO_PIN_11
 #define CMD_FIRE_LOCK_GPIO_Port GPIOE
+#define Test0_Pin GPIO_PIN_12
+#define Test0_GPIO_Port GPIOE
 #define CMD_FIRE_PWR_Pin GPIO_PIN_15
 #define CMD_FIRE_PWR_GPIO_Port GPIOE
 #define CNC_DO_0_Pin GPIO_PIN_12

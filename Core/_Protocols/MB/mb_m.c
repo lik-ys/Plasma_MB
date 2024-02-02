@@ -294,9 +294,10 @@ static struct {
 
     uint16_t frame_send;
     uint16_t error;
+    uint16_t timeout; // TODO
     uint16_t def;
     uint16_t ev_false;
-}MBMcnt = { 0,0,0,0, 0,0,0,0 };
+}MBMcnt = { 0,0,0,0, 0,0,0,0,0 };
 
 eMBErrorCode
 eMBMasterPoll( void )
@@ -417,6 +418,7 @@ eMBMasterPoll( void )
 			case EV_ERROR_RESPOND_TIMEOUT:
 				vMBMasterErrorCBRespondTimeout(ucMBMasterGetDestAddress(),
 						ucMBFrame, usMBMasterGetPDUSndLength());
+                MBMcnt.timeout++; // TODO
 				return MB_ETIMEDOUT;
 
 			case EV_ERROR_RECEIVE_DATA:
@@ -558,7 +560,7 @@ void vMBMasterErrorCBRespondTimeout(UCHAR ucDestAddress, const UCHAR* pucPDUData
 	//RS485_Dir_m(tx);
 	xMBMasterPortEventPost(EV_MASTER_ERROR_RESPOND_TIMEOUT);
 	HAL_Delay(1);
-    WR_DEBUG("_vMBMasterErrorCBRespondTimeout\r\n");
+    WR_DEBUG("RespondTimeout Addr= \r\n", ucDestAddress);
 	//RS485_Dir_m(rx);
 }
 void vMBMasterErrorCBReceiveData(UCHAR ucDestAddress, const UCHAR* pucPDUData, USHORT ucPDULength)

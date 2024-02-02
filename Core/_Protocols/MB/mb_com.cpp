@@ -140,7 +140,7 @@ bool ModBusCom::Hr_query( mb_addr_t mb_addr, eMBReg_t saddr_rg )
 {
 	bool ret = true;
 
-    gMBMasterReqErrCode = eMBMasterReqReadHoldingRegister( mb_addr, saddr_rg, 8, MB_TIME_OUT );
+    gMBMasterReqErrCode = eMBMasterReqReadHoldingRegister( mb_addr, saddr_rg, 4, MB_TIME_OUT );
     // if (gMBMasterReqErrCode )...
 
 	return ret;
@@ -167,7 +167,7 @@ bool ModBusCom::Read( void )
     mb_act.response = 0;
     
     if ( saddr++ >= 6 )  saddr = 1;
-    this->addr  = static_cast<mb_addr_t>(saddr);
+    this->addr  = static_cast<mb_addr_t>(4);//(saddr);
     res = Hr_query( this->addr, static_cast<eMBReg_t>(REG_R_CURR_1s) );
   }else;// ret = false;  
   return res;

@@ -32,6 +32,7 @@ void vMBMasterPortTimersT35Enable()
   vMBMasterSetCurTimerMode(MB_TMODE_T35);
   counter_m=0;
   HAL_TIM_Base_Start_IT(tim_m);
+  HAL_GPIO_WritePin( Test0_GPIO_Port, Test0_Pin, GPIO_PIN_SET );
 }
 
 void vMBMasterPortTimersConvertDelayEnable()
@@ -45,7 +46,7 @@ void vMBMasterPortTimersRespondTimeoutEnable()
 {
 	vMBMasterSetCurTimerMode(MB_TMODE_RESPOND_TIMEOUT);
 	HAL_TIM_Base_Start_IT(tim_m);
-	counter_m=0;
+	counter_m=30;
 }
 
 void vMBMasterPortTimersDisable()
@@ -61,6 +62,7 @@ void MBMasterPortCBTimerExpired(TIM_HandleTypeDef *htim)
       {
 			pxMBMasterPortCBTimerExpired();
             counter_m = 0;
+            
       }
 	}
 }

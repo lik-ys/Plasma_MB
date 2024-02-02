@@ -346,7 +346,7 @@ static void MX_TIM3_Init(void)
 {
 
   /* USER CODE BEGIN TIM3_Init 0 */
-
+  /// --- MasterMB
   /* USER CODE END TIM3_Init 0 */
 
   TIM_ClockConfigTypeDef sClockSourceConfig = {0};
@@ -358,7 +358,7 @@ static void MX_TIM3_Init(void)
   htim3.Instance = TIM3;
   htim3.Init.Prescaler = 1000;
   htim3.Init.CounterMode = TIM_COUNTERMODE_UP;
-  htim3.Init.Period = 50;
+  htim3.Init.Period = 50*1;
   htim3.Init.ClockDivision = TIM_CLOCKDIVISION_DIV1;
   htim3.Init.AutoReloadPreload = TIM_AUTORELOAD_PRELOAD_ENABLE;
   if (HAL_TIM_Base_Init(&htim3) != HAL_OK)
@@ -391,7 +391,7 @@ static void MX_TIM4_Init(void)
 {
 
   /* USER CODE BEGIN TIM4_Init 0 */
-
+  // MB slave
   /* USER CODE END TIM4_Init 0 */
 
   TIM_ClockConfigTypeDef sClockSourceConfig = {0};
@@ -607,7 +607,7 @@ static void MX_GPIO_Init(void)
 
   /*Configure GPIO pin Output Level */
   HAL_GPIO_WritePin(GPIOE, LED_WORK1_Pin|LED_WORK2_Pin|CMD_FIRE_FIRE_Pin|CMD_FIRE_LOCK_Pin
-                          |CMD_FIRE_PWR_Pin, GPIO_PIN_RESET);
+                          |Test0_Pin|CMD_FIRE_PWR_Pin, GPIO_PIN_RESET);
 
   /*Configure GPIO pin Output Level */
   HAL_GPIO_WritePin(GPIOD, CNC_DO_0_Pin|CNC_DO_1_Pin|CNC_DO_2_Pin|CNC_DO_3_Pin
@@ -648,6 +648,13 @@ static void MX_GPIO_Init(void)
   GPIO_InitStruct.Pull = GPIO_NOPULL;
   GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
   HAL_GPIO_Init(GPIOE, &GPIO_InitStruct);
+
+  /*Configure GPIO pin : Test0_Pin */
+  GPIO_InitStruct.Pin = Test0_Pin;
+  GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
+  GPIO_InitStruct.Pull = GPIO_PULLUP;
+  GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
+  HAL_GPIO_Init(Test0_GPIO_Port, &GPIO_InitStruct);
 
   /*Configure GPIO pins : CNC_DO_0_Pin CNC_DO_1_Pin CNC_DO_2_Pin CNC_DO_3_Pin */
   GPIO_InitStruct.Pin = CNC_DO_0_Pin|CNC_DO_1_Pin|CNC_DO_2_Pin|CNC_DO_3_Pin;

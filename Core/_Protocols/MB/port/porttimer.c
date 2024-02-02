@@ -55,6 +55,7 @@ void HAL_TIM_PeriodElapsedCallback( TIM_HandleTypeDef *htim )
 	}else
     if (htim == pMBTimMaster){
       MBMasterPortCBTimerExpired( htim );
+      
     }else;
 }
 
