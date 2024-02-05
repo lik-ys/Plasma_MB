@@ -24,6 +24,22 @@ void UpDateReadRgM( uint16_t addr, eMBReg_t numRg )
       break;
   } // switch(  )
 }
+
+/***
+**
+*/
+void CntrCellsStatus( uint16_t addr, FlagStatus st )
+{
+  if ( st )
+  {
+    gCells.reg |=   1 << (addr + 1); 
+  }else
+  {
+    gCells.reg &= ~(1 << (addr + 1)); 
+  }
+  SetMBRgS( REG_R_ST_CELLS, gCells.reg );  
+}//CntrCellsStatus()
+
 /**
   * @brief  апдейт регистров записи
   * @param
@@ -31,10 +47,7 @@ void UpDateReadRgM( uint16_t addr, eMBReg_t numRg )
   */
 void UpDateWriteRgM( uint16_t addr, eMBReg_t numRg )
 {
-  
-  gCells.reg |= 1 << (addr + 1) ; // TODO reset bit  
-  SetMBRgS( REG_R_ST_CELLS, gCells.reg);
-  
+  CntrCellsStatus( addr, SET );
   switch( numRg )    // 
   {
     case REG_R_CURR_1s:

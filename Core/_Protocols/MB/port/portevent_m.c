@@ -117,6 +117,7 @@ __weak
 void vMBMasterErrorCBReceiveData(UCHAR ucDestAddress, const UCHAR* pucPDUData, USHORT ucPDULength)
 {
 	xMBMasterPortEventPost(EV_MASTER_ERROR_RECEIVE_DATA);
+    
 }
 
 /**

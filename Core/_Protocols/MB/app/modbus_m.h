@@ -50,6 +50,7 @@ typedef union
 
 void UpDateReadRgM( uint16_t addr, eMBReg_t numRg );
 void UpDateWriteRgM( uint16_t addr, eMBReg_t numRg );
+void CntrCellsStatus( uint16_t addr, FlagStatus st);
 
 #ifdef __cplusplus
 }

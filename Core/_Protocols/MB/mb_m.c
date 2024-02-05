@@ -43,7 +43,9 @@
 #include "mbframe.h"
 #include "mbproto.h"
 #include "mbfunc.h"
-
+                          
+#include "modbus_m.h"
+   
 #include "mbport.h"
 #if MB_MASTER_RTU_ENABLED == 1
 #include "mbrtu.h"
@@ -415,9 +417,12 @@ eMBMasterPoll( void )
             break;
 
         case EV_MASTER_ERROR_PROCESS:
+        {
         	mb_cnt.error++;
         	MBMasterError();
-            CntSucsses[ucMBMasterGetDestAddress()-1]--;
+            uint16_t addr = ucMBMasterGetDestAddress()-1;
+            if ( addr > 0 ) CntSucsses[ addr ]--;
+            CntrCellsStatus( addr, RESET );//
         	/* Execute specified error process callback function. */
 			errorType = eMBMasterGetErrorType();
 			vMBMasterGetPDUSndBuf( &ucMBFrame );
@@ -430,7 +435,7 @@ eMBMasterPoll( void )
 
 			case EV_ERROR_RECEIVE_DATA:
 				vMBMasterErrorCBReceiveData(ucMBMasterGetDestAddress(),
-						ucMBFrame, usMBMasterGetPDUSndLength());
+						ucMBFrame, usMBMasterGetPDUSndLength()); 
 				return MB_EIO;
 
 			case EV_ERROR_EXECUTE_FUNCTION:
@@ -438,7 +443,8 @@ eMBMasterPoll( void )
 						ucMBFrame, usMBMasterGetPDUSndLength());
 				return MB_EILLSTATE;
 			}
-			vMBMasterRunResRelease();
+			vMBMasterRunResRelease();            
+        }
         	break;
         default:MBMcnt.def++;
             break;
@@ -566,13 +572,15 @@ void vMBMasterErrorCBRespondTimeout(UCHAR ucDestAddress, const UCHAR* pucPDUData
 {
 	//RS485_Dir_m(tx);
 	xMBMasterPortEventPost(EV_MASTER_ERROR_RESPOND_TIMEOUT);
-	HAL_Delay(1);
-    WR_DEBUG("RespondTimeout Addr= \r\n", ucDestAddress);
+	//HAL_Delay(1);
+    WR_DEBUG("RespondTimeout Addr= %i\r\n", ucDestAddress);
 	//RS485_Dir_m(rx);
+    
 }
 void vMBMasterErrorCBReceiveData(UCHAR ucDestAddress, const UCHAR* pucPDUData, USHORT ucPDULength)
 {
 	xMBMasterPortEventPost(EV_MASTER_ERROR_RECEIVE_DATA);
+    //
 }
 
 

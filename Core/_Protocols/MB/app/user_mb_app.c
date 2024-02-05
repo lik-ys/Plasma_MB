@@ -1,5 +1,6 @@
 #include "user_mb_app.h"
 #include "modbus.h"
+#include "modbus_m.h"
 
 #if (MB_SLAVE_ASCII_ENABLED > 0 || MB_SLAVE_RTU_ENABLED > 0 || MB_SLAVE_TCP_ENABLED > 0)
 
