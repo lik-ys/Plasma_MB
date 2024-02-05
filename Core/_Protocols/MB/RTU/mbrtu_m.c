@@ -378,9 +378,16 @@ xMBMasterRTUTimerExpired(void)
 		 * a new frame was received. */
 	case STATE_M_RX_RCV:
         HAL_GPIO_WritePin( Test0_GPIO_Port, Test0_Pin, GPIO_PIN_RESET );
-		if (usMasterRcvBufferPos > 5 ) // отсекаем ложное срабатывание выхода RO драйвера
+        
+		if (usMasterRcvBufferPos > 5 ) // отсекаем ложное срабатывание выхода RO драйвера 
+        {
           xNeedPoll = xMBMasterPortEventPost(EV_MASTER_FRAME_RECEIVED);
-		vMBMasterSetErrorType(EV_NO_ERROR_EVENT);
+          vMBMasterSetErrorType(EV_NO_ERROR_EVENT);
+        }
+        else {
+          xMBMasterPortEventPost(EV_MASTER_ERROR_PROCESS);
+          vMBMasterSetErrorType(EV_ERROR_RECEIVE_DATA);          
+        }		
 		break;
 
 		/* An error occured while receiving the frame. */
