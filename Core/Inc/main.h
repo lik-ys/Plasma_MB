@@ -40,6 +40,9 @@ extern ADC_HandleTypeDef hadc1;
 //extern ETH_HandleTypeDef heth;
 extern TIM_HandleTypeDef htim3;
 extern TIM_HandleTypeDef htim4;
+
+extern TIM_HandleTypeDef htim5;
+
 extern UART_HandleTypeDef huart4;
 extern UART_HandleTypeDef huart1;
 extern UART_HandleTypeDef huart2;
@@ -128,6 +131,10 @@ void Error_Handler(void);
 #define CMD_CHOPPER_WAITING_GPIO_Port GPIOC
 #define DIR_RS1_Pin GPIO_PIN_8
 #define DIR_RS1_GPIO_Port GPIOA
+#define Test1_Pin GPIO_PIN_2
+#define Test1_GPIO_Port GPIOD
+#define W_IN_Pin GPIO_PIN_3
+#define W_IN_GPIO_Port GPIOD
 #define DIR_RS2_Pin GPIO_PIN_4
 #define DIR_RS2_GPIO_Port GPIOD
 #define CMD_GAS_Waiting_Pin GPIO_PIN_5

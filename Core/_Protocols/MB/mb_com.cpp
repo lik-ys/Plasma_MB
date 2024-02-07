@@ -113,20 +113,24 @@ bool ModBusCom::Loop( void )
 		break;
 	case EV_MASTER_EXECUTE                :
       //WR_DEBUG("EV_MASTER_EXECUTE \r\n");
+        return TRUE;
 	case EV_MASTER_FRAME_SENT             : //mb_cnt.tx++;
 		gMBEvent = EV_MASTER_READY;
+        break;
 	case EV_MASTER_ERROR_PROCESS          : //mb_cnt.error++;
 		gMBEvent = EV_MASTER_READY;
 	case EV_MASTER_PROCESS_SUCESS         : //mb_cnt.ex++;
 		gMBEvent = EV_MASTER_READY;		
 	case EV_MASTER_ERROR_EXECUTE_FUNCTION ://mb_cnt.error++;
 		gMBEvent = EV_MASTER_READY;
+        xSetMAsterEvent(gMBEvent);
 		return TRUE;        
         
 	case EV_MASTER_ERROR_RESPOND_TIMEOUT  ://mb_cnt.error++;
 		gMBEvent = EV_MASTER_READY;
 	case EV_MASTER_ERROR_RECEIVE_DATA     ://mb_cnt.error++;
 		gMBEvent = EV_MASTER_READY;
+        xSetMAsterEvent(gMBEvent);
 		return FALSE;
 	}    
   }

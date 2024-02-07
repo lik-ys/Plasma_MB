@@ -59,6 +59,7 @@
 extern DMA_HandleTypeDef hdma_adc1;
 extern TIM_HandleTypeDef htim3;
 extern TIM_HandleTypeDef htim4;
+extern TIM_HandleTypeDef htim5;
 extern DMA_HandleTypeDef hdma_uart4_tx;
 extern DMA_HandleTypeDef hdma_usart1_tx;
 extern DMA_HandleTypeDef hdma_usart2_tx;
@@ -378,6 +379,25 @@ void USART3_IRQHandler(void)
   /* USER CODE BEGIN USART3_IRQn 1 */
 
   /* USER CODE END USART3_IRQn 1 */
+}
+
+#include "mbport.h"
+/**
+  * @brief This function handles TIM5 global interrupt.
+  */
+void TIM5_IRQHandler(void)
+{
+  /* USER CODE BEGIN TIM5_IRQn 0 */
+  HAL_GPIO_WritePin( Test1_GPIO_Port , Test1_Pin, GPIO_PIN_RESET);
+  /* USER CODE END TIM5_IRQn 0 */
+  HAL_TIM_IRQHandler(&htim5);
+  /* USER CODE BEGIN TIM5_IRQn 1 */
+  HAL_TIM_Base_Stop_IT(&htim5);
+  
+  MBMasterPortCBTimerExpired( &htim5 );
+  while ( GPIO_PIN_RESET == HAL_GPIO_ReadPin( W_IN_GPIO_Port, W_IN_Pin));
+  
+  /* USER CODE END TIM5_IRQn 1 */
 }
 
 /**

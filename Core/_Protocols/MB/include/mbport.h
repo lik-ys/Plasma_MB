@@ -35,7 +35,7 @@
 #ifdef __cplusplus
 PR_BEGIN_EXTERN_C
 #endif
-
+#include "port.h"
 /* ----------------------- Defines ------------------------------------------*/
 
 #define SEND_ALL_BYTES_IN_ONE_CALL		(1)

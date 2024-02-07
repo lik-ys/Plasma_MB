@@ -415,7 +415,16 @@ eMBMasterPoll( void )
 			eStatus = peMBMasterFrameSendCur( ucMBMasterGetDestAddress(), ucMBFrame, usMBMasterGetPDUSndLength() );
 			MBMasterTransmite();
             break;
-
+            
+        case EV_MASTER_ERROR_RESPOND_TIMEOUT:
+        {
+          MBMcnt.timeout++;
+          eStatus = MB_ETIMEDOUT;
+          uint16_t addr = ucMBMasterGetDestAddress()-1;
+          if ( addr > 0 ) CntSucsses[ addr ]--;
+        }
+          break;
+          
         case EV_MASTER_ERROR_PROCESS:
         {
         	mb_cnt.error++;

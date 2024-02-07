@@ -79,7 +79,7 @@ void ProcessInit( void )
   
   eSM_proc = ST_IDLE;
   gLed.led = led1_pin;
-  
+  HAL_GPIO_WritePin( Test1_GPIO_Port, Test1_Pin, GPIO_PIN_SET);
   pMBhl->Init(); 
   pMBcntrl->Init();
   
@@ -109,6 +109,25 @@ void SM_loop( void )
   //if ( 1 == gStateSM.st.bToggleLed )  gStateSM.proc =  ST_TOGGLE_LED;
   
   hPilotArc->Proc();
+  
+  if ( GPIO_PIN_RESET == HAL_GPIO_ReadPin( W_IN_GPIO_Port , W_IN_Pin))
+  {
+    HAL_Delay(10);
+    while(GPIO_PIN_RESET == HAL_GPIO_ReadPin( W_IN_GPIO_Port , W_IN_Pin));
+      if ( HAL_OK != HAL_TIM_Base_Start_IT( &htim5 ) )
+      {
+        //Error_Handler();
+      }else;    
+    // psc 1000 arr = 1000 = 12mc| arr = 3000 = 36мс
+      __HAL_TIM_SET_COUNTER( &htim5, 1);  
+      __HAL_TIM_CLEAR_FLAG( &htim5, TIM_FLAG_UPDATE ); 
+      
+      HAL_GPIO_WritePin( Test1_GPIO_Port, Test1_Pin, GPIO_PIN_SET);    
+      if ( HAL_OK != HAL_TIM_Base_Start_IT( &htim5 ) )
+      {
+        //Error_Handler();
+      }else; 
+  }
   
   switch( gStateSM.proc )    // 
   {

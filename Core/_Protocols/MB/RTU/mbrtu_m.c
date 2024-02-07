@@ -305,7 +305,7 @@ xMBMasterRTUReceiveFSM( void )
         {
             eRcvState = STATE_M_RX_ERROR;
         }
-        if ((eMasterCurTimerMode == MB_TMODE_RESPOND_TIMEOUT)) //(0 == ucByte)&&(1 == usMasterRcvBufferPos)&&
+        if ((0 == ucByte)&&(1 == usMasterRcvBufferPos)&&(eMasterCurTimerMode == MB_TMODE_RESPOND_TIMEOUT)) //
         {
         }else{
           vMBMasterPortTimersT35Enable();

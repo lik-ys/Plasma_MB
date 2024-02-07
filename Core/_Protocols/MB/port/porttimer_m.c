@@ -64,10 +64,25 @@ void vMBMasterPortTimersRespondTimeoutEnable()
     Error_Handler();
   }else;
   
-  for (int i = 10000;i>0;i--)__NOP();
-  __NOP();
-  __NOP();
-  //counter_m = 2;
+  
+  if ( HAL_OK != HAL_TIM_Base_Stop_IT( &htim5 ) )
+  {
+    //Error_Handler();
+  }else;    
+// psc 1000 arr = 1000 = 12mc| arr = 3000 = 36мс
+  __HAL_TIM_SET_COUNTER( &htim5, 1);  
+  __HAL_TIM_CLEAR_FLAG( &htim5, TIM_FLAG_UPDATE ); 
+    
+  if ( HAL_OK != HAL_TIM_Base_Start_IT( &htim5 ) )
+  {
+    //Error_Handler();
+  }else;   
+  
+//  
+//  for (uint32_t i = 100000;i>0;i--)__NOP();
+//  __NOP();
+//  __NOP();
+//  //counter_m = 2;
 
 }
 
@@ -87,6 +102,11 @@ void MBMasterPortCBTimerExpired(TIM_HandleTypeDef *htim)
             counter_m = 0;  
       }
 	}
+    if ( htim5.Instance == htim->Instance )
+    {
+            HAL_GPIO_WritePin( Test0_GPIO_Port, Test0_Pin, GPIO_PIN_RESET );
+			pxMBMasterPortCBTimerExpired();       
+    }
 }
 
 
