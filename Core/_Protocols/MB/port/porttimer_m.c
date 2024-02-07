@@ -29,10 +29,14 @@ void vMBMasterPortTimersT35Enable()
     Error_Handler();
   }else;
   
-  vMBMasterSetCurTimerMode(MB_TMODE_T35);
-  counter_m=0;
+  if ( vMBMasterGetCurTimerMode() == MB_TMODE_RESPOND_TIMEOUT )
+  {
+//counter_m = 1; 
+  }else 
+   //counter_m = 0; 
+;
+  vMBMasterSetCurTimerMode(MB_TMODE_T35);  
   HAL_TIM_Base_Start_IT(tim_m);
-  HAL_GPIO_WritePin( Test0_GPIO_Port, Test0_Pin, GPIO_PIN_SET );
 }
 
 void vMBMasterPortTimersConvertDelayEnable()
@@ -44,9 +48,27 @@ void vMBMasterPortTimersConvertDelayEnable()
 
 void vMBMasterPortTimersRespondTimeoutEnable()
 {
-	vMBMasterSetCurTimerMode(MB_TMODE_RESPOND_TIMEOUT);
-	HAL_TIM_Base_Start_IT(tim_m);
-	counter_m=30;
+  if ( HAL_OK != HAL_TIM_Base_Stop_IT( tim_m ) )
+  {
+    Error_Handler();
+  }else;  
+
+  __HAL_TIM_SET_COUNTER( tim_m, 1);  
+  __HAL_TIM_CLEAR_FLAG( tim_m, TIM_FLAG_UPDATE );  
+  
+  HAL_GPIO_WritePin( Test0_GPIO_Port, Test0_Pin, GPIO_PIN_SET );
+  vMBMasterSetCurTimerMode(MB_TMODE_RESPOND_TIMEOUT);  
+
+  if ( HAL_OK != HAL_TIM_Base_Start_IT(tim_m) )
+  {
+    Error_Handler();
+  }else;
+  
+  for (int i = 10000;i>0;i--)__NOP();
+  __NOP();
+  __NOP();
+  //counter_m = 2;
+
 }
 
 void vMBMasterPortTimersDisable()
@@ -60,9 +82,9 @@ void MBMasterPortCBTimerExpired(TIM_HandleTypeDef *htim)
 	{
       if((++counter_m) >= timeout)
       {
-			pxMBMasterPortCBTimerExpired();
-            counter_m = 0;
-            
+            HAL_GPIO_WritePin( Test0_GPIO_Port, Test0_Pin, GPIO_PIN_RESET );
+			pxMBMasterPortCBTimerExpired();   
+            counter_m = 0;  
       }
 	}
 }

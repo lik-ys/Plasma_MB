@@ -53,7 +53,7 @@
 #define MB_SER_PDU_SIZE_CRC     2       /*!< Size of CRC field in PDU. */
 #define MBM_SER_PDU_ADDR_OFF    0       /*!< Offset of slave address in Ser-PDU. */
 #define MB_SER_PDU_PDU_OFF      1       /*!< Offset of Modbus-PDU in Ser-PDU. */
-#define MB_RTU_TO_M             38      //  55: 0 error on 3000 responds
+#define MB_RTU_TO_M             1      //  55: 0 error on 3000 responds
                                         //  45: 0 error on 3000 responds
                                         //  40: 1 error on 1900 responds, period 50ms
 /* ----------------------- Type definitions ---------------------------------*/
@@ -145,7 +145,7 @@ eMBMasterRTUStart( void )
     eRcvState = STATE_M_RX_INIT;
     eSndState = STATE_M_TX_IDLE;
     vMBMasterPortSerialEnable( FALSE, TRUE);
-    //vMBMasterPortTimersT35Enable(  );
+    vMBMasterPortTimersT35Enable(  );
 
     EXIT_CRITICAL_SECTION(  );
 }
@@ -253,9 +253,12 @@ xMBMasterRTUReceiveFSM( void )
          * wait until the frame is finished.
          */
     case STATE_M_RX_INIT:
-        vMBMasterPortTimersT35Enable( );
-        ucMasterRTURcvBuf[usMasterRcvBufferPos++] = ucByte;
-        eRcvState = STATE_M_RX_RCV;
+        if ((ucByte == 0) && (eMasterCurTimerMode == MB_TMODE_RESPOND_TIMEOUT )){  // отбрасываем захват 0 при переключении на передачу
+        }else{
+          vMBMasterPortTimersT35Enable( );
+          ucMasterRTURcvBuf[usMasterRcvBufferPos++] = ucByte;
+          eRcvState = STATE_M_RX_RCV;
+        }        
         break;
 
         /* In the error state we wait until all characters in the
@@ -281,8 +284,11 @@ xMBMasterRTUReceiveFSM( void )
         ucMasterRTURcvBuf[usMasterRcvBufferPos++] = ucByte;
         eRcvState = STATE_M_RX_RCV;
 
-        /* Enable t3.5 timers. */
-        vMBMasterPortTimersT35Enable( );
+        if ((ucByte == 0) && (eMasterCurTimerMode == MB_TMODE_RESPOND_TIMEOUT )){  // отбрасываем захват 0 при переключении на передачу
+        }else{
+          /* Enable t3.5 timers. */
+          vMBMasterPortTimersT35Enable( );
+          }
         break;
 
         /* We are currently receiving a frame. Reset the timer after
@@ -299,7 +305,12 @@ xMBMasterRTUReceiveFSM( void )
         {
             eRcvState = STATE_M_RX_ERROR;
         }
-        vMBMasterPortTimersT35Enable();
+        if ((eMasterCurTimerMode == MB_TMODE_RESPOND_TIMEOUT)) //(0 == ucByte)&&(1 == usMasterRcvBufferPos)&&
+        {
+        }else{
+          vMBMasterPortTimersT35Enable();
+        }
+        
         break;
     }
     return xTaskNeedSwitch;
@@ -326,6 +337,7 @@ xMBMasterRTUTransmitFSM( void )
         if( usMasterSndBufferCount != 0 )
         {
 #if SEND_ALL_BYTES_IN_ONE_CALL > 0
+            //HAL_GPIO_WritePin( Test0_GPIO_Port, Test0_Pin, GPIO_PIN_RESET );
 			xMBMasterPortSerialPutBytes(pucMasterSndBufferCur, usMasterSndBufferCount);
 			usMasterSndBufferCount = 0;  // vMBMasterPortTimersRespondTimeoutEnable();
 #else
@@ -377,10 +389,10 @@ xMBMasterRTUTimerExpired(void)
 		/* A frame was received and t35 expired. Notify the listener that
 		 * a new frame was received. */
 	case STATE_M_RX_RCV:
-        HAL_GPIO_WritePin( Test0_GPIO_Port, Test0_Pin, GPIO_PIN_RESET );
-        
-		if (usMasterRcvBufferPos >= 2 ) // отсекаем ложное срабатывание выхода RO драйвера 
+      //HAL_GPIO_WritePin( Test0_GPIO_Port, Test0_Pin, GPIO_PIN_RESET );
+		if (usMasterRcvBufferPos >= 5 ) // отсекаем ложное срабатывание выхода RO драйвера 
         {
+          
           xNeedPoll = xMBMasterPortEventPost(EV_MASTER_FRAME_RECEIVED);
           vMBMasterSetErrorType(EV_NO_ERROR_EVENT);
         }
@@ -464,6 +476,12 @@ USHORT usMBMasterGetPDUSndLength( void )
 void vMBMasterSetCurTimerMode( eMBMasterTimerMode eMBTimerMode )
 {
 	eMasterCurTimerMode = eMBTimerMode;
+}
+
+/* Get Modbus Master current timer mode.*/
+eMBMasterTimerMode vMBMasterGetCurTimerMode( void )
+{
+	return eMasterCurTimerMode;
 }
 
 /* The master request is broadcast? */

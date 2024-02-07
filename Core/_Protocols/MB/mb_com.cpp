@@ -166,7 +166,7 @@ bool ModBusCom::Read( void )
   {
     mb_act.response = 0;
     
-    if ( ++saddr >= MB_cell_end )  saddr = 1;
+    if ( ++saddr >= MB_cell_3 )  saddr = 1;
     this->addr  = static_cast<mb_addr_t>(saddr);
     res = Hr_query( this->addr, static_cast<eMBReg_t>(REG_R_CURR_1s) );
   }else;// ret = false;  
