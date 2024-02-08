@@ -51,7 +51,7 @@ void UpDateWriteRgM( uint16_t addr, eMBReg_t numRg )
   switch( numRg )    // 
   {
     case REG_R_CURR_1s:
-      SetMBRgM(0,1,0);
+      //SetMBRgM(0,1,0);
       break;
     case REG_R_CURR_2s:
       break;    
