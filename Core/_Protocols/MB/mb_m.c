@@ -420,8 +420,12 @@ eMBMasterPoll( void )
         {
           MBMcnt.timeout++;
           eStatus = MB_ETIMEDOUT;
-          uint16_t addr = ucMBMasterGetDestAddress()-1;
-          if ( addr > 0 ) CntSucsses[ addr ]--;
+          int16_t addr = ucMBMasterGetDestAddress()-1;
+          if ( addr >= 0 ) 
+          {
+            CntSucsses[ addr ]--;
+            CntrCellsStatus( addr, RESET );//
+          }
         }
           break;
           
@@ -429,7 +433,7 @@ eMBMasterPoll( void )
         {
         	mb_cnt.error++;
         	MBMasterError();
-            uint16_t addr = ucMBMasterGetDestAddress()-1;
+            int16_t addr = ucMBMasterGetDestAddress()-1;
             if ( addr > 0 ) CntSucsses[ addr ]--;
             CntrCellsStatus( addr, RESET );//
         	/* Execute specified error process callback function. */
