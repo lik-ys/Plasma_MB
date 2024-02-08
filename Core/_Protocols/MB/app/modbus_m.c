@@ -6,24 +6,6 @@
 RegStatusM_t         RgStatus[ MB_MASTER_TOTAL_SLAVE_NUM];
 RegStatusProces_t   RgProcess[MB_MASTER_TOTAL_SLAVE_NUM ];
 static int CntMBRg[6] = {0,};
-/**
-  * @brief  апдейт регистров чтени€
-  * @param
-  * @retval
-  */
-void UpDateReadRgM( uint16_t addr, eMBReg_t numRg )
-{
-  CntMBRg[addr]++;
-  switch( numRg )    // 
-  {
-    case REG_R_STATE_UNIT:
-      break;
-    case REG_R_STATE_PROCESS:
-      break;    
-    default:
-      break;
-  } // switch(  )
-}
 
 /***
 **
@@ -41,6 +23,31 @@ void CntrCellsStatus( uint16_t addr, FlagStatus st )
 }//CntrCellsStatus()
 
 /**
+  * @brief  апдейт регистров чтени€ €чеек 
+  * @param
+  * @retval
+  */
+void UpDateReadRgM( uint16_t addr, eMBReg_t numRg )
+{
+  CntrCellsStatus( addr, SET );
+  CntMBRg[addr]++;
+  switch( numRg )    // 
+  {
+    case REG_R_CURR_1s:   
+      //SetMBRgM(addr,addr,0);
+      break;
+    case REG_R_CURR_2s        : break;    
+    case REG_R_IN_VOLTs       : break;
+    case REG_R_STATE_UNIT     : break;   
+    case REG_R_STATE_PROCESS  : break;   
+    case REG_R_PWM1           : break;   
+    case REG_R_PWM2           : break; 
+    default:
+      break;
+  } // switch(  )
+}
+
+/**
   * @brief  апдейт регистров записи
   * @param
   * @retval
@@ -50,18 +57,15 @@ void UpDateWriteRgM( uint16_t addr, eMBReg_t numRg )
   CntrCellsStatus( addr, SET );
   switch( numRg )    // 
   {
-    case REG_R_CURR_1s:
-      //SetMBRgM(0,1,0);
-      break;
-    case REG_R_CURR_2s:
-      break;    
-    case REG_R_IN_VOLTs       : break;
-    case REG_R_STATE_UNIT     : 
-      break;   
-    case REG_R_STATE_PROCESS  : 
-      break;   
-    case REG_R_PWM1           : break;   
-    case REG_R_PWM2           : break;         
+    case REG_W_PID_P:break;
+    case REG_W_PID_I:break;
+    case REG_W_PID_D:break;
+    case REG_W_SET_OUT_PWM     : break;  
+    case REG_W_SET_OUT_CURRENT : break;
+    case REG_W_CONTROL         : break;  
+    case REG_W_CNTRL_PROCESS   : break;  
+    case REG_W_FIRST_DAC       : break;
+    case REG_W_LAST_DAC        : break;    
     default:
       break;
   } // switch(  )

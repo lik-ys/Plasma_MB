@@ -25,7 +25,7 @@
 #ifdef __cplusplus
 extern "C" {
 #endif
-  
+
 /*===============================[ SPECIAL ]===================================*/ 
     // Ѕлок операторов условной компил€ции 
 /*===============================[ PUBLIC CONSTANTS ]==========================*/ 
@@ -192,10 +192,42 @@ typedef union
     uint16_t bFireStart     : 1;    // поджиг
     uint16_t bPilotArc      : 1;    // вкл дежурной дуги 
     uint16_t bChopperStart  : 1;    // синхронное выключение €чеек от команды  bit0 в  REG_W_CNTRL_START
-    uint16_t bFireIn        : 1;    // todo внешний поджиг
     uint16_t bStartCNC      : 1;    //  1 - Start, 0 - Stop CNC
+    uint16_t bFireIn        : 1;    // todo внешний поджиг    
   }bit;   
 }RgCntrl_t;
+
+typedef union{
+  uint16_t rg;
+  struct{
+      uint16_t rgReserv0  : 1;
+      uint16_t rgCNTRL	  : 1;
+      uint16_t rgPWM	  : 1;
+      uint16_t rgCURR	  : 1;
+      uint16_t rgSLOP_1   : 1; 
+      uint16_t rgSLOP_2   : 1; 
+      uint16_t rgP        : 1; 
+      uint16_t rgI        : 1; 
+      uint16_t rgD        : 1;  
+  };
+}bActivRg_t;  
+
+// регистры управлени€ €чейкой 
+typedef union
+{ 
+  struct{
+    uint16_t rgReserv0  ;
+    uint16_t rgCNTRL	  ;
+    uint16_t rgPWM	  ;
+    uint16_t rgCURR	  ;
+    uint16_t rgSLOP_1  ; 
+    uint16_t rgSLOP_2  ; 
+    uint16_t rgP       ; 
+    uint16_t rgI       ; 
+    uint16_t rgD       ;  
+  };
+  uint16_t mbReg[ 9 ];  
+}CntrlCellsRg_t;
 
 extern eProcess_t  eSM_proc;
 extern ADC_data_t  ADCdata[ ADC_BUF_LENGHT ];
@@ -206,7 +238,9 @@ extern RgCntrl_t   preMbCntrl;
 extern RgCntrl_t   gMbCntrl;
 extern RgCntrl_t   gMbStatus;
 extern RgCntrl_t   gMbActiveCntrl;
-  
+extern CntrlCellsRg_t  gCntrlCell;
+extern bActivRg_t      gActiveReg;
+
 void ProcessInit( void );
 
 void SM_loop( void );

@@ -74,12 +74,16 @@ void UpateActiveRg( void )
 }// UpateActiveRg()
 
 /**
-  * @brief  апдейт регистров записи
+  * @brief  апдейт регистров записи c ВУ -> 6x Cells
   * @param
   * @retval
   */
 void UpDateWriteRg( eMBRegS_t numRg )
 {  
+  if ( numRg <= REG_W_D ) gCntrlCell.mbReg[ numRg ] = usSRegHoldBuf[numRg];
+  
+  gActiveReg.rg  |= 1<< numRg;
+  
   switch( numRg )    // 
   {
     case REG_W_CNTRL:
@@ -92,10 +96,25 @@ void UpDateWriteRg( eMBRegS_t numRg )
       else  gMbCntrl.bit.bChopperStart = 0;      
       UpateActiveRg();
       break;
-    case REG_W_CNC_OUT:
-      break; 
-    case REG_W_FREQ:
+    case REG_W_PWM:    
       break;
+    case REG_W_CURR:
+      break;
+    case REG_W_SLOP_1:
+      break;
+    case REG_W_SLOP_2: 
+      break;
+    case REG_W_P:
+
+      break;
+    case REG_W_I:break;
+    case REG_W_D:break;
+    
+    case REG_W_CNC_OUT:
+      break;
+    case REG_W_FREQ:
+          break;      
+      
     default:
       break;
   } // switch(  )

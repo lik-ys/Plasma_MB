@@ -29,6 +29,7 @@ typedef enum _MB_REG_S
     REG_W_CNC_OUT       = 16,// дискретные выходы  
     REG_W_FREQ          = 17,// Частота синхронизации 12345 Гц      
     // reserv  
+    // -- Таблица 4 - регистры состояния материнской платы ИП
     REG_R_STATUS       = 50,//
     REG_R_ST_CELLS     = 51,//    
     REG_R_VOLT         = 52,

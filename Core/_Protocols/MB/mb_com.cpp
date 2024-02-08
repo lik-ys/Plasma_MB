@@ -22,7 +22,8 @@
 #include "mbframe.h"
 #include "mbproto.h"
 #include "mbfunc.h"
-
+#include "user_mb_app_m.h"
+#include "user_mb_app.h"
 #include "mb_com.hpp"
 
 #ifdef __cplusplus
@@ -96,6 +97,7 @@ bool ModBusCom::Loop( void )
     if ( 0 == eMBMasterIsEnabled()) return false;
     
     Read();
+    Write();
     
     gMBErrorCode = eMBMasterPoll( );
 	xGetMasterEvent( &gMBEvent);
@@ -137,7 +139,7 @@ bool ModBusCom::Loop( void )
   return FALSE;  
 } // Loop()
 
-/*
+/**
 **
 */
 bool ModBusCom::Hr_query( mb_addr_t mb_addr, eMBReg_t saddr_rg )
@@ -150,8 +152,8 @@ bool ModBusCom::Hr_query( mb_addr_t mb_addr, eMBReg_t saddr_rg )
 	return ret;
 }// Hr_query(); 
 
-/*
- *
+/**
+ **
  */
 bool ModBusCom::Hr_write( mb_addr_t mb_addr, eMBReg_t rg, uint16_t data)
 {
@@ -159,7 +161,7 @@ bool ModBusCom::Hr_write( mb_addr_t mb_addr, eMBReg_t rg, uint16_t data)
   return TRUE;
 }// write()
 
-/*
+/**
 **
 */
 bool ModBusCom::Read( void )
@@ -170,12 +172,49 @@ bool ModBusCom::Read( void )
   {
     mb_act.response = 0;
     
-    if ( ++saddr >= MB_cell_3 )  saddr = 1;
+    if ( ++saddr >= MB_cell_end )  saddr = 1;
     this->addr  = static_cast<mb_addr_t>(saddr);
     res = Hr_query( this->addr, static_cast<eMBReg_t>(REG_R_CURR_1s) );
   }else;// ret = false;  
   return res;
-}
+}// Read()
+
+/***
+**  write to slave cell
+*/
+bool ModBusCom::Write( void )
+{
+  bool ret = 0;
+  if (gActiveReg.rg)
+  {
+    if ( gActiveReg.rgCNTRL){
+    }
+    if ( gActiveReg.rgPWM)  
+    {
+      ret = Hr_write(this->addr, static_cast<eMBReg_t>(REG_R_PWM1), GetMBRgS(REG_W_PWM) );
+    }
+    if ( gActiveReg.rgCURR) 
+    {
+      ret = Hr_write(this->addr, static_cast<eMBReg_t>(REG_R_CURR_1s), GetMBRgS(REG_W_CURR) );
+    }
+    if ( gActiveReg.rgSLOP_1){
+      ret = Hr_write(this->addr, static_cast<eMBReg_t>(REG_W_FIRST_DAC), GetMBRgS(REG_W_SLOP_1) );      
+    }
+    if ( gActiveReg.rgSLOP_2){
+      ret = Hr_write(this->addr, static_cast<eMBReg_t>(REG_W_LAST_DAC), GetMBRgS(REG_W_SLOP_2) );    
+    }
+    if ( gActiveReg.rgP){
+      ret = Hr_write(this->addr, static_cast<eMBReg_t>(REG_W_PID_P), GetMBRgS(REG_W_P) );      
+    }
+    if ( gActiveReg.rgI){
+      ret = Hr_write(this->addr, static_cast<eMBReg_t>(REG_W_PID_I), GetMBRgS(REG_W_I) );
+    }    
+    if ( gActiveReg.rgD){
+      ret = Hr_write(this->addr, static_cast<eMBReg_t>(REG_W_PID_D), GetMBRgS(REG_W_D) );
+    }     
+  }  
+  return ret;
+}// Write()
 
 ModBusCom::~ModBusCom(){}
 

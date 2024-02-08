@@ -199,7 +199,7 @@ eMBErrorCode eMBMasterRegHoldingCB(UCHAR * pucRegBuffer, USHORT usAddress, USHOR
     REG_HOLDING_NREGS = M_REG_HOLDING_NREGS;
     usRegHoldStart = usMRegHoldStart;
     /* if mode is read, the master will write the received date to buffer. */
-    eMode = MB_REG_WRITE;
+    //eMode = MB_REG_WRITE;
 
     /* it already plus one in modbus function method. */
     usAddress--;

@@ -50,7 +50,8 @@ public:
   bool Hr_query( mb_addr_t mb_addr, eMBReg_t saddr_rg );
   bool Hr_write( mb_addr_t mb_addr, eMBReg_t rg, uint16_t data);
   bool Read(void);
-
+  bool Write(void);
+  
   
 private:
   type_t type;  
