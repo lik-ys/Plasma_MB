@@ -417,9 +417,12 @@ BOOL eMBMasterIsEnabled( void );
 uint16_t GetDataMBRg( USHORT slave_addr, uint16_t reg );
 BOOL IsMBRcvSate (void );
 
-#define MB_CNT_ERROR 	4000
+#define MB_CNT_ERROR 	16000
 
 void SetRcvIdleState (void);
+
+void xMasterEventFix(UCHAR ucSndAddr, eMBMasterEventType eEvent );
+eMBMasterEventType xMasterEventGet( UCHAR ucSndAddr );
 
 
 /* ----------------------- Callback -----------------------------------------*/

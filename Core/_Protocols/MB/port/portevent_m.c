@@ -47,6 +47,8 @@ void xGetMasterEvent(eMBMasterEventType * eEvent)
 void xSetMAsterEvent(eMBMasterEventType eEvent)
 {
 	eQueuedEvent_m = eEvent;
+    if (EV_MASTER_PROCESS_SUCESS == eQueuedEvent_m ) 
+      WR_DEBUG("EV_MASTER_PROCESS_SUCESS\r\n");    
 }
 
 /**

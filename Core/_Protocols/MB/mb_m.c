@@ -340,6 +340,7 @@ eMBMasterPoll( void )
             /* Check if the frame is for us. If not ,send an error process event. */
             if ( ( eStatus == MB_ENOERR ) && ( ucRcvAddress == ucMBMasterGetDestAddress() ) )
             {
+                xMasterEventFix(ucRcvAddress, EV_MASTER_EXECUTE ) ;
                 ( void ) xMBMasterPortEventPost( EV_MASTER_EXECUTE ); 
                 cntErr = MB_CNT_ERROR;
             	//xMBMasterPortEventGet( &eEvent );
@@ -565,10 +566,52 @@ BOOL xMBMasterPortEventGet( eMBMasterEventType * eEvent )
 	return xEventHappened;
 } 
 
+typedef struct
+{
+  UCHAR ucSndAddr             ;
+  eMBMasterEventType eEvent   ;
+} CellEvent_t;
+
+/* !!! ќ“лавить событие EV_MASTER_PROCESS_SUCESS */
+// дл€ каждой €чейки пишем событи€ 
+eMBMasterEventType CellEvent[ MB_cell_6 ][ EVENTS_MASTER ];
+uint8_t CntEvent[MB_cell_6]  = {0,};
+
+/*
+**
+*/
+eMBMasterEventType xMasterEventGet( UCHAR ucSndAddr )
+{
+  eMBMasterEventType ret;
+  if ( CntEvent[ucSndAddr] > 0 ) CntEvent[ucSndAddr]--;
+  else ret = EV_MASTER_INIT;//ucSndAddr = EVENTS_MASTER-1;  
+  
+  ret = CellEvent[ucSndAddr][ CntEvent[ucSndAddr] ];
+  return  ret;
+}// 
+/* 
+**
+*/
+void xMasterEventFix( UCHAR ucSndAddr, eMBMasterEventType eEvent )
+{
+  
+  if ( CntEvent[ucSndAddr] < EVENTS_MASTER ) 
+  {
+    CellEvent[ucSndAddr][ CntEvent[ucSndAddr] ] = eEvent;
+    CntEvent[ucSndAddr]++;
+  }
+  else 
+  {
+    //CntEvent[ucSndAddr] = 0;
+  }  
+}// xMasterEventFix()
+
 BOOL xMBMasterPortEventPost( eMBMasterEventType eEvent )
 {
 	xEventInQueue = TRUE;
 	eQueuedEvent_m = (eMBMasterEventType)eEvent;
+    if (EV_MASTER_PROCESS_SUCESS == eQueuedEvent_m ) 
+      WR_DEBUG("EV_MASTER_PROCESS_SUCESS\r\n");
 	return TRUE;
 }
 

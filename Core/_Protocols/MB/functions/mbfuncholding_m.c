@@ -114,6 +114,7 @@ eMBMasterReqWriteHoldingRegister( UCHAR ucSndAddr, USHORT usRegAddr, USHORT usRe
 		ucMBFrame[MB_PDU_REQ_WRITE_VALUE_OFF]     = usRegData >> 8;
 		ucMBFrame[MB_PDU_REQ_WRITE_VALUE_OFF + 1] = usRegData ;
 		vMBMasterSetPDUSndLength( MB_PDU_SIZE_MIN + MB_PDU_REQ_WRITE_SIZE );
+        xMasterEventFix(ucSndAddr, EV_MASTER_FRAME_SENT ) ;
 		( void ) xMBMasterPortEventPost( EV_MASTER_FRAME_SENT );
 		eErrStatus = eMBMasterWaitRequestFinish( );
     }

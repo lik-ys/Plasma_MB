@@ -79,6 +79,7 @@ void ModBusCom::Init(void )
 	RS485_Dir_m( tx );
     SetRcvIdleState();
     MBMasterRecieved();
+    xMBMasterPortEventPost(EV_MASTER_READY);
   }  
 }// Init()
 
@@ -96,7 +97,7 @@ bool ModBusCom::Loop( void )
   {
     if ( 0 == eMBMasterIsEnabled()) return false;
     
-    Read();
+    //Read();
     Write();
     
     gMBErrorCode = eMBMasterPoll( );
@@ -179,37 +180,61 @@ bool ModBusCom::Read( void )
   return res;
 }// Read()
 
+#include "mbport.h"  
+#include "mb_m.h"
 /***
 **  write to slave cell
 */
 bool ModBusCom::Write( void )
 {
   bool ret = 0;
-  if (gActiveReg.rg)
+  static eMBMasterEventType   	eEvent = EV_MASTER_INIT;
+  
+  // xMBMasterPortEventGet(&eEvent);
+//  if ( FALSE == xMBMasterPortEventGet(&eEvent) ) {
+//    xMBMasterPortEventPost(EV_MASTER_READY);
+//    xMBMasterPortEventGet(&eEvent);
+//  }
+  
+//  if ((eEvent == EV_MASTER_FRAME_SENT) ) return 0;
+  
+  //if (gStateSM.time.b100ms)
+  //  gActiveReg.rgPWM = 1;
+  if (gActiveReg.rg) 
   {
     if ( gActiveReg.rgCNTRL){
     }
-    if ( gActiveReg.rgPWM)  
+    if ( gActiveReg.rgPWM )  
     {
-      ret = Hr_write(this->addr, static_cast<eMBReg_t>(REG_R_PWM1), GetMBRgS(REG_W_PWM) );
+      this->addr  = static_cast<mb_addr_t>(1);
+      gActiveReg.rgPWM = 0;
+      //eEvent = xMasterEventGet(this->addr);
+      //if (( EV_MASTER_EXECUTE == eEvent ) || ( EV_MASTER_INIT == eEvent ))
+        ret = Hr_write(this->addr, static_cast<eMBReg_t>(REG_R_PWM1), GetMBRgS(REG_W_PWM) );
     }
     if ( gActiveReg.rgCURR) 
     {
+      gActiveReg.rgCURR = 0;
       ret = Hr_write(this->addr, static_cast<eMBReg_t>(REG_R_CURR_1s), GetMBRgS(REG_W_CURR) );
     }
     if ( gActiveReg.rgSLOP_1){
+      gActiveReg.rgSLOP_1 = 0;      
       ret = Hr_write(this->addr, static_cast<eMBReg_t>(REG_W_FIRST_DAC), GetMBRgS(REG_W_SLOP_1) );      
     }
     if ( gActiveReg.rgSLOP_2){
+      gActiveReg.rgSLOP_2 = 0;
       ret = Hr_write(this->addr, static_cast<eMBReg_t>(REG_W_LAST_DAC), GetMBRgS(REG_W_SLOP_2) );    
     }
     if ( gActiveReg.rgP){
+      gActiveReg.rgP = 0;
       ret = Hr_write(this->addr, static_cast<eMBReg_t>(REG_W_PID_P), GetMBRgS(REG_W_P) );      
     }
     if ( gActiveReg.rgI){
+      gActiveReg.rgI = 0;
       ret = Hr_write(this->addr, static_cast<eMBReg_t>(REG_W_PID_I), GetMBRgS(REG_W_I) );
     }    
     if ( gActiveReg.rgD){
+      gActiveReg.rgD = 0;
       ret = Hr_write(this->addr, static_cast<eMBReg_t>(REG_W_PID_D), GetMBRgS(REG_W_D) );
     }     
   }  

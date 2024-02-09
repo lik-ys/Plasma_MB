@@ -64,6 +64,8 @@ typedef enum
     EV_MASTER_ERROR_EXECUTE_FUNCTION   = 1<<8,  /*!< Request execute function error. */
 } eMBMasterEventType;
 
+#define EVENTS_MASTER 9
+
 typedef enum
 {
 	EV_NO_ERROR_EVENT = 0 ,
