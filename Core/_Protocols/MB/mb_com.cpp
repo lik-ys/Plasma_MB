@@ -206,7 +206,7 @@ bool ModBusCom::Write( void )
     }
     if ( gActiveReg.rgPWM )  
     {
-      this->addr  = static_cast<mb_addr_t>(1);
+      this->addr  = static_cast<mb_addr_t>(0);
       gActiveReg.rgPWM = 0;
       //eEvent = xMasterEventGet(this->addr);
       //if (( EV_MASTER_EXECUTE == eEvent ) || ( EV_MASTER_INIT == eEvent ))
