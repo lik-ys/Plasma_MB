@@ -672,7 +672,7 @@ static void MX_GPIO_Init(void)
 
   /*Configure GPIO pins : COMM_START_Pin DI_METAL_CONTACT_Pin COMM_FIRE_Pin */
   GPIO_InitStruct.Pin = COMM_START_Pin|DI_METAL_CONTACT_Pin|COMM_FIRE_Pin;
-  GPIO_InitStruct.Mode = GPIO_MODE_IT_FALLING;
+  GPIO_InitStruct.Mode = GPIO_MODE_IT_RISING_FALLING;
   GPIO_InitStruct.Pull = GPIO_NOPULL;
   HAL_GPIO_Init(GPIOE, &GPIO_InitStruct);
 

@@ -30,7 +30,7 @@ typedef enum _MB_REG_S
     REG_W_FREQ          = 17,// Частота синхронизации 12345 Гц      
     // reserv  
     // -- Таблица 4 - регистры состояния материнской платы ИП
-    REG_R_STATUS       = 50,//
+    REG_R_STATUS       = 50,// ==  REG_W_CNTRL
     REG_R_ST_CELLS     = 51,//    
     REG_R_VOLT         = 52,
     REG_R_CURR_1       = 53,
@@ -80,7 +80,7 @@ typedef union STATUS
     uint16_t bOverHeat     : 1;    // 4 бит – перегрев
     uint16_t bPhaseFailure : 1;    // 5 бит – обрыв фазы
     uint16_t bChillerErr   : 1;    // 6 бит – ошибка чиллера   
-    uint16_t bReserv7      : 1;
+    uint16_t bStartCNC     : 1;    // 7 бит - Старт от ЧПУ
     uint16_t bReserv8      : 1;
     uint16_t bReserv9      : 1;
     uint16_t bReserv10     : 1;
@@ -153,6 +153,7 @@ typedef union STATUS_0
 
 void UpDateReadRg( eMBRegS_t numRg );
 void UpDateWriteRg( eMBRegS_t numRg );
+void UpateActiveRg( void );
 
 extern StatProc_t gStatus;
 extern StatCell_t gCells ;

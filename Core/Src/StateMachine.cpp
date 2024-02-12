@@ -30,6 +30,7 @@ TODO сделать поджиг
 #include  "Timer.hpp"
 #include  "CommandExec.hpp"
 #include  "PilotArc.hpp"
+#include   "user_mb_app.h"
 
 Command  gCmd;
 Command* hCmd = &gCmd;
@@ -258,9 +259,14 @@ void SM_Tick( void )
       {     
         gStateSM.st.bCommStart = 0;
         gMbStatus.bit.bStartCNC = 1;
+        gStateSM.st.bFireStrat = 1;
+        
+        gMbCntrl.bit.bPilotArc = 1;      
+        UpateActiveRg();
+      
         SetMBRgS( REG_R_STATUS, gMbStatus.reg );          
         WR_DEBUG("Start from CNC \r\n");    
-      }
+      }else;
       gStateSM.st.bStart = 0;
     break;
   case ST_COMM_STOP:      
@@ -270,7 +276,7 @@ void SM_Tick( void )
         gMbStatus.bit.bStartCNC = 0;
         SetMBRgS( REG_R_STATUS, gMbStatus.reg );                
         WR_DEBUG("Stop from CNC \r\n");    
-      }
+      }else;
       gStateSM.st.bStop = 0;
     break;
   default:
