@@ -27,18 +27,22 @@ void vMBPortSerialEnable(BOOL xRxEnable, BOOL xTxEnable)
 {
 	if(xRxEnable)
 	{
-        HAL_UART_AbortReceive_IT(uart);
-        RS485_Dir(rx);
+        //HAL_UART_AbortReceive_IT(uart);
+        RS485_Dir(rx); 
+        uart->Instance->CR1 &= ~(1<<3); // TE -reset
+        uart->Instance->CR1 |=  (1<<2); // RE- set
         HAL_UART_Receive_IT(uart, &singlechar, 1); 
 	}	
 	else
 	{
-		HAL_UART_AbortReceive_IT(uart);
+		//HAL_UART_AbortReceive_IT(uart);
 	}
 
 	if(xTxEnable)
 	{
 		RS485_Dir(tx);
+        uart->Instance->CR1 |= (1<<3); // TE -set
+        uart->Instance->CR1 &=~(1<<2); // RE- reset        
 		pxMBFrameCBTransmitterEmpty();
 	}
 	else
