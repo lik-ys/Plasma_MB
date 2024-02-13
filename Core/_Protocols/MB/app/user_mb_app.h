@@ -17,6 +17,7 @@ extern "C" {
  */
 typedef enum _MB_REG_S
 {
+    REG_W_RESERV_0  = 0,
 	REG_W_CNTRL		= 1,
 	REG_W_PWM		= 2,
 	REG_W_CURR		= 3, 

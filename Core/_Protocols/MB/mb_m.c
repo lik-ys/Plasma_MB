@@ -385,7 +385,7 @@ eMBMasterPoll( void )
 							}
 						}
 						else {
-							eException = xMasterFuncHandlers[i].pxHandler(ucMBFrame, &usLength);
+							eException = xMasterFuncHandlers[i].pxHandler(ucMBFrame, &usLength);   // ќшибка обработки ответа на прин€тый подчиненным пакет
 						}
 						vMBMasterSetCBRunInMasterMode(FALSE);
 						break;
@@ -400,6 +400,7 @@ eMBMasterPoll( void )
 
             }
             else {
+                xMasterEventGet(ucMBMasterGetDestAddress());
             	vMBMasterCBRequestSucess( );
             	vMBMasterRunResRelease( );
             	//xMBMasterPortEventGet( &eEvent );
@@ -574,8 +575,8 @@ typedef struct
 
 /* !!! ќ“лавить событие EV_MASTER_PROCESS_SUCESS */
 // дл€ каждой €чейки пишем событи€ 
-eMBMasterEventType CellEvent[ MB_cell_6 ][ EVENTS_MASTER ];
-uint8_t CntEvent[MB_cell_6]  = {0,};
+eMBMasterEventType CellEvent[ MB_cell_end ][ EVENTS_MASTER ];
+uint8_t CntEvent[MB_cell_end ]  = {0,};
 
 /*
 **
@@ -594,6 +595,7 @@ eMBMasterEventType xMasterEventGet( UCHAR ucSndAddr )
 */
 void xMasterEventFix( UCHAR ucSndAddr, eMBMasterEventType eEvent )
 {
+  if ( MB_ADDRESS_BROADCAST == ucSndAddr ) return; // ignory broadcast
   
   if ( CntEvent[ucSndAddr] < EVENTS_MASTER ) 
   {

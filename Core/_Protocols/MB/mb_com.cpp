@@ -60,7 +60,10 @@ ModBusCom :: ModBusCom( type_t t )
 {
   type = t;
   if (t == slave ) addr = MB_cell_1; // адрес подчиненного для опроса ВУ
-  if (t == master) addr = MB_cell_5;
+  if (t == master) addr = MB_cell_6; // Последняя ячейка в подчиненных
+  
+  cntMaster = 0;
+  cntSlave  = 0;  
 } // ModBusCom
 
 void ModBusCom::Init(void )
@@ -91,10 +94,12 @@ bool ModBusCom::Loop( void )
   if ( type == slave )
   {
     gMBErrorCode = eMBPoll( );
+    this->cntSlave++;
   }
   else 
   if ( type == master )
   {
+    this->cntMaster++;
     if ( 0 == eMBMasterIsEnabled()) return false;
     
     //Read();
@@ -202,20 +207,21 @@ bool ModBusCom::Write( void )
   //  gActiveReg.rgPWM = 1;
   if (gActiveReg.rg) 
   {
+    this->addr  = static_cast<mb_addr_t>(1);
     if ( gActiveReg.rgCNTRL){
     }
     if ( gActiveReg.rgPWM )  
     {
-      this->addr  = static_cast<mb_addr_t>(0);
+      
       gActiveReg.rgPWM = 0;
       //eEvent = xMasterEventGet(this->addr);
       //if (( EV_MASTER_EXECUTE == eEvent ) || ( EV_MASTER_INIT == eEvent ))
-        ret = Hr_write(this->addr, static_cast<eMBReg_t>(REG_R_PWM1), GetMBRgS(REG_W_PWM) );
+        ret = Hr_write(this->addr, static_cast<eMBReg_t>(REG_W_SET_OUT_PWM), GetMBRgS(REG_W_PWM) );
     }
     if ( gActiveReg.rgCURR) 
     {
       gActiveReg.rgCURR = 0;
-      ret = Hr_write(this->addr, static_cast<eMBReg_t>(REG_R_CURR_1s), GetMBRgS(REG_W_CURR) );
+      ret = Hr_write(this->addr, static_cast<eMBReg_t>(REG_W_SET_OUT_CURRENT), GetMBRgS(REG_W_CURR) );
     }
     if ( gActiveReg.rgSLOP_1){
       gActiveReg.rgSLOP_1 = 0;      

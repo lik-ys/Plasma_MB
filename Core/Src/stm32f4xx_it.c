@@ -381,7 +381,6 @@ void USART3_IRQHandler(void)
   /* USER CODE END USART3_IRQn 1 */
 }
 
-#include "mbport.h"
 /**
   * @brief This function handles TIM5 global interrupt.
   */

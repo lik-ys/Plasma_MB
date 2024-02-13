@@ -404,7 +404,8 @@ eMBErrorCode eMBPoll( void )
                 }
                 else if( xFuncHandlers[i].ucFunctionCode == ucFunctionCode )
                 {
-                    eException = xFuncHandlers[i].pxHandler( ucMBFrame, &usLength ); MBScnt.execute++;
+                    eException = xFuncHandlers[i].pxHandler( ucMBFrame, &usLength ); 
+                    MBScnt.execute++;
                     break;
                 }
             }
@@ -420,8 +421,10 @@ eMBErrorCode eMBPoll( void )
                     usLength = 0;
                     ucMBFrame[usLength++] = ( UCHAR )( ucFunctionCode | MB_FUNC_ERROR );
                     ucMBFrame[usLength++] = eException;
+                    MBScnt.error++;
                 }
                 eStatus = peMBFrameSendCur( ucMBAddress, ucMBFrame, usLength );
+                if (MB_ENOERR == eStatus) MBScnt.frame_send++;
             }
             break;
 
@@ -429,9 +432,6 @@ eMBErrorCode eMBPoll( void )
             break;
         }
     }
-    return MB_ENOERR;
+    return eStatus;
 }
-
-
-
 #endif

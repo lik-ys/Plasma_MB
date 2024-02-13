@@ -79,6 +79,7 @@ void SM_Tick( void );
 */
 void ProcessInit( void )
 {
+  WR_DEBUG("START Master board \r\n");
   memcpy( gStateSM.tick, 0, sizeof(gStateSM.tick) );
   
   eSM_proc = ST_IDLE;

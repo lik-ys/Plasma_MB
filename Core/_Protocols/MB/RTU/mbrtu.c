@@ -338,7 +338,13 @@ xMBRTUTimerT35Expired( void )
         /* A frame was received and t35 expired. Notify the listener that
          * a new frame was received. */
     case STATE_RX_RCV:
-        xNeedPoll = xMBPortEventPost( EV_FRAME_RECEIVED );
+		if (usRcvBufferPos >= 5 ) // отсекаем ложное срабатывание выхода RO драйвера 
+        {
+          xNeedPoll = xMBPortEventPost( EV_FRAME_RECEIVED );
+        }
+        else {
+          xMBPortEventPost(EV_READY);          
+        }      
         break;
 
         /* An error occured while receiving the frame. */

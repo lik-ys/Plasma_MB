@@ -36,6 +36,8 @@ public:
   } type_t;
   
   mb_addr_t addr; // slave MB_addr
+  uint32_t cntMaster;
+  uint32_t cntSlave;
   
   ModBusCom( type_t  t);
   virtual ~ModBusCom();
