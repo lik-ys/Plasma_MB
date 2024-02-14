@@ -317,15 +317,15 @@ float VoltCoef =  ADC_VOLT_COEF;
 int16_t adc_zero = ADC_ZERO; 
 int16_t adc_v_zero = 17; 
 /**
-  * @brief  
+  * @brief   // TODO Усреднить что-бы не прыгали значения на ВУ
   * @param
   * @retval
   */
 void ADC_Process( void ) 
 {
-  static int32_t stAdc_cur1 = 0;
-  static int32_t stAdc_cur2 = 0;
-  static int32_t stAdc_volt = 0;
+  static float stAdc_cur1 = 0;
+  static float stAdc_cur2 = 0;
+  static float stAdc_volt = 0;
   
   if ( gStateSM.st.bAdcCmplt )
   {
@@ -340,20 +340,27 @@ void ADC_Process( void )
     stAdc_cur2 /= ADC_BUF_LENGHT;
     stAdc_volt /= ADC_BUF_LENGHT;
     
-    ADCdat.Current1  = stAdc_cur1;
-    ADCdat.Current2  = stAdc_cur2;
-    ADCdat.Voltage   = stAdc_volt;
+    static float t1,t2,t3;
+    
+    t1 = stAdc_cur1*(1/5.0);
+    ADCdat.Current1  = t1=(int)floor(stAdc_cur1*(1/5.0) + (4/5.0)*(float)ADCdat.Current1);
+    ADCdat.Current2  = t2= (int)floor(stAdc_cur2*(1/5.0)+ (4/5.0)*(float)ADCdat.Current2);
+    ADCdat.Voltage   = t3= (int)floor(stAdc_volt*(1/5.0)+ (4/5.0)*(float)ADCdat.Voltage);
      
     if ( stAdc_cur1 < ADC_ZERO) adc_zero = 0;
     if ( stAdc_cur2 < ADC_ZERO) adc_zero = 0;
     
-    SetMBRgS( REG_R_CURR_1, (uint16_t)floor(10*(stAdc_cur1 - adc_zero) / CURR1_COEF));   // TODO  
-    SetMBRgS( REG_R_CURR_2, (uint16_t)floor(10*(stAdc_cur2 - adc_zero) / CURR2_COEF));   // 50A - 424 ///  22.5 - 192// 0 - 7
-    int16_t voltage  = (int16_t)floor(1*(stAdc_volt + adc_v_zero) / VoltCoef);
-    if ( voltage < 0 ) voltage = 0;
-    
-    SetMBRgS( REG_R_VOLT, voltage );   //
-    
+    if (abs(ADCdat.Current1 - stAdc_cur1) > 8) {
+      SetMBRgS( REG_R_CURR_1, (uint16_t)floor(10*(stAdc_cur1 - adc_zero) / CURR1_COEF));   // TODO  
+    }
+    if (abs(ADCdat.Current2 - stAdc_cur2) > 8) {      
+      SetMBRgS( REG_R_CURR_2, (uint16_t)floor(10*(stAdc_cur2 - adc_zero) / CURR2_COEF));   // 50A - 424 ///  22.5 - 192// 0 - 7
+    }
+    if (abs(ADCdat.Voltage - stAdc_volt) > 8) {
+      int16_t voltage  = (int16_t)floor(1*(stAdc_volt + adc_v_zero) / VoltCoef);
+      if ( voltage < 0 ) voltage = 0;      
+      SetMBRgS( REG_R_VOLT, voltage );   //      
+    }        
     DBG_ITM_Event(ITM_CH1, stAdc_cur1);
   }else;
 } // ADC_Process()

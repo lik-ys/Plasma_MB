@@ -197,7 +197,7 @@ eMBRTUSend( UCHAR ucSlaveAddress, const UCHAR * pucFrame, USHORT usLength )
     {
         /* First byte before the Modbus-PDU is the slave address. */
         pucSndBufferCur = ( UCHAR * ) pucFrame - 1;
-        usSndBufferCount = 1;
+       usSndBufferCount = 1;
 
         /* Now copy the Modbus-PDU into the Modbus-Serial-Line-PDU. */
         pucSndBufferCur[MB_SER_PDU_ADDR_OFF] = ucSlaveAddress;
