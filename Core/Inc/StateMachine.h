@@ -33,7 +33,7 @@ extern "C" {
 #define ADC_MAX         4095
 #define DAC_MAX         4095
 
-#define ADC_BUF_LENGHT  32
+#define ADC_BUF_LENGHT  16
   
 #define TIME_OUT_TEST   250
 /*===============================[ PUBLIC TYPES ]==============================*/ 
@@ -68,9 +68,7 @@ typedef enum
   ST_IDLE,
   ST_TOGGLE_LED,
   ST_START,
-  ST_MB_MASTER,
-  ST_MB_SLAVE,
-  ST_TX,
+  
   ST_ADC_CMPLT,
   
   ST_FIRE_START,

@@ -68,14 +68,7 @@ extern "C" {
  * time of the network.
  */
 #define MB_ASCII_TIMEOUT_SEC                    (  1 )
-/*! \brief Maximum number of Modbus functions codes the protocol stack
- *    should support.
- *
- * The maximum number of supported Modbus functions must be greater than
- * the sum of all enabled functions in this file and custom function
- * handlers. If set to small adding more functions will fail.
- */
-#define MB_FUNC_HANDLERS_MAX                    ( 6 )
+
 /*! \brief Number of bytes which should be allocated for the <em>Report Slave ID
  *    </em>command.
  *
@@ -86,9 +79,9 @@ extern "C" {
  */
 #define MB_FUNC_OTHER_REP_SLAVEID_BUF           ( 32 )
 /*! \brief If the <em>Report Slave ID</em> function should be enabled. */
-#define MB_FUNC_OTHER_REP_SLAVEID_ENABLED       (  1 ) // 17
+#define MB_FUNC_OTHER_REP_SLAVEID_ENABLED       (  0 ) // 17
 /*! \brief If the <em>Read Input Registers</em> function should be enabled. */
-#define MB_FUNC_READ_INPUT_ENABLED              (  1 ) // 04
+#define MB_FUNC_READ_INPUT_ENABLED              (  0 ) // 04
 /*! \brief If the <em>Read Holding Registers</em> function should be enabled. */
 #define MB_FUNC_READ_HOLDING_ENABLED            (  1 ) // 03
 /*! \brief If the <em>Write Single Register</em> function should be enabled. */
@@ -105,6 +98,19 @@ extern "C" {
 #define MB_FUNC_READ_DISCRETE_INPUTS_ENABLED    (  0 ) // 02
 /*! \brief If the <em>Read/Write Multiple Registers</em> function should be enabled. */
 #define MB_FUNC_READWRITE_HOLDING_ENABLED       (  0 ) // 23
+
+/*! \brief Maximum number of Modbus functions codes the protocol stack
+ *    should support.
+ *
+ * The maximum number of supported Modbus functions must be greater than
+ * the sum of all enabled functions in this file and custom function
+ * handlers. If set to small adding more functions will fail.
+ */
+#define MB_FUNC_HANDLERS_MAX      ( MB_FUNC_OTHER_REP_SLAVEID_ENABLED + MB_FUNC_READ_INPUT_ENABLED + \
+   MB_FUNC_READ_HOLDING_ENABLED + MB_FUNC_WRITE_HOLDING_ENABLED + MB_FUNC_WRITE_MULTIPLE_HOLDING_ENABLED + \
+   MB_FUNC_READ_COILS_ENABLED + MB_FUNC_WRITE_COIL_ENABLED + MB_FUNC_WRITE_MULTIPLE_COILS_ENABLED + \
+   MB_FUNC_READ_DISCRETE_INPUTS_ENABLED + MB_FUNC_READWRITE_HOLDING_ENABLED + 1)
+   
 /*! @} */
 #ifdef __cplusplus
 	}    //PR_END_EXTERN_C

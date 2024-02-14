@@ -90,10 +90,8 @@ void ProcessInit( void )
   
   hTimer->Time_Out( Timer::start, TIME_OUT_TEST, PROC_EV_DEBUG );
   
- //gMbCntrl.bit.bChopperStart = 1;
+  //gMbCntrl.bit.bChopperStart = 1;
   //CmdStartStopPwm( );
-
-    
 }// ProcessInit()
 
 /**
@@ -113,27 +111,6 @@ void SM_loop( void )
   }else;  
   //if ( 1 == gStateSM.st.bToggleLed )  gStateSM.proc =  ST_TOGGLE_LED;
   
-  hPilotArc->Proc();
-  
-  if ( GPIO_PIN_RESET == HAL_GPIO_ReadPin( W_IN_GPIO_Port , W_IN_Pin))
-  {
-    HAL_Delay(10);
-    while(GPIO_PIN_RESET == HAL_GPIO_ReadPin( W_IN_GPIO_Port , W_IN_Pin));
-      if ( HAL_OK != HAL_TIM_Base_Start_IT( &htim5 ) )
-      {
-        //Error_Handler();
-      }else;    
-    // psc 1000 arr = 1000 = 12mc| arr = 3000 = 36мс
-      __HAL_TIM_SET_COUNTER( &htim5, 1);  
-      __HAL_TIM_CLEAR_FLAG( &htim5, TIM_FLAG_UPDATE ); 
-      
-      HAL_GPIO_WritePin( Test1_GPIO_Port, Test1_Pin, GPIO_PIN_SET);    
-      if ( HAL_OK != HAL_TIM_Base_Start_IT( &htim5 ) )
-      {
-        //Error_Handler();
-      }else; 
-  }
-  
   switch( gStateSM.proc )    // 
   {
     case ST_IDLE:
@@ -141,24 +118,10 @@ void SM_loop( void )
     case ST_START:
       break;
     case ST_TOGGLE_LED:
-      //RS485_Dir_m( tx );
-      //xMBMasterPortSerialPutByte( 0x55 ); // работает 
-     // RS485_Dir_m( rx );
-     // xMBPortSerialGetByte(pdata);
       ToggleLed( &gLed );      
       gStateSM.st.bToggleLed = 0;
       gStateSM.proc = ST_IDLE;    
     break;
-      
-    case ST_MB_MASTER:
-      eSM_proc = ST_IDLE;
-      break;
-    case ST_MB_SLAVE:
-      eSM_proc = ST_IDLE;
-      break;   
-    case ST_TX:
-      eSM_proc = ST_IDLE;
-      break;
     case ST_ADC_CMPLT:
       ADC_Process( );
       eSM_proc = ST_IDLE;
@@ -226,8 +189,11 @@ void SM_Tick( void )
   
   if ( gMbStatus.bit.bStartCNC && hTimer->IsTimeOut( EV_COMM_START ) )
   {
-//    gMbStatus.bit.bStartCNC = 0;
-//    SetMBRgS( REG_R_STATUS_S, gMbStatus.reg );
+    gMbStatus.bit.bStartCNC = 0;
+    WR_DEBUG("Fire start from CNC \r\n");
+    gStateSM.st.bFireStrat = 1;
+    UpateActiveRg();
+    SetMBRgS( REG_R_STATUS, gMbStatus.reg );
   }else;
   
   switch( gStateSM.proc )
@@ -242,9 +208,8 @@ void SM_Tick( void )
     hCmd->Proc();
     ReadStart( );
     gStateSM.time.b100ms = 0;
-
-    //xMBMasterPortEventPost( EV_MASTER_READY );
-    //MBMasterRecieved();    
+  
+    hPilotArc->Proc();
     
     gStateSM.proc = ST_IDLE;
     break;
@@ -254,17 +219,13 @@ void SM_Tick( void )
     gStateSM.time.b1000ms = 0; 
     gStateSM.proc = ST_TOGGLE_LED;
     break;
-  case ST_COMM_START:          
-      //hTimer->Time_Out( Timer::start, TIME_START, EV_COMM_START);      
+  case ST_COMM_START:                
       if (1 == gStateSM.st.bCommStart ) 
       {     
+        hTimer->Time_Out( Timer::start, TIME_START, EV_COMM_START);
         gStateSM.st.bCommStart = 0;
         gMbStatus.bit.bStartCNC = 1;
-        gStateSM.st.bFireStrat = 1;
-        
-        gMbCntrl.bit.bPilotArc = 1;      
-        UpateActiveRg();
-      
+        gMbCntrl.bit.bPilotArc = 1;  // Деж. дуга    
         SetMBRgS( REG_R_STATUS, gMbStatus.reg );          
         WR_DEBUG("Start from CNC \r\n");    
       }else;
@@ -273,8 +234,13 @@ void SM_Tick( void )
   case ST_COMM_STOP:      
       if ( 1 == gStateSM.st.bCommStart )
       {         
-        gStateSM.st.bCommStart = 0;
+        gMbCntrl.bit.bPilotArc = 0;
+        gStateSM.st.bCommStart = 0;        
+        gStateSM.st.bFireStrat = 0;
+        UpateActiveRg();
         gMbStatus.bit.bStartCNC = 0;
+        
+        //gMbStatus.bit.bPilotArc = 0;
         SetMBRgS( REG_R_STATUS, gMbStatus.reg );                
         WR_DEBUG("Stop from CNC \r\n");    
       }else;
@@ -313,7 +279,7 @@ Uin V     Uout  V
 600         6.8
 */
 #define N_I     10.0
-#define THRESHOLD_V 10
+#define THRESHOLD_V 4
 float VoltCoef =  ADC_VOLT_COEF;
 int16_t adc_zero = ADC_ZERO; 
 int16_t adc_v_zero = 17; 
@@ -327,6 +293,10 @@ void ADC_Process( void )
   static float stAdc_cur1 = 0;
   static float stAdc_cur2 = 0;
   static float stAdc_volt = 0;
+
+  static uint16_t pre_cur1 = 0;
+  static uint16_t pre_cur2 = 0;
+  static uint16_t pre_volt = 0;  
   
   if ( gStateSM.st.bAdcCmplt )
   {
@@ -348,18 +318,22 @@ void ADC_Process( void )
     if ( stAdc_cur1 < ADC_ZERO) adc_zero = 0;
     if ( stAdc_cur2 < ADC_ZERO) adc_zero = 0;
     
-    if (abs(ADCdat.Current1 - stAdc_cur1) > THRESHOLD_V) {
+    if (abs(ADCdat.Current1 - pre_cur1) > THRESHOLD_V) {      
+      pre_cur1 = ADCdat.Current1;
       SetMBRgS( REG_R_CURR_1, (uint16_t)floor(10*(ADCdat.Current1 - adc_zero) / CURR1_COEF));   // TODO  
+      DBG_ITM_Event(ITM_CH1, ADCdat.Current1);
     }
-    if (abs(ADCdat.Current2 - stAdc_cur2) > THRESHOLD_V) {      
+    if (abs(ADCdat.Current2 - pre_cur2) > THRESHOLD_V) {    
+      pre_cur2 = ADCdat.Current2;
       SetMBRgS( REG_R_CURR_2, (uint16_t)floor(10*(ADCdat.Current2 - adc_zero) / CURR2_COEF));   // 50A - 424 ///  22.5 - 192// 0 - 7
+      
     }
-    if (abs(ADCdat.Voltage - stAdc_volt) > THRESHOLD_V) {
+    if (abs(ADCdat.Voltage - pre_volt) > THRESHOLD_V) {
+      pre_volt = ADCdat.Voltage;
       int16_t voltage  = (int16_t)floor(1*(ADCdat.Voltage + adc_v_zero) / VoltCoef);
       if ( voltage < 0 ) voltage = 0;      
       SetMBRgS( REG_R_VOLT, voltage );   //      
     }        
-    DBG_ITM_Event(ITM_CH1, stAdc_cur1);
   }else;
 } // ADC_Process()
 

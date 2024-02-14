@@ -88,12 +88,11 @@ void UpDateWriteRg( eMBRegS_t numRg )
   {
     case REG_W_CNTRL:
       gMbCntrl.reg = GetMBRgS( numRg );
-      UpateActiveRg();      
-//      break;
-//    case REG_W_CNTRL:
+      
       if ( GetMBRgS( numRg )&(1<<0) )
             gMbCntrl.bit.bChopperStart = 1;
-      else  gMbCntrl.bit.bChopperStart = 0;      
+      else  gMbCntrl.bit.bChopperStart = 0; 
+      
       UpateActiveRg();
       break;
     case REG_W_PWM:    

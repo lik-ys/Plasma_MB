@@ -106,10 +106,14 @@ void CmdStartStopPwm( void )
   {
     pExtSync->Instance->CNT = 0;
     HAL_TIM_PWM_Start( pExtSync, TIM_CHANNEL_1 ); 
+    gMbStatus.bit.bOnOffPwr = 1;
+    SetMBRgS( REG_R_STATUS, gMbStatus.reg );
   }else
   {
     pExtSync->Instance->CNT = 0;
     HAL_TIM_PWM_Stop( pExtSync, TIM_CHANNEL_1 );
+    gMbStatus.bit.bOnOffPwr = 0;
+    SetMBRgS( REG_R_STATUS, gMbStatus.reg );
   }  
 }//StartPwm()
 
