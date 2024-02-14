@@ -312,7 +312,8 @@ Uin V     Uout  V
 500         5.6
 600         6.8
 */
-
+#define N_I     10.0
+#define THRESHOLD_V 10
 float VoltCoef =  ADC_VOLT_COEF;
 int16_t adc_zero = ADC_ZERO; 
 int16_t adc_v_zero = 17; 
@@ -340,24 +341,21 @@ void ADC_Process( void )
     stAdc_cur2 /= ADC_BUF_LENGHT;
     stAdc_volt /= ADC_BUF_LENGHT;
     
-    static float t1,t2,t3;
-    
-    t1 = stAdc_cur1*(1/5.0);
-    ADCdat.Current1  = t1=(int)floor(stAdc_cur1*(1/5.0) + (4/5.0)*(float)ADCdat.Current1);
-    ADCdat.Current2  = t2= (int)floor(stAdc_cur2*(1/5.0)+ (4/5.0)*(float)ADCdat.Current2);
-    ADCdat.Voltage   = t3= (int)floor(stAdc_volt*(1/5.0)+ (4/5.0)*(float)ADCdat.Voltage);
+    ADCdat.Current1  =  (uint16_t)floor(stAdc_cur1*(1/N_I)+ ((N_I-1)/N_I)*(float)ADCdat.Current1);
+    ADCdat.Current2  =  (uint16_t)floor(stAdc_cur2*(1/N_I)+ ((N_I-1)/N_I)*(float)ADCdat.Current2);
+    ADCdat.Voltage   =  (uint16_t)floor(stAdc_volt*(1/N_I)+ ((N_I-1)/N_I)*(float)ADCdat.Voltage);
      
     if ( stAdc_cur1 < ADC_ZERO) adc_zero = 0;
     if ( stAdc_cur2 < ADC_ZERO) adc_zero = 0;
     
-    if (abs(ADCdat.Current1 - stAdc_cur1) > 8) {
-      SetMBRgS( REG_R_CURR_1, (uint16_t)floor(10*(stAdc_cur1 - adc_zero) / CURR1_COEF));   // TODO  
+    if (abs(ADCdat.Current1 - stAdc_cur1) > THRESHOLD_V) {
+      SetMBRgS( REG_R_CURR_1, (uint16_t)floor(10*(ADCdat.Current1 - adc_zero) / CURR1_COEF));   // TODO  
     }
-    if (abs(ADCdat.Current2 - stAdc_cur2) > 8) {      
-      SetMBRgS( REG_R_CURR_2, (uint16_t)floor(10*(stAdc_cur2 - adc_zero) / CURR2_COEF));   // 50A - 424 ///  22.5 - 192// 0 - 7
+    if (abs(ADCdat.Current2 - stAdc_cur2) > THRESHOLD_V) {      
+      SetMBRgS( REG_R_CURR_2, (uint16_t)floor(10*(ADCdat.Current2 - adc_zero) / CURR2_COEF));   // 50A - 424 ///  22.5 - 192// 0 - 7
     }
-    if (abs(ADCdat.Voltage - stAdc_volt) > 8) {
-      int16_t voltage  = (int16_t)floor(1*(stAdc_volt + adc_v_zero) / VoltCoef);
+    if (abs(ADCdat.Voltage - stAdc_volt) > THRESHOLD_V) {
+      int16_t voltage  = (int16_t)floor(1*(ADCdat.Voltage + adc_v_zero) / VoltCoef);
       if ( voltage < 0 ) voltage = 0;      
       SetMBRgS( REG_R_VOLT, voltage );   //      
     }        

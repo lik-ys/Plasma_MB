@@ -70,7 +70,7 @@ static volatile eMBSndState eSndState;
 static volatile eMBRcvState eRcvState;
 
 volatile UCHAR  ucRTUBuf[MB_SER_PDU_SIZE_MAX];
-
+volatile UCHAR  ucBufRx[20], ucBufTx[20];
 static volatile UCHAR *pucSndBufferCur;
 static volatile USHORT usSndBufferCount;
 
@@ -301,7 +301,7 @@ xMBRTUTransmitFSM( void )
         if( usSndBufferCount != 0 )
         {
 #if SEND_ALL_BYTES_IN_ONE_CALL > 0
-			xMBPortSerialPutBytes(pucSndBufferCur, usSndBufferCount);
+			xMBPortSerialPutBytes(pucSndBufferCur, usSndBufferCount); memcpy((void *)ucBufTx,(void const*)ucRTUBuf, 20);
 			usSndBufferCount = 0;
 #else
             xMBPortSerialPutByte( ( CHAR )*pucSndBufferCur );
@@ -340,7 +340,7 @@ xMBRTUTimerT35Expired( void )
     case STATE_RX_RCV:
 		if (usRcvBufferPos >= 5 ) // отсекаем ложное срабатывание выхода RO драйвера 
         {
-          xNeedPoll = xMBPortEventPost( EV_FRAME_RECEIVED );
+          xNeedPoll = xMBPortEventPost( EV_FRAME_RECEIVED );   memcpy((void *)ucBufRx,(void const*)ucRTUBuf, 20);
         }
         else {
           xMBPortEventPost(EV_READY);          
