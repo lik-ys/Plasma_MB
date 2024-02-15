@@ -96,7 +96,6 @@ void   Timer::Time_Out( cntrl_timer_t ct, uint32_t time , eProcessCom_t ev )
 		ev_timeout[ ev ] = time;
 		msec[ ev ] = HAL_GetTick();
 		break;
-
 	case test:
 		if ( (0 == ev_timeout[ev] ) || (st_tim[ ev ] == not_start ))  { return;}
 
@@ -113,18 +112,12 @@ void   Timer::Time_Out( cntrl_timer_t ct, uint32_t time , eProcessCom_t ev )
 			 st_tim[ ev ] = time_ok; return;
 		}
 		break;
-
 	case stop:
+    case clr:
 		ev_timeout[ (uint8_t)ev ] = 0;
-		st_tim[ ev ] = not_start; return;
+		st_tim[ ev ] = not_start; 
+        return;
 		break;
-
-	case clr:
-		ev_timeout[ (uint8_t)ev ] = 0;
-		msec[ ev ] = 0;
-		st_tim[ ev ] =  not_start; return;
-		break;
-
 	default:
 		st_tim[ ev ] =  not_start; return;
 		break;

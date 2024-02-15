@@ -32,8 +32,7 @@ TODO сделать поджиг
 #include  "PilotArc.hpp"
 #include   "user_mb_app.h"
 
-Command  gCmd;
-Command* hCmd = &gCmd;
+extern Command* hCmd;
 
 Timer gTimer;
 Timer *hTimer = &gTimer;
@@ -186,46 +185,30 @@ void SM_Tick( void )
 
   if (     1 == gStateSM.st.bStart )  gStateSM.proc = ST_COMM_START;
   else if (1  == gStateSM.st.bStop )  gStateSM.proc = ST_COMM_STOP;
-  
+  //Передача уставок. StartCNC->1.PilotArc->TO(1sec)->FireON->Curr1 Compare 100A->CNC_OUT_RELAY
+  if (gMbStatus.bit.bStartCNC && 0 == gMbCntrl.bit.bPilotArc )
+  {
+    WR_DEBUG("--1-- PilotARC Timer Start on TIME_START = %i s. \r\n",TIME_START/1000);
+    gMbCntrl.bit.bPilotArc = 1;  // Деж. дуга
+    gMbActiveCntrl.bit.bPilotArc = 1;
+    hTimer->Time_Out( Timer::start, TIME_START, EV_COMM_START);    
+  }
   if ( gMbStatus.bit.bStartCNC && hTimer->IsTimeOut( EV_COMM_START ) )
   {
-    gMbStatus.bit.bStartCNC = 0;
-    WR_DEBUG("Fire start from CNC \r\n");
+    WR_DEBUG("--2-- FireSstart\r\n");
+        
     gStateSM.st.bFireStrat = 1;
     UpateActiveRg();
     SetMBRgS( REG_R_STATUS, gMbStatus.reg );
   }else;
-  
+
   switch( gStateSM.proc )
   {
-  case ST_HIGHT_PROCESS:
-    gStateSM.time.b10ms = 0;
-    gStateSM.proc = ST_IDLE;
-    break;
-  case ST_MEDIUM_PROCESS:
-    InRead();
-    FireProcess();   
-    hCmd->Proc();
-    ReadStart( );
-    gStateSM.time.b100ms = 0;
-  
-    hPilotArc->Proc();
-    
-    gStateSM.proc = ST_IDLE;
-    break;
-  case ST_SLOW_PROCESS: 
-    gStateSM.time.b1000ms = 0;     
-    // TestOut();    
-    gStateSM.time.b1000ms = 0; 
-    gStateSM.proc = ST_TOGGLE_LED;
-    break;
   case ST_COMM_START:                
-      if (1 == gStateSM.st.bCommStart ) 
-      {     
-        hTimer->Time_Out( Timer::start, TIME_START, EV_COMM_START);
+      if ( 1 == gStateSM.st.bCommStart ) 
+      {             
         gStateSM.st.bCommStart = 0;
-        gMbStatus.bit.bStartCNC = 1;
-        gMbCntrl.bit.bPilotArc = 1;  // Деж. дуга    
+        gMbStatus.bit.bStartCNC = 1;            
         SetMBRgS( REG_R_STATUS, gMbStatus.reg );          
         WR_DEBUG("Start from CNC \r\n");    
       }else;
@@ -238,13 +221,34 @@ void SM_Tick( void )
         gStateSM.st.bCommStart = 0;        
         gStateSM.st.bFireStrat = 0;
         UpateActiveRg();
-        gMbStatus.bit.bStartCNC = 0;
-        
+        gMbStatus.bit.bStartCNC = 0;        
         //gMbStatus.bit.bPilotArc = 0;
         SetMBRgS( REG_R_STATUS, gMbStatus.reg );                
         WR_DEBUG("Stop from CNC \r\n");    
       }else;
       gStateSM.st.bStop = 0;
+    break;    
+  case ST_HIGHT_PROCESS:
+    gStateSM.time.b10ms = 0;
+    gStateSM.proc = ST_IDLE;
+    break;
+  case ST_MEDIUM_PROCESS:
+    InRead();
+    FireProcess();   
+    hCmd->Proc();
+    hCmd->TechProc();
+    ReadStart( );
+    gStateSM.time.b100ms = 0;
+  
+    hPilotArc->Proc();
+    
+    gStateSM.proc = ST_IDLE;
+    break;
+  case ST_SLOW_PROCESS: 
+    gStateSM.time.b1000ms = 0;     
+    // TestOut();    
+    gStateSM.time.b1000ms = 0; 
+    gStateSM.proc = ST_TOGGLE_LED;
     break;
   default:
     gStateSM.proc = ST_IDLE;
@@ -262,10 +266,10 @@ void HAL_ADC_ConvCpltCallback(ADC_HandleTypeDef* hadc)
   gStateSM.st.bAdcCmplt = 1;
     //getADC( );
 }
-
+#define  NUMBER_TURN_CURR_SENS 3.0 // 1/3 - 3 витка на датчике тока
 #define  ADC_ZERO 7
-#define  CURR1_COEF (float)8.4
-#define  CURR2_COEF (float)8.4
+#define  CURR1_COEF (float)(8.4/NUMBER_TURN_CURR_SENS)
+#define  CURR2_COEF (float)(8.4/NUMBER_TURN_CURR_SENS) 
 #define  ADC_VOLT_COEF  (float)5.17
 
 /*
@@ -320,12 +324,12 @@ void ADC_Process( void )
     
     if (abs(ADCdat.Current1 - pre_cur1) > THRESHOLD_V) {      
       pre_cur1 = ADCdat.Current1;
-      SetMBRgS( REG_R_CURR_1, (uint16_t)floor(10*(ADCdat.Current1 - adc_zero) / CURR1_COEF));   // TODO  
+      SetMBRgS( REG_R_CURR_1, (uint16_t)floor((ADCdat.Current1 - adc_zero) / CURR1_COEF));   // TODO  
       DBG_ITM_Event(ITM_CH1, ADCdat.Current1);
     }
     if (abs(ADCdat.Current2 - pre_cur2) > THRESHOLD_V) {    
       pre_cur2 = ADCdat.Current2;
-      SetMBRgS( REG_R_CURR_2, (uint16_t)floor(10*(ADCdat.Current2 - adc_zero) / CURR2_COEF));   // 50A - 424 ///  22.5 - 192// 0 - 7
+      SetMBRgS( REG_R_CURR_2, (uint16_t)floor((ADCdat.Current2 - adc_zero) / CURR2_COEF));   // 50A - 424 ///  22.5 - 192// 0 - 7
       
     }
     if (abs(ADCdat.Voltage - pre_volt) > THRESHOLD_V) {

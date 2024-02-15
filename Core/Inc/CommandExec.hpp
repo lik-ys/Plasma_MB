@@ -37,24 +37,57 @@
 /*===============================[ PUBLIC FUNCTIONS ]==========================*/ 
     // Публичные функции 
 
+
+
 void CmdPilotArc( void );
-void CmdFireStart(void);
+void CmdFireStart( void);
 void CmdStartStopPwm( void );
 void CmdMetalContact( void );
+void CmdTimeOut( void );
+void CmdRepeat( void );
+void CmdWiteCurrent( void );
 
+  typedef enum {
+    P_PILOT_ARC     ,
+    P_TIME_OUT_0    ,
+    P_FIRE_START    ,
+    P_WAIT_CURR     ,
+    P_TIME_OUT_1    ,      
+    P_CMD_REPEAT    ,
+    P_START_PWM     ,
+    P_STOP_PWM      ,
+    P_END
+  }tech_proc_t;
+  
+#define CNT_PROC   P_END
+#define CNT_REPEAT 2    
+  
 class Command// : public Timer
 {
 public:
-  Command();
-  
+  Command();  
   void Proc( void );
-
   typedef void (*pExecFunc_t)(void);
 
-  pExecFunc_t TableExcFunc[ NUMBERS_CNTL_BIT ] = {CmdStartStopPwm , CmdPilotArc, CmdFireStart , NULL, };
+  typedef enum{    
+    PILOT_ARC   ,
+    FIRE_START  ,
+    ON_PWM      ,
+  }start_func_t;
+  
+  void Start(start_func_t );
+  
+  pExecFunc_t TableExcFunc[ NUMBERS_CNTL_BIT ] = { CmdPilotArc, CmdFireStart, CmdStartStopPwm, NULL, };
+  
+  // описание процесса включения 
+  typedef uint8_t NumTechProc_t;
+  uint8_t repeat;
+  NumTechProc_t num; // 0,1,..7
+  NumTechProc_t tbl[ CNT_PROC ]       = {P_PILOT_ARC, P_TIME_OUT_0, P_START_PWM ,    P_FIRE_START, P_WAIT_CURR,    P_TIME_OUT_1, P_CMD_REPEAT };
+  pExecFunc_t tblThechProc[ CNT_PROC ]= {CmdPilotArc, CmdTimeOut,   CmdStartStopPwm, CmdFireStart, CmdWiteCurrent, CmdTimeOut,   CmdRepeat    };
+  void TechProc( void );
 
 private:
-  
 };//Command
 
 /*===============================[ PSEUDO/INLINE FUNCTIONS ]===================*/ 

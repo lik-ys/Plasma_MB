@@ -23,15 +23,14 @@
 #include    "io_process.h"
 #include    "main.h"
 
-#define PA_TIME_OUT  2000
 
 class PilotArc //: public Timer
 {
 public: 
   PilotArc(void );
-  
+
   Timer * htim;
-  port_t    port;     // выод управления деж. дугой
+  port_t    port;     // вывод управления деж. дугой
   uint16_t  TimeOut;  // время ожиданя 
   uint16_t  curr;  // уровень напряжения 
   

@@ -36,6 +36,8 @@ extern "C" {
 #define ADC_BUF_LENGHT  16
   
 #define TIME_OUT_TEST   250
+#define THRESHOLD_CURR_1    100  // 100 A  - пороговый ток включения готовности для ЧПУ
+  
 /*===============================[ PUBLIC TYPES ]==============================*/ 
     // Публичные типы 
 typedef   enum
@@ -109,7 +111,7 @@ typedef struct
   uint16_t bMetalContact: 1;
   uint16_t bCommFire    : 1;
   
-  uint16_t bTestCurr2   : 1; // Начать проверять рост тока дуги
+  uint16_t bTestCurr1   : 1; // Начать проверять рост тока дуги
   uint16_t bIgnitionOk  : 1; // Поджиг сработал - выдать на ЧПУ сигнал готовоность
   
   uint16_t bHightProc   : 1;

@@ -129,14 +129,17 @@ void FireProcess( void )
     SetMBRgS( REG_R_STATUS, gMbStatus.reg );    
     FireStart();        
     gStateSM.st.bFireWaite = 1;
-    gStateSM.st.bTestCurr2 = 1;
+    gStateSM.st.bTestCurr1 = 1;
+    hTimer->Time_Out( Timer::start, PA_TIME_OUT, EV_PILOT_ARC_TO );
+    hTimer->Time_Out( Timer::start, TIME_FIRE_START, EV_COMM_FIRE);
+    
   break;
   case ST_FIRE_WAITE: 
     if ( hTimer->IsTimeOut( EV_FIRE_START ) ) 
     {
       gStateSM.proc = ST_FIRE_ON;
       hTimer->Time_Out( Timer::start, TIME_HOLD, EV_FIRE_ON );
-      WR_DEBUG("Fire ON \r\n");
+      WR_DEBUG("Fire ON time TIME_HOLD = %i\r\n", TIME_HOLD);
       gStateSM.proc =  ST_FIRE_ON;
       gStateSM.st.bFireWaite = 0;
       gStateSM.st.bFireOn = 1;
@@ -152,7 +155,8 @@ void FireProcess( void )
     gMbStatus.bit.bFireStart = 0;
     preMbCntrl.bit.bFireStart = 0;
     SetMBRgS( REG_R_STATUS, gMbStatus.reg );  
-    ///hTimer->Time_Out( Timer::start, TIME_OUT_FIRE_OFF, EV_FIRE_OFF );
+    hTimer->Time_Out( Timer::start, TIME_OUT_FIRE_OFF, EV_FIRE_OFF );
+    hTimer->Time_Out( Timer::stop, TIME_FIRE_START, EV_COMM_FIRE);
     break;
   default:;    
   }

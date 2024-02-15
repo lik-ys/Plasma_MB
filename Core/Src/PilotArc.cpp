@@ -63,27 +63,38 @@ void PilotArc::Off( void )
   htim->Time_Out( Timer::clr , PA_TIME_OUT, EV_PILOT_ARC_TO );
 }
 
-#define THRESHOLD_CURR_2    500 
+ 
 
 /***
 *  ∆дем роста тока 
 */
 void PilotArc::Proc( void )
 {   
-  if ( 0 ==  gStateSM.st.bIgnitionOk && gStateSM.st.bTestCurr2 )
+  if ( 0 ==  gStateSM.st.bIgnitionOk && gStateSM.st.bTestCurr1 )
   {
-    if ( ADCdat.Current2 > THRESHOLD_CURR_2)  //
+     if ( GetMBRgS( REG_R_CURR_1)/10 > THRESHOLD_CURR_1 )  //
     {
       gStateSM.st.bIgnitionOk = 1;
-      CncWrite( cnc_out0, GPIO_PIN_SET );
-      // htim->Time_Out( Timer::start, PA_TIME_OUT, EV_PILOT_ARC_TO );
-    }else;
-  };
-  
+      CncWrite( cnc_out0, GPIO_PIN_SET );      
+    }else
+    {
+      // ≈ще две попытки включени€ если не дождались роста тока
+      if ( htim->IsTimeOut( EV_PILOT_ARC_TO ) )
+      {
+        WR_DEBUG("--3-- EV_PILOT_ARC_TO \r\n");
+        hTimer->Time_Out( Timer::stop, PA_TIME_OUT, EV_PILOT_ARC_TO );
+      }
+      if ( htim->IsTimeOut( EV_FIRE_OFF) )
+      {        
+        WR_DEBUG("--4-- EV_FIRE_OFF \r\n"); 
+        hTimer->Time_Out( Timer::stop, TIME_OUT_FIRE_OFF, EV_FIRE_OFF );
+      }
+    }
+  };  
   if ( 0 == gMbStatus.bit.bStartCNC )
   {
       gStateSM.st.bIgnitionOk = 0;
-      gStateSM.st.bTestCurr2  = 0;
+      gStateSM.st.bTestCurr1  = 0;
       CncWrite( cnc_out0, GPIO_PIN_RESET );
   }  
 }// Proc()
