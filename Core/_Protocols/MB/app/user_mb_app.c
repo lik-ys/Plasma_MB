@@ -70,7 +70,8 @@ void UpateActiveRg( void )
   {
     gMbActiveCntrl.reg  = preMbCntrl.reg ^ gMbCntrl.reg;
     preMbCntrl.reg = gMbCntrl.reg;
-  };  
+  }else{
+  };   // TODO
 }// UpateActiveRg()
 
 /**

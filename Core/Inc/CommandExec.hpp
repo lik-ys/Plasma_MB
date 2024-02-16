@@ -38,26 +38,49 @@
     // ѕубличные функции 
 
 
-
+void CmdPilotArcStart(void);
 void CmdPilotArc( void );
 void CmdFireStart( void);
 void CmdStartStopPwm( void );
+void CmdStartPwm(void);
 void CmdMetalContact( void );
 void CmdTimeOut( void );
 void CmdRepeat( void );
 void CmdWiteCurrent( void );
 
-  typedef enum {
-    P_PILOT_ARC     ,
-    P_TIME_OUT_0    ,
-    P_FIRE_START    ,
-    P_WAIT_CURR     ,
-    P_TIME_OUT_1    ,      
-    P_CMD_REPEAT    ,
-    P_START_PWM     ,
-    P_STOP_PWM      ,
-    P_END
-  }tech_proc_t;
+/**
+*
+*/
+typedef enum
+{
+  CHOPPER_START     , // синхронное выключение €чеек от команды  bit0 в  REG_W_CNTRL_START
+  PILOT_ARC         , // ¬кл/выкл дежурной дуги
+  FIRE_START        , // ¬кл/выкл поджига
+  
+  RESERV_B__1     , // TODO
+  RESERV_B_0    ,
+  RESERV_B_1    ,
+  RESERV_B_2    ,
+  RESERV_B_3    ,
+  RESERV_B_4    ,
+  CHOPPER_OFF   ,
+  // 15 bit  -  EEPROM_write TODO
+  NUMBERS_CNTL_BIT
+}eCntrlRegBits_t;//
+
+typedef enum {
+  P_START_PWM    ,
+  P_PILOT_ARC_START     ,
+  P_PILOT_ARC    ,
+  P_TIME_OUT_0    ,
+    
+  P_FIRE_START    ,
+  P_WAIT_CURR     ,
+  P_TIME_OUT_1    ,      
+  P_CMD_REPEAT    ,
+  P_STOP_PWM      ,
+  P_END             // 9
+}tech_proc_t;
   
 #define CNT_PROC   P_END
 #define CNT_REPEAT 2    
@@ -77,15 +100,16 @@ public:
   
   void Start(start_func_t );
   
-  pExecFunc_t TableExcFunc[ NUMBERS_CNTL_BIT ] = { CmdPilotArc, CmdFireStart, CmdStartStopPwm, NULL, };
+  pExecFunc_t TableExcFunc[ NUMBERS_CNTL_BIT ] = { CmdStartStopPwm, CmdPilotArc, CmdFireStart, NULL, NULL,NULL, NULL, NULL,NULL, CmdStartStopPwm };
   
   // описание процесса включени€ 
   typedef uint8_t NumTechProc_t;
-  uint8_t repeat;
+  int8_t repeat;
   NumTechProc_t num; // 0,1,..7
-  NumTechProc_t tbl[ CNT_PROC ]       = {P_PILOT_ARC, P_TIME_OUT_0, P_START_PWM ,    P_FIRE_START, P_WAIT_CURR,    P_TIME_OUT_1, P_CMD_REPEAT };
-  pExecFunc_t tblThechProc[ CNT_PROC ]= {CmdPilotArc, CmdTimeOut,   CmdStartStopPwm, CmdFireStart, CmdWiteCurrent, CmdTimeOut,   CmdRepeat    };
+  NumTechProc_t tbl[ CNT_PROC ]       = {P_PILOT_ARC_START, P_TIME_OUT_0,     P_PILOT_ARC,  P_START_PWM, P_FIRE_START, P_WAIT_CURR,   P_TIME_OUT_1, P_CMD_REPEAT };
+  pExecFunc_t tblThechProc[ CNT_PROC ]= {CmdStartPwm,       CmdPilotArcStart, CmdPilotArc,  CmdTimeOut,  CmdFireStart, CmdWiteCurrent,CmdTimeOut,   CmdRepeat    };
   void TechProc( void );
+  void InitTechProc(void );
 
 private:
 };//Command

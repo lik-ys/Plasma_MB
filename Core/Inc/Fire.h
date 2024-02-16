@@ -8,7 +8,7 @@ extern "C" {
 #define TIME_OUT_PWR_ON     1000
 #define TIME_HOLD           1000 // время удержавния
 #define TIME_OUT_FIRE_OFF   1500 // время паузы между включениями ОГНЯ
-#define TIME_START          10000 //
+#define TIME_START          3000 //
 #define PA_TIME_OUT         2000
 #define TIME_FIRE_START     1000  
 

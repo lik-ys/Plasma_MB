@@ -130,7 +130,7 @@ void FireProcess( void )
     FireStart();        
     gStateSM.st.bFireWaite = 1;
     gStateSM.st.bTestCurr1 = 1;
-    hTimer->Time_Out( Timer::start, PA_TIME_OUT, EV_PILOT_ARC_TO );
+
     hTimer->Time_Out( Timer::start, TIME_FIRE_START, EV_COMM_FIRE);
     
   break;
@@ -165,7 +165,6 @@ void FireProcess( void )
 #define  CNT_FIRE_READ 5
 void ReadStart( void )
 {
-
     static uint16_t cnt = 0;
     if ( GPIO_PIN_SET == Read( comm_start )) 
     {

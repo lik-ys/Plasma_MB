@@ -72,7 +72,7 @@ void PilotArc::Proc( void )
 {   
   if ( 0 ==  gStateSM.st.bIgnitionOk && gStateSM.st.bTestCurr1 )
   {
-     if ( GetMBRgS( REG_R_CURR_1)/10 > THRESHOLD_CURR_1 )  //
+     if ( GetMBRgS( REG_R_CURR_1) > THRESHOLD_CURR_1 )  //
     {
       gStateSM.st.bIgnitionOk = 1;
       CncWrite( cnc_out0, GPIO_PIN_SET );      

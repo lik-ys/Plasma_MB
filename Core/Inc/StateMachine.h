@@ -171,19 +171,6 @@ typedef struct
   
 }State_t;
 
-/**
-*
-*/
-typedef enum
-{
-  FIRE_START        ,
-  PILOT_ARC         ,
-  CHOPPER_START     , // синхронное выключение €чеек от команды  bit0 в  REG_W_CNTRL_START
-  FIRE_IN_START     , // TODO
-  
-  NUMBERS_CNTL_BIT
-}eCntrlRegBits_t;//
-
 // REG_S_CNTRL
 typedef union 
 {  

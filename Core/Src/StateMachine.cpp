@@ -185,7 +185,8 @@ void SM_Tick( void )
 
   if (     1 == gStateSM.st.bStart )  gStateSM.proc = ST_COMM_START;
   else if (1  == gStateSM.st.bStop )  gStateSM.proc = ST_COMM_STOP;
-  //Передача уставок. StartCNC->1.PilotArc->TO(1sec)->FireON->Curr1 Compare 100A->CNC_OUT_RELAY
+  
+  /*Передача уставок. StartCNC->1.PilotArc->TO(1sec)->FireON->Curr1 Compare 100A->CNC_OUT_RELAY
   if (gMbStatus.bit.bStartCNC && 0 == gMbCntrl.bit.bPilotArc )
   {
     WR_DEBUG("--1-- PilotARC Timer Start on TIME_START = %i s. \r\n",TIME_START/1000);
@@ -201,6 +202,7 @@ void SM_Tick( void )
     UpateActiveRg();
     SetMBRgS( REG_R_STATUS, gMbStatus.reg );
   }else;
+*/
 
   switch( gStateSM.proc )
   {
@@ -216,14 +218,19 @@ void SM_Tick( void )
     break;
   case ST_COMM_STOP:      
       if ( 1 == gStateSM.st.bCommStart )
-      {         
-        gMbCntrl.bit.bPilotArc = 0;
+      { 
+        gMbCntrl.bit.bChopperStart = 0;
+        gMbCntrl.bit.bOnOffPwr = 0;
+        gMbCntrl.bit.bPilotArc = 0;        
+        gMbCntrl.bit.bFireStart = 0;
         gStateSM.st.bCommStart = 0;        
         gStateSM.st.bFireStrat = 0;
         UpateActiveRg();
+        gMbActiveCntrl.bit.bOnOffPwr = 1;
         gMbStatus.bit.bStartCNC = 0;        
         //gMbStatus.bit.bPilotArc = 0;
-        SetMBRgS( REG_R_STATUS, gMbStatus.reg );                
+        SetMBRgS( REG_R_STATUS, gMbStatus.reg ); 
+        hCmd->InitTechProc();
         WR_DEBUG("Stop from CNC \r\n");    
       }else;
       gStateSM.st.bStop = 0;

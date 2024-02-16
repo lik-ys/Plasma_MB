@@ -32,7 +32,7 @@ Command* hCmd = &gCmd;
 Command::Command( void )
 {
   num = 0;
-  repeat = 0;
+  repeat = CNT_REPEAT;
 }
 
 void Command::Start( start_func_t start )
@@ -45,6 +45,7 @@ void Command::Start( start_func_t start )
 void Command:: Proc( void )
 {  
   static int num = 0;
+  if ( gMbStatus.bit.bStartCNC ) return;
   if ( gMbActiveCntrl.reg & (1 << num ) )
   { 
     if ( NULL != TableExcFunc[num] ) TableExcFunc[num]();
@@ -53,14 +54,37 @@ void Command:: Proc( void )
   if ( num++ >= NUMBERS_CNTL_BIT ) num = 0;  
 }// Proc()
 
+void Command::InitTechProc(void)
+{
+  gMbStatus.bit.bStartCNC = 0;
+  num = 0;
+  repeat = CNT_REPEAT;
+}
 /**
 * 
 */
 void Command::TechProc(void)
 {
-   if (gMbStatus.bit.bStartCNC) tblThechProc[tbl[num]]();   
+  if ( gMbStatus.bit.bStartCNC ) {
+    if ( 0 >= repeat )
+    {
+      gMbStatus.bit.bStartCNC = 0;
+      num = 0;
+    }
+    else 
+      if (tblThechProc[num] != NULL ) tblThechProc[num]();   
+  }
 }// TechProc()
 
+static
+void  CmdPilotArcStart(void )
+{
+    WR_DEBUG("--1-- PilotARC Timer Start on TIME_START = %i s. \r\n",TIME_START/1000);
+    gMbCntrl.bit.bPilotArc = 1;  // Деж. дуга
+    gMbActiveCntrl.bit.bPilotArc = 1;
+    hTimer->Time_Out( Timer::start, TIME_START, EV_COMM_START); 
+    hCmd->num = P_PILOT_ARC;
+}
 // command functions
 /**
 *   Дежурная дуга
@@ -70,21 +94,20 @@ void  CmdPilotArc(void )
 {  
   if ( gMbCntrl.bit.bPilotArc ) // cmd_pilot_arc
   {
-    WR_DEBUG("PILOT_ARC SET \r\n");
-    //PilotArc( SET );    
+    WR_DEBUG("PILOT_ARC SET \r\n");    
     hPilotArc->On();
-    gMbStatus.bit.bPilotArc = 1; 
+    gMbStatus.bit.bPilotArc = 1;
+    hCmd->num = P_TIME_OUT_0; 
     // timer start    
   }else
   {
     WR_DEBUG("PILOT_ARC RESET \r\n");    
-    //PilotArc( RESET );
     gMbStatus.bit.bPilotArc = 0; 
     hPilotArc->Off();
   } 
   SetMBRgS( REG_R_STATUS, gMbStatus.reg );
   gMbActiveCntrl.bit.bPilotArc = 0;
-  hCmd->num = P_PILOT_ARC;
+    
   hTimer->Time_Out( Timer::start, PA_TIME_OUT, EV_PILOT_ARC_TO );
 } //CmdPilotArc()
 
@@ -92,19 +115,25 @@ void  CmdPilotArc(void )
 *   Поджиг
 */
 static void  CmdFireStart( void )
-{
-  WR_DEBUG("FIRE_START \r\n");  
-  if ( gMbCntrl.bit.bFireStart ) // получили команду "поджиг "от МБ
-  {
-    gMbCntrl.bit.bFireStart  = 0;
-    SetMBRgS( REG_W_CNTRL, gMbCntrl.reg );
-    gStateSM.st.bCommFire = 1; 
-    gStateSM.proc = ST_COMM_FIRE;
-    gStateSM.st.bFireStrat = 1;
-    UpateActiveRg();
-    SetMBRgS( REG_R_STATUS, gMbStatus.reg );    
-  }else;
-  gMbActiveCntrl.bit.bFireStart = 0;  
+{  
+  gStateSM.st.bFireStrat = 1;
+  WR_DEBUG("FIRE_START \r\n");
+  hCmd->num = P_WAIT_CURR;
+  UpateActiveRg();
+  SetMBRgS( REG_R_STATUS, gMbStatus.reg );  
+//  if ( gMbCntrl.bit.bFireStart ) // получили команду "поджиг "от МБ
+//  {
+//    WR_DEBUG("FIRE_START \r\n");
+//    gMbCntrl.bit.bFireStart  = 0;
+//    SetMBRgS( REG_W_CNTRL, gMbCntrl.reg );
+//    gStateSM.st.bCommFire = 1; 
+//    gStateSM.proc = ST_COMM_FIRE;
+//    gStateSM.st.bFireStrat = 1;
+//    UpateActiveRg();
+//    SetMBRgS( REG_R_STATUS, gMbStatus.reg );    
+//    hCmd->num = P_WAIT_CURR;
+//  }else;
+//  gMbActiveCntrl.bit.bFireStart = 0;  
 }// CmdFireStart()
 
 /**
@@ -113,7 +142,7 @@ static void  CmdFireStart( void )
 static 
 void CmdWiteCurrent(void )
 {
-  if ( GetMBRgS( REG_R_CURR_1)/10 > THRESHOLD_CURR_1 )  //
+  if ( GetMBRgS( REG_R_CURR_1) > THRESHOLD_CURR_1 )  //
   {
     gStateSM.st.bIgnitionOk = 1;
     CncWrite( cnc_out0, GPIO_PIN_SET );   
@@ -123,7 +152,6 @@ void CmdWiteCurrent(void )
     if (hTimer->IsTimeOut( EV_COMM_FIRE ))
     {
       hCmd->num = P_CMD_REPEAT;
-      hCmd->repeat = 0;
     }else;    
   }
 }
@@ -134,14 +162,18 @@ void CmdWiteCurrent(void )
 static
 void CmdRepeat( void )
 {
-  if ( CNT_REPEAT < hCmd->repeat-- )
-  {
-    hCmd->num = P_FIRE_START;
-    WR_DEBUG("P_FIRE_START \r\n");
-  }else
-  {
-    hCmd->num = P_END;
-    WR_DEBUG("P_END \r\n");
+  if ( 0 == gStateSM.st.bFireOff ){
+    if ( hCmd->repeat > 0 )
+    {
+      hCmd->repeat--;
+      hCmd->num = P_FIRE_START; 
+      gMbCntrl.bit.bFireStart = 1;
+      WR_DEBUG("----- repeat \r\n");
+    }else
+    {
+      hCmd->num = P_END;
+      WR_DEBUG("P_END \r\n");
+    }
   }
 }
 /**
@@ -152,20 +184,31 @@ void CmdTimeOut( void )
 {
   switch( hCmd->num )    // 
   {
-    case P_PILOT_ARC:   hCmd->num = P_TIME_OUT_0;
+    case P_PILOT_ARC_START:   
+      hCmd->num = P_TIME_OUT_0;
       break;
     case P_TIME_OUT_0:  
-      if (hTimer->IsTimeOut( EV_PILOT_ARC_TO )) hCmd->num = P_FIRE_START;
+      if ( hTimer->IsTimeOut( EV_COMM_START ) ) {
+        hCmd->num = P_FIRE_START;     
+        WR_DEBUG("-------- TimeOut is EV_COMM_START \r\n");
+      }
       break;
-    case P_FIRE_START:  hCmd->num = P_WAIT_CURR;
+    case P_PILOT_ARC:
+      hCmd->num = P_FIRE_START;
+      break;
+    case P_FIRE_START:  
+      hCmd->num = P_WAIT_CURR;
       break;
     case P_WAIT_CURR:   hCmd->num = P_TIME_OUT_1;
+      WR_DEBUG("-------- P_WAIT_CURR \r\n");
       break;
-    case P_TIME_OUT_1:  hCmd->num = P_CMD_REPEAT;
+    case P_TIME_OUT_1:  
+      WR_DEBUG("-------- TimeOut is P_TIME_OUT_1 \r\n");
+      hCmd->num = P_CMD_REPEAT;
       break; 
-    case P_CMD_REPEAT:  
-      if ( hCmd->repeat < CNT_REPEAT ) hCmd->num = P_START_PWM;
-      else  hCmd->num = P_START_PWM;
+    case P_CMD_REPEAT:        
+      WR_DEBUG("-------- P_CMD_REPEAT \r\n");
+      hCmd->num = P_START_PWM;
       break;
     case P_START_PWM:
       break;
@@ -196,14 +239,45 @@ void CmdStartStopPwm( void )
     pExtSync->Instance->CNT = 0;
     HAL_TIM_PWM_Start( pExtSync, TIM_CHANNEL_1 ); 
     gMbStatus.bit.bOnOffPwr = 1;
+    gMbCntrl.bit.bOnOffPwr = 1;
     SetMBRgS( REG_R_STATUS, gMbStatus.reg );
-  }else
+    hCmd->num = P_PILOT_ARC_START;
+    gMbCntrl.bit.bFireStart = 1;
+  }else if (1 == gMbStatus.bit.bOnOffPwr || gMbStatus.bit.bChopperStart )
   {
     pExtSync->Instance->CNT = 0;
     HAL_TIM_PWM_Stop( pExtSync, TIM_CHANNEL_1 );
     gMbStatus.bit.bOnOffPwr = 0;
     SetMBRgS( REG_R_STATUS, gMbStatus.reg );
-  }  
+    //hCmd->num = P_END;
+  }   
+}//StartPwm()
+
+/**
+* включение синхрочастоты
+*/
+static
+void CmdStartPwm( void )
+{
+    pExtSync->Instance->CNT = 0;
+    HAL_TIM_PWM_Start( pExtSync, TIM_CHANNEL_1 ); 
+    gMbStatus.bit.bOnOffPwr = 1;
+    SetMBRgS( REG_R_STATUS, gMbStatus.reg );
+    hCmd->num = P_PILOT_ARC_START;
+    gMbCntrl.bit.bFireStart = 1;  
+}//StartPwm()
+/**
+* выключение синхрочастоты
+*/
+static
+void CmdStopPwm( void )
+{
+    pExtSync->Instance->CNT = 0;
+    HAL_TIM_PWM_Stop( pExtSync, TIM_CHANNEL_1 );
+    gMbStatus.bit.bOnOffPwr = 0;
+    gMbStatus.bit.bChopperStart = 0;
+    SetMBRgS( REG_R_STATUS, gMbStatus.reg );
+    hCmd->num = P_END;
 }//StartPwm()
 
 /** (END OF FILE  : CommandExec.cpp.cpp) 
