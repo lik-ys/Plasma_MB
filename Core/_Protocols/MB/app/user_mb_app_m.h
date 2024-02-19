@@ -48,7 +48,7 @@ typedef enum _MB_REG_SLAVE
   
   REG_W_SET_OUT_PWM     = 48,  // 0-100%
   REG_W_SET_OUT_CURRENT = 49,  // 0..300 А 
-  REG_W_CONTROL         = 50,
+  REG_W_CONTROL         = 50,  // 0 - stop PWM; 1 - start PWM
   REG_W_CNTRL_PROCESS   = 51,  // соотвествует REG_R_STATE_PROCESS
   REG_W_CURRENT0        = 80,  // Таблица ID 80..92 Значение тока (12 значений) 
   REG_W_CURRENT1          ,    // 
@@ -134,6 +134,8 @@ void MBMasterError(void );
 void MBMasterExec(void );
 void MBMasterErrorTO( void );
 
+void SetMBRgM( uint16_t slave, eMBReg_t numMBReg, uint16_t data );
+uint16_t GetMBRgM( uint16_t slave, eMBReg_t numMBReg );
 
 #endif
 

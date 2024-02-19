@@ -102,8 +102,8 @@ bool ModBusCom::Loop( void )
     this->cntMaster++;
     if ( 0 == eMBMasterIsEnabled()) return false;
     
-    //Read();
-    Write();
+    Read();
+    //Write();
     
     gMBErrorCode = eMBMasterPoll( );
 	xGetMasterEvent( &gMBEvent);
@@ -207,16 +207,22 @@ bool ModBusCom::Write( void )
   //  gActiveReg.rgPWM = 1;
   if (gActiveReg.rg) 
   {
-    this->addr  = static_cast<mb_addr_t>(1);
-    if ( gActiveReg.rgCNTRL){
-    }
-    if ( gActiveReg.rgPWM )  
+    this->addr  = static_cast<mb_addr_t>(6);  // 
+    if ( gActiveReg.rgCNTRL)
     {
-      
+      gActiveReg.rgCNTRL = 0;
+      uint16_t rgCntrl;      
+      rgCntrl = GetMBRgM((uint16_t)this->addr, REG_W_CONTROL);
+      rgCntrl |= (1<<0);
+      SetMBRgM((uint16_t)this->addr, REG_W_CONTROL, rgCntrl );
+      ret = Hr_write(this->addr, static_cast<eMBReg_t>(REG_W_CONTROL), GetMBRgS(REG_W_CNTRL) );      
+    }else;
+    if ( gActiveReg.rgPWM )  
+    {      
       gActiveReg.rgPWM = 0;
       //eEvent = xMasterEventGet(this->addr);
       //if (( EV_MASTER_EXECUTE == eEvent ) || ( EV_MASTER_INIT == eEvent ))
-        ret = Hr_write(this->addr, static_cast<eMBReg_t>(REG_W_SET_OUT_PWM), GetMBRgS(REG_W_PWM) );
+      ret = Hr_write(this->addr, static_cast<eMBReg_t>(REG_W_SET_OUT_PWM), GetMBRgS(REG_W_PWM) );
     }
     if ( gActiveReg.rgCURR) 
     {

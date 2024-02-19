@@ -154,7 +154,7 @@ void FireProcess( void )
     HAL_NVIC_EnableIRQ( EXTI4_IRQn );
     gMbStatus.bit.bFireStart = 0;
     preMbCntrl.bit.bFireStart = 0;
-    SetMBRgS( REG_R_STATUS, gMbStatus.reg );  
+    SetMBRgS( REG_R_STATUS, gMbStatus.reg );  // todo SetMBRgS( REG_R_STATUS, gMbCntrl.reg );  
     hTimer->Time_Out( Timer::start, TIME_OUT_FIRE_OFF, EV_FIRE_OFF );
     hTimer->Time_Out( Timer::stop, TIME_FIRE_START, EV_COMM_FIRE);
     break;
