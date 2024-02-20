@@ -301,7 +301,7 @@ xMBRTUTransmitFSM( void )
         if( usSndBufferCount != 0 )
         {
 #if SEND_ALL_BYTES_IN_ONE_CALL > 0
-			xMBPortSerialPutBytes(pucSndBufferCur, usSndBufferCount); memcpy((void *)ucBufTx,(void const*)ucRTUBuf, 20);
+			xMBPortSerialPutBytes(pucSndBufferCur, usSndBufferCount); //memcpy((void *)ucBufTx,(void const*)ucRTUBuf, 20);
 			usSndBufferCount = 0;
 #else
             xMBPortSerialPutByte( ( CHAR )*pucSndBufferCur );

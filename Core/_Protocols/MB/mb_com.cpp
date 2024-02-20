@@ -64,6 +64,10 @@ ModBusCom :: ModBusCom( type_t t )
   
   cntMaster = 0;
   cntSlave  = 0;  
+  b_read_en_dis     = 1;
+  b_write_en_dis    = 1; 
+  b_master_en_dis   = 1;
+  b_slave_en_dis    = 1;
 } // ModBusCom
 
 void ModBusCom::Init(void )
@@ -93,17 +97,19 @@ bool ModBusCom::Loop( void )
 {
   if ( type == slave )
   {
+    if (0 == b_slave_en_dis) return false;
     gMBErrorCode = eMBPoll( );
     this->cntSlave++;
   }
   else 
   if ( type == master )
   {
+    if ( 0 == b_master_en_dis ) return false;
     this->cntMaster++;
     if ( 0 == eMBMasterIsEnabled()) return false;
     
     Read();
-    //Write();
+    Write();
     
     gMBErrorCode = eMBMasterPoll( );
 	xGetMasterEvent( &gMBEvent);
@@ -172,6 +178,7 @@ bool ModBusCom::Hr_write( mb_addr_t mb_addr, eMBReg_t rg, uint16_t data)
 */
 bool ModBusCom::Read( void )
 {
+  if ( 0 == b_read_en_dis ) return false;
   static uint16_t saddr = 0;
   bool res = false;
   if ( mb_act.response )
@@ -179,7 +186,7 @@ bool ModBusCom::Read( void )
     mb_act.response = 0;
     
     if ( ++saddr >= MB_cell_end )  saddr = 1;
-    this->addr  = static_cast<mb_addr_t>(saddr);
+    this->addr  = static_cast<mb_addr_t>(6);//(saddr);
     res = Hr_query( this->addr, static_cast<eMBReg_t>(REG_R_CURR_1s) );
   }else;// ret = false;  
   return res;
@@ -192,6 +199,7 @@ bool ModBusCom::Read( void )
 */
 bool ModBusCom::Write( void )
 {
+  if (0 == b_write_en_dis) return false;
   bool ret = 0;
   static eMBMasterEventType   	eEvent = EV_MASTER_INIT;
   

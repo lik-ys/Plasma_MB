@@ -10,7 +10,7 @@
 #include "main.h"
 #include "io_process.h"
 
-#define CNT_TO_DIR_RS485    5
+#define CNT_TO_DIR_RS485    50
 
 port_t  Input[ InLast ] = {
   { CNC_DI_0_Pin, CNC_DI_0_GPIO_Port},

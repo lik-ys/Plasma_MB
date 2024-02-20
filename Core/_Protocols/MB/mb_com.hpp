@@ -34,6 +34,12 @@ public:
     slave = 0,
     master = 1
   } type_t;
+
+  // debugs bits
+  bool b_read_en_dis;
+  bool b_write_en_dis;
+  bool b_master_en_dis;
+  bool b_slave_en_dis;
   
   mb_addr_t addr; // slave MB_addr
   uint32_t cntMaster;
@@ -53,7 +59,6 @@ public:
   bool Hr_write( mb_addr_t mb_addr, eMBReg_t rg, uint16_t data);
   bool Read(void);
   bool Write(void);
-  
   
 private:
   type_t type;  

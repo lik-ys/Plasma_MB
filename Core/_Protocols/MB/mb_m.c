@@ -613,7 +613,7 @@ BOOL xMBMasterPortEventPost( eMBMasterEventType eEvent )
 	xEventInQueue = TRUE;
 	eQueuedEvent_m = (eMBMasterEventType)eEvent;
     if (EV_MASTER_PROCESS_SUCESS == eQueuedEvent_m ) 
-      WR_DEBUG("EV_MASTER_PROCESS_SUCESS\r\n");
+      ;//WR_DEBUG("EV_MASTER_PROCESS_SUCESS\r\n");
 	return TRUE;
 }
 
