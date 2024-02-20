@@ -90,6 +90,7 @@ void ModBusCom::Init(void )
   }  
 }// Init()
 
+
 /*
 *
 */
@@ -149,6 +150,7 @@ bool ModBusCom::Loop( void )
 	}    
   }else
   {
+    this->type = slave;
     WR_DEBUG("Error ModBusCom::Loop() \r\n");
     return FALSE;
   }
