@@ -38,8 +38,7 @@ public:
   // debugs bits
   bool b_read_en_dis;
   bool b_write_en_dis;
-  bool b_master_en_dis;
-  bool b_slave_en_dis;
+  bool b_en_dis;
   
   mb_addr_t addr; // slave MB_addr
   uint32_t cntMaster;

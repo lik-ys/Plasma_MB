@@ -42,11 +42,11 @@ extern "C" {
 
 #include "io_process.h"
 
-ModBusCom MB_cntrl( ModBusCom::master ); // связь с чопперами
-ModBusCom MB_hl( ModBusCom::slave );  // связь с ПК
+const ModBusCom MB_cntrl( ModBusCom::master ); // связь с чопперами
+const ModBusCom MB_hl( ModBusCom::slave );  // связь с ПК
 
-ModBusCom *pMBcntrl = &MB_cntrl;
-ModBusCom *pMBhl = &MB_hl;
+const ModBusCom *pMBcntrl = &MB_cntrl;
+const ModBusCom *pMBhl = &MB_hl;
 
 
 //
@@ -60,14 +60,14 @@ ModBusCom :: ModBusCom( type_t t )
 {
   type = t;
   if (t == slave ) addr = MB_cell_1; // адрес подчиненного для опроса ВУ
-  if (t == master) addr = MB_cell_6; // Последняя ячейка в подчиненных
+  if (t == master) addr = MB_cell_1; // Последняя ячейка в подчиненных
   
   cntMaster = 0;
   cntSlave  = 0;  
   b_read_en_dis     = 1;
   b_write_en_dis    = 1; 
-  b_master_en_dis   = 1;
-  b_slave_en_dis    = 1;
+  b_en_dis   = 1;
+
 } // ModBusCom
 
 void ModBusCom::Init(void )
@@ -95,16 +95,16 @@ void ModBusCom::Init(void )
 */
 bool ModBusCom::Loop( void )
 {
-  if ( type == slave )
+  if ( this->type == slave )
   {
-    if (0 == b_slave_en_dis) return false;
+    if (0 == this->b_en_dis) return false;
     gMBErrorCode = eMBPoll( );
     this->cntSlave++;
   }
   else 
-  if ( type == master )
+  if ( this->type == master )
   {
-    if ( 0 == b_master_en_dis ) return false;
+    if ( 0 == this->b_en_dis ) return false;
     this->cntMaster++;
     if ( 0 == eMBMasterIsEnabled()) return false;
     
@@ -147,6 +147,10 @@ bool ModBusCom::Loop( void )
         xSetMAsterEvent(gMBEvent);
 		return FALSE;
 	}    
+  }else
+  {
+    WR_DEBUG("Error ModBusCom::Loop() \r\n");
+    return FALSE;
   }
   return FALSE;  
 } // Loop()
@@ -186,7 +190,7 @@ bool ModBusCom::Read( void )
     mb_act.response = 0;
     
     if ( ++saddr >= MB_cell_end )  saddr = 1;
-    this->addr  = static_cast<mb_addr_t>(6);//(saddr);
+    this->addr  = static_cast<mb_addr_t>(saddr);
     res = Hr_query( this->addr, static_cast<eMBReg_t>(REG_R_CURR_1s) );
   }else;// ret = false;  
   return res;
@@ -215,7 +219,7 @@ bool ModBusCom::Write( void )
   //  gActiveReg.rgPWM = 1;
   if (gActiveReg.rg) 
   {
-    this->addr  = static_cast<mb_addr_t>(6);  // 
+    this->addr  = static_cast<mb_addr_t>(0);  // 
     if ( gActiveReg.rgCNTRL)
     {
       gActiveReg.rgCNTRL = 0;
