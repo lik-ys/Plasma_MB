@@ -465,14 +465,15 @@ eMBMasterPoll( void )
             break;
         }
     }else
-    {
-    	MBMcnt.ev_false++;
+    {    	
 		if ( cntErr-- < 0 )
-		{
+		{   
+            MBMcnt.ev_false++;
 			eMBMasterEnable( );
 			cntErr = MB_CNT_ERROR;
 			MBMasterErrorTO( );
-            MBMasterRecieved();
+            //MBMasterRecieved();
+            MBMasterError();
 			SetRcvIdleState( );
 		}else{}
     }

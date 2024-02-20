@@ -174,7 +174,8 @@ bool ModBusCom::Hr_query( mb_addr_t mb_addr, eMBReg_t saddr_rg )
  **
  */
 bool ModBusCom::Hr_write( mb_addr_t mb_addr, eMBReg_t rg, uint16_t data)
-{
+{ // TODO зафиксировать номер регистра. при получении ответа проверить номер 
+  // TODO НОвая запись только после получения ответа
   gMBMasterReqErrCode = eMBMasterReqWriteHoldingRegister( mb_addr, rg , data, MB_TIME_OUT );
   return TRUE;
 }// write()
@@ -193,7 +194,7 @@ bool ModBusCom::Read( void )
     
     if ( ++saddr >= MB_cell_end )  saddr = 1;
     this->addr  = static_cast<mb_addr_t>(saddr);
-    res = Hr_query( this->addr, static_cast<eMBReg_t>(REG_R_CURR_1s) );
+    ///res = Hr_query( this->addr, static_cast<eMBReg_t>(REG_R_CURR_1s) );  /// TODO без опроса запись работает с первого раза
   }else;// ret = false;  
   return res;
 }// Read()
@@ -221,7 +222,8 @@ bool ModBusCom::Write( void )
   //  gActiveReg.rgPWM = 1;
   if (gActiveReg.rg) 
   {
-    this->addr  = static_cast<mb_addr_t>(0);  // 
+    static uint16_t saddr = 0;
+    //this->addr  = static_cast<mb_addr_t>(3);  // 
     if ( gActiveReg.rgCNTRL)
     {
       gActiveReg.rgCNTRL = 0;
@@ -233,7 +235,11 @@ bool ModBusCom::Write( void )
     }else;
     if ( gActiveReg.rgPWM )  
     {      
-      gActiveReg.rgPWM = 0;
+      if ( ++saddr >= MB_cell_end )  {
+        saddr = 0;
+        gActiveReg.rgPWM = 0;
+      }
+      this->addr  = static_cast<mb_addr_t>(saddr);
       //eEvent = xMasterEventGet(this->addr);
       //if (( EV_MASTER_EXECUTE == eEvent ) || ( EV_MASTER_INIT == eEvent ))
       ret = Hr_write(this->addr, static_cast<eMBReg_t>(REG_W_SET_OUT_PWM), GetMBRgS(REG_W_PWM) );

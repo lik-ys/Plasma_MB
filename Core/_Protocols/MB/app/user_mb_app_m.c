@@ -70,9 +70,9 @@ void MBMasterTransmite(void )
  */
 void MBMasterError(void )
 {
-	mb_act.execute = 1;
+	//mb_act.execute = 1;
 	mb_cnt.error++;
-	mb_act.response = 1;
+	//mb_act.response = 1;
 	mb_act.request = 0;
 	mb_act.error = 1;
 
@@ -199,7 +199,7 @@ eMBErrorCode eMBMasterRegHoldingCB(UCHAR * pucRegBuffer, USHORT usAddress, USHOR
     REG_HOLDING_NREGS = M_REG_HOLDING_NREGS;
     usRegHoldStart = usMRegHoldStart;
     /* if mode is read, the master will write the received date to buffer. */
-    eMode = MB_REG_WRITE;
+    ///eMode = MB_REG_WRITE;
 
     /* it already plus one in modbus function method. */
     usAddress--;
@@ -227,7 +227,7 @@ eMBErrorCode eMBMasterRegHoldingCB(UCHAR * pucRegBuffer, USHORT usAddress, USHOR
                 pusRegHoldingBuf[ iRegIndex ]  = *pucRegBuffer++ << 8;
                 pusRegHoldingBuf[ iRegIndex ] |= *pucRegBuffer++;
                 
-                UpDateWriteRgM(addr_slave, iRegIndex );
+                UpDateWriteRgM(addr_slave, iRegIndex );   /// todo здесь получаем ответ после записи в регистр
                 
                 iRegIndex++;
                 usNRegs--;

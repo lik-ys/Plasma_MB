@@ -42,7 +42,7 @@ public:
   
   mb_addr_t addr; // slave MB_addr
   uint32_t cntMaster;
-  uint32_t cntSlave;
+  uint32_t cntSlave; // todo counter
   
   ModBusCom( type_t  t);
   virtual ~ModBusCom();
