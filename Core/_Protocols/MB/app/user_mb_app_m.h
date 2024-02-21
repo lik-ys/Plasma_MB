@@ -127,12 +127,14 @@ extern mb_cnt_t 	mb_cnt;
 #define          M_DI_RESERVE                     0
 
 extern uint16_t   usMRegHoldBuf[ MB_MASTER_TOTAL_SLAVE_NUM ][ M_REG_HOLDING_NREGS ];
+extern mb_action_t gMBactM[MB_MASTER_TOTAL_SLAVE_NUM];
 
-void MBMasterRecieved(void );
-void MBMasterTransmite(void );
+uint16_t isMBmRequest(void);
+void MBMasterRecieved( uint16_t addr );
+void MBMasterTransmite(uint16_t addr );
 void MBMasterError(void );
 void MBMasterExec(void );
-void MBMasterErrorTO( void );
+void MBMasterErrorTO( uint16_t addr );
 
 void SetMBRgM( uint16_t slave, eMBReg_t numMBReg, uint16_t data );
 uint16_t GetMBRgM( uint16_t slave, eMBReg_t numMBReg );

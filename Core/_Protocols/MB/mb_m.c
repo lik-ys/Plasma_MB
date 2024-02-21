@@ -357,7 +357,7 @@ eMBMasterPoll( void )
             break;
 
         case EV_MASTER_EXECUTE:
-            MBMasterRecieved();
+            MBMasterRecieved(ucMBMasterGetDestAddress()-1);
             ucFunctionCode = ucMBFrame[MB_PDU_FUNC_OFF];
             eException = MB_EX_ILLEGAL_FUNCTION;
             /* If receive frame has exception .The receive function code highest bit is 1.*/
@@ -415,14 +415,17 @@ eMBMasterPoll( void )
         	/* Master is busy now. */
         	vMBMasterGetPDUSndBuf( &ucMBFrame );
 			eStatus = peMBMasterFrameSendCur( ucMBMasterGetDestAddress(), ucMBFrame, usMBMasterGetPDUSndLength() );
-			MBMasterTransmite();
+			MBMasterTransmite(ucMBMasterGetDestAddress()-1);
             break;
             
         case EV_MASTER_ERROR_RESPOND_TIMEOUT:
         {
+          int16_t addr = ucMBMasterGetDestAddress()-1;
+          xMBMasterPortEventPost(EV_MASTER_READY);
+          MBMasterErrorTO( addr );
           MBMcnt.timeout++;
           eStatus = MB_ETIMEDOUT;
-          int16_t addr = ucMBMasterGetDestAddress()-1;
+          
           if ( addr >= 0 ) 
           {
             CntSucsses[ addr ]--;
@@ -471,7 +474,7 @@ eMBMasterPoll( void )
             MBMcnt.ev_false++;
 			eMBMasterEnable( );
 			cntErr = MB_CNT_ERROR;
-			MBMasterErrorTO( );
+			MBMasterErrorTO(ucMBMasterGetDestAddress()-1 );
             //MBMasterRecieved();
             MBMasterError();
 			SetRcvIdleState( );

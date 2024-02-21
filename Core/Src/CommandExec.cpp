@@ -234,6 +234,7 @@ void CmdMetalContact( void )
 static
 void CmdStartStopPwm( void )
 {
+  if ( 1 == gMbCntrl.bit.bFireStart ) return;
   if ( gMbCntrl.bit.bChopperStart )
   {
     pExtSync->Instance->CNT = 0;

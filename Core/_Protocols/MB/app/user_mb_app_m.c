@@ -2,8 +2,10 @@
 #include "user_mb_app_m.h"
 #include "user_mb_app.h"
 
-mb_action_t mb_act  = { 0, 1, 0,0 };
-mb_cnt_t 	mb_cnt  = { 0, 0, 0 };
+mb_action_t gMBactM[ MB_MASTER_TOTAL_SLAVE_NUM ] = {0,};
+
+mb_action_t mb_act  = { 0, 1, 0, 0, 0 };
+mb_cnt_t 	mb_cnt  = { 0, 0, 0, 0 };
 
 #if (MB_MASTER_ASCII_ENABLED > 0 || MB_MASTER_RTU_ENABLED > 0 || MB_MASTER_TCP_ENABLED > 0)
 /*-----------------------Master mode use these variables----------------------*/
@@ -39,32 +41,64 @@ USHORT   usMRegHoldStart                            = M_REG_HOLDING_START;
 USHORT   usMRegHoldBuf[MB_MASTER_TOTAL_SLAVE_NUM][M_REG_HOLDING_NREGS];
 #endif
 
+// todo
+void MBMasterInit()
+{}
 /*
  *
  */
-void MBMasterRecieved(void )
-{
-	mb_cnt.rx++;
-	if ( mb_cnt.error ) mb_cnt.error--;
-	if ( mb_cnt.error > CNT_MB_ERROR_THR ) mb_cnt.error = 0;
-	mb_act.response = 1;
-	mb_act.request = 0;
-	mb_act.error = 0;
-	mb_act.execute = 0;
-	mb_act.err_time_out = 0;
+void MBMasterRecieved( uint16_t addr )
+{  
+  if ( addr < MB_MASTER_TOTAL_SLAVE_NUM )
+  {
+    gMBactM[addr].response = 1;
+    gMBactM[addr].request = 0;
+    gMBactM[addr].error = 0;
+    gMBactM[addr].err_time_out = 0;   
+  }else;
+  
+  mb_cnt.rx++;
+  if ( mb_cnt.error ) mb_cnt.error--;
+  if ( mb_cnt.error > CNT_MB_ERROR_THR ) mb_cnt.error = 0;
+  mb_act.response = 1;
+  mb_act.request = 0;
+  mb_act.error = 0;
+  mb_act.execute = 0;
+  mb_act.err_time_out = 0;
 }
 /*
  *
  */
-void MBMasterTransmite(void )
+void MBMasterTransmite(uint16_t addr )
 {
-	mb_cnt.tx++;
-	mb_act.response = 0;
-	mb_act.request = 1;
-	mb_act.error = 0;
-	mb_act.execute = 0;
-	mb_act.err_time_out = 0;
+  if ( addr < MB_MASTER_TOTAL_SLAVE_NUM )
+  {
+    gMBactM[addr].response = 0;
+    gMBactM[addr].request = 1;
+    gMBactM[addr].error = 0;
+    gMBactM[addr].err_time_out = 0;   
+  }else;
+
+  mb_cnt.tx++;
+  mb_act.response = 0;
+  mb_act.request = 1;
+  mb_act.error = 0;
+  mb_act.execute = 0;
+  mb_act.err_time_out = 0;
 }
+
+/*
+*
+*/
+uint16_t isMBmRequest(void)
+{
+  for ( uint16_t addr = 0 ; addr < MB_MASTER_TOTAL_SLAVE_NUM; addr++ )
+  {
+    if (1 == gMBactM[addr].request && (0 == gMBactM[addr].response )) return 1;
+  }
+  return 0; 
+}//
+
 /*
  * not response, not connect
  */
@@ -75,15 +109,22 @@ void MBMasterError(void )
 	//mb_act.response = 1;
 	mb_act.request = 0;
 	mb_act.error = 1;
-
-}
+}//
 /*
  *
  */
-void MBMasterErrorTO( void )
+void MBMasterErrorTO( uint16_t addr )
 {
-	mb_act.err_time_out = 1;
-}
+  if ( addr < MB_MASTER_TOTAL_SLAVE_NUM )
+  {
+    gMBactM[addr].response = 1;
+    gMBactM[addr].request = 0;
+    //gMBactM[addr].error = 0;
+    gMBactM[addr].err_time_out = 1;   
+  }else;  
+  mb_act.err_time_out = 1;  
+} //MBMasterErrorTO() 
+  
 /*
  *
  */
