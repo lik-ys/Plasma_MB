@@ -40,8 +40,8 @@ void UpDateReadRgM( uint16_t addr, eMBReg_t numRg )
     case REG_R_IN_VOLTs       : break;
     case REG_R_STATE_UNIT     : break;   
     case REG_R_STATE_PROCESS  : break;   
-    case REG_R_PWM1           : break;   
-    case REG_R_PWM2           : break; 
+    case REG_R_PWM           : break;   
+ 
     default:
       break;
   } // switch(  )

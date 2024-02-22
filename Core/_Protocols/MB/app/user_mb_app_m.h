@@ -38,8 +38,8 @@ typedef enum _MB_REG_SLAVE
   REG_R_STATE_UNIT      = 3,   // (Вкл/Выкл, обрыв фаз, перегрев, тип управления, перегрузка по току, защита драйвера)
   REG_R_STATE_PROCESS   = 4,   // соотвествует REG_W_CNTRL_PROCESS (Ожидание, поджиг, Резка, Тушение, True Hole)
   
-  REG_R_PWM1            = 5,
-  REG_R_PWM2            = 6,
+  REG_R_PWM             = 5,
+  REW_R_RESERV          = 6,
   REW_R_RESERV0         = 7,
   
   REG_W_PID_P           = 40,

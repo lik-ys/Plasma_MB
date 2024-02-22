@@ -301,6 +301,11 @@ static struct {
     uint16_t ev_false;
 }MBMcnt = { 0,0,0,0, 0,0,0,0,0 };
 
+void MBMcntIncTO()
+{
+  MBMcnt.timeout++;
+}
+
 int32_t CntSucsses[ MB_MASTER_TOTAL_SLAVE_NUM ] = {0,};
 
 eMBErrorCode
@@ -411,8 +416,8 @@ eMBMasterPoll( void )
             }
             break;
 
-        case EV_MASTER_FRAME_SENT: MBMcnt.frame_send++;
-        	/* Master is busy now. */
+        case EV_MASTER_FRAME_SENT: MBMcnt.frame_send++;  // BUG после ресета сразу посылка кадра ???
+        	/* Master is busy now. */                    // BUG 6 посылок 2 выполнения 2 таймаута (должно быть 4)
         	vMBMasterGetPDUSndBuf( &ucMBFrame );
 			eStatus = peMBMasterFrameSendCur( ucMBMasterGetDestAddress(), ucMBFrame, usMBMasterGetPDUSndLength() );
 			MBMasterTransmite(ucMBMasterGetDestAddress()-1);
@@ -421,9 +426,10 @@ eMBMasterPoll( void )
         case EV_MASTER_ERROR_RESPOND_TIMEOUT:
         {
           int16_t addr = ucMBMasterGetDestAddress()-1;
+          xMasterEventFix( addr, EV_MASTER_ERROR_RESPOND_TIMEOUT );
           xMBMasterPortEventPost(EV_MASTER_READY);
           MBMasterErrorTO( addr );
-          MBMcnt.timeout++;
+          //MBMcnt.timeout++;
           eStatus = MB_ETIMEDOUT;
           
           if ( addr >= 0 ) 
