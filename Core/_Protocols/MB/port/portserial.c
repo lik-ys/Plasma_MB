@@ -94,6 +94,8 @@ void HAL_UART_TxCpltCallback( UART_HandleTypeDef *huart )
 	if( huart->Instance == uart_m->Instance )
 	{
 		pxMBMasterFrameCBTransmitterEmpty();
+        __NOP();
+        __NOP();
 	}    
 }
 

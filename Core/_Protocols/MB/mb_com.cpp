@@ -85,7 +85,7 @@ void ModBusCom::Init(void )
     eMBMasterEnable( );
 	RS485_Dir_m( tx );
     SetRcvIdleState();
-    for (uint16_t addr = 0; addr < MB_MASTER_TOTAL_SLAVE_NUM; addr++ )  MBMasterRecieved( addr );
+    for (uint16_t addr = 0; addr < MB_MASTER_TOTAL_SLAVE_NUM; addr++ )  MBMasterInit( addr );
     xMBMasterPortEventPost(EV_MASTER_READY);
   }  
 }// Init()
@@ -176,6 +176,8 @@ bool ModBusCom::Hr_query( mb_addr_t mb_addr, eMBReg_t saddr_rg )
 bool ModBusCom::Hr_write( mb_addr_t mb_addr, eMBReg_t rg, uint16_t data)
 { // TODO зафиксировать номер регистра. при получении ответа проверить номер 
   // TODO НОвая запись только после получения ответа
+  if ( 1 == gMBactM[ mb_addr - 1 ].request)  return 0;
+  MBMasterTransmite( mb_addr - 1);
   gMBMasterReqErrCode = eMBMasterReqWriteHoldingRegister( mb_addr, rg , data, MB_TIME_OUT );
   return TRUE;
 }// write()
@@ -195,7 +197,7 @@ bool ModBusCom::Read( void )
     
     //if ( ++saddr >= MB_cell_end )  saddr = 1;
     //this->addr  = static_cast<mb_addr_t>(3);
-    res = Hr_query( this->addr, static_cast<eMBReg_t>(REG_R_CURR_1s) );  /// TODO без опроса запись работает с первого раза
+    //res = Hr_query( this->addr, static_cast<eMBReg_t>(REG_R_CURR_1s) );  /// TODO без опроса запись работает с первого раза
   }else;// ret = false;  
   return res;
 }// Read()
@@ -214,7 +216,7 @@ bool ModBusCom::Write( void )
   
   if ( gActiveReg.rg ) 
   {
-    HAL_Delay(10);  // BUG : 
+    //HAL_Delay(10);  // BUG : 
     static uint16_t saddr = 0;
     //this->addr  = static_cast<mb_addr_t>(3);  // 
     if ( gActiveReg.rgCNTRL)
@@ -234,8 +236,10 @@ bool ModBusCom::Write( void )
     {      
       if ( ++saddr >= MB_cell_end )  {
         saddr = 0;
-        gActiveReg.rgPWM = 0;return 1;
+        gActiveReg.rgPWM = 0;
+        return 1;
       }
+      //saddr = 2;
       this->addr  = static_cast<mb_addr_t>(saddr);
       //eEvent = xMasterEventGet(this->addr);
       //if (( EV_MASTER_EXECUTE == eEvent ) || ( EV_MASTER_INIT == eEvent ))

@@ -5,7 +5,7 @@
 mb_action_t gMBactM[ MB_MASTER_TOTAL_SLAVE_NUM ] = {0,};
 
 mb_action_t mb_act  = { 0, 1, 0, 0, 0 };
-mb_cnt_t 	mb_cnt  = { 0, 0, 0, 0 };
+mb_cnt_t 	mb_cnt  = { 0, 0, 0, 0, 0 };
 
 #if (MB_MASTER_ASCII_ENABLED > 0 || MB_MASTER_RTU_ENABLED > 0 || MB_MASTER_TCP_ENABLED > 0)
 /*-----------------------Master mode use these variables----------------------*/
@@ -42,8 +42,16 @@ USHORT   usMRegHoldBuf[MB_MASTER_TOTAL_SLAVE_NUM][M_REG_HOLDING_NREGS];
 #endif
 
 // todo
-void MBMasterInit()
-{}
+void MBMasterInit( uint16_t addr)
+{
+  if ( addr < MB_MASTER_TOTAL_SLAVE_NUM )
+  {
+    gMBactM[addr].response = 1;
+    gMBactM[addr].request = 0;
+    gMBactM[addr].error = 0;
+    gMBactM[addr].err_time_out = 0;   
+  }else;  
+}
 /*
  *
  */
@@ -71,15 +79,19 @@ void MBMasterRecieved( uint16_t addr )
  */
 void MBMasterTransmite(uint16_t addr )
 {
+  mb_cnt.tx++;
+  if (mb_cnt.tx == 2) 
+  {
+    mb_cnt.tx  = 0;
+  }  
   if ( addr < MB_MASTER_TOTAL_SLAVE_NUM )
   {
-    gMBactM[addr].response = 0;
     gMBactM[addr].request = 1;
+    gMBactM[addr].execute = 0;
+    gMBactM[addr].response = 0;    
     gMBactM[addr].error = 0;
     gMBactM[addr].err_time_out = 0;   
   }else;
-
-  mb_cnt.tx++;
   mb_act.response = 0;
   mb_act.request = 1;
   mb_act.error = 0;
@@ -117,7 +129,7 @@ void MBMasterErrorTO( uint16_t addr )
 {
   if ( addr < MB_MASTER_TOTAL_SLAVE_NUM )
   {
-    gMBactM[addr].response = 1;
+   //gMBactM[addr].response = 1;
     gMBactM[addr].request = 0;
     //gMBactM[addr].error = 0;
     gMBactM[addr].err_time_out = 1;   
@@ -128,8 +140,16 @@ void MBMasterErrorTO( uint16_t addr )
 /*
  *
  */
-void MBMasterExec(void )
+void MBMasterExec( uint16_t addr )
 {
+  if ( addr < MB_MASTER_TOTAL_SLAVE_NUM )
+  {
+    gMBactM[addr].execute = 1;
+    gMBactM[addr].response = 0;
+    gMBactM[addr].request = 0;
+    gMBactM[addr].error = 0;
+    gMBactM[addr].err_time_out = 0;   
+  }else;  
 	mb_act.execute = 1;
 	mb_cnt.ex++;
 	mb_act.error = 0;

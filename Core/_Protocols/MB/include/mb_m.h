@@ -417,7 +417,7 @@ BOOL eMBMasterIsEnabled( void );
 uint16_t GetDataMBRg( USHORT slave_addr, uint16_t reg );
 BOOL IsMBRcvSate (void );
 
-#define MB_CNT_ERROR 	16000
+#define MB_CNT_ERROR 	160000
 
 void SetRcvIdleState (void);
 

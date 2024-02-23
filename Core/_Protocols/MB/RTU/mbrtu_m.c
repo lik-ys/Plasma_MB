@@ -372,6 +372,7 @@ xMBMasterRTUTransmitFSM( void )
 
     return xNeedPoll;
 }
+
 extern void MBMcntIncTO();
 BOOL
 xMBMasterRTUTimerExpired(void)
@@ -443,7 +444,10 @@ xMBMasterRTUTimerExpired(void)
 	}
     if (eMasterCurTimerMode == MB_TMODE_RESPOND_TIMEOUT)
     {
-      xMBMasterPortEventPost( EV_MASTER_ERROR_RESPOND_TIMEOUT );  MBMcntIncTO();
+      xMBMasterPortEventPost( EV_MASTER_ERROR_RESPOND_TIMEOUT );  
+      MBMcntIncTO();
+      MBMasterErrorTO( ucMBMasterGetDestAddress()-1 );
+      
     }
 	return xNeedPoll;
 }

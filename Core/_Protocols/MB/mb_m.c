@@ -336,11 +336,13 @@ eMBMasterPoll( void )
     { /// TODO  BUG зависание  всегда FALSE
         switch ( eEvent )
         {
-        case EV_MASTER_READY:MBMcnt.ready++;
-            eMBState = STATE_ESTABLISHED;
-            break;
+        case EV_MASTER_READY:
+          MBMcnt.ready++;
+          eMBState = STATE_ESTABLISHED;
+          break;
 
-        case EV_MASTER_FRAME_RECEIVED: 
+        case EV_MASTER_FRAME_RECEIVED:
+          cntErr = MB_CNT_ERROR;
             eStatus = peMBMasterFrameReceiveCur( &ucRcvAddress, &ucMBFrame, &usLength );
             /* Check if the frame is for us. If not ,send an error process event. */
             if ( ( eStatus == MB_ENOERR ) && ( ucRcvAddress == ucMBMasterGetDestAddress() ) )
@@ -362,6 +364,7 @@ eMBMasterPoll( void )
             break;
 
         case EV_MASTER_EXECUTE:
+          cntErr = MB_CNT_ERROR;
             MBMasterRecieved(ucMBMasterGetDestAddress()-1);
             ucFunctionCode = ucMBFrame[MB_PDU_FUNC_OFF];
             eException = MB_EX_ILLEGAL_FUNCTION;
@@ -405,43 +408,52 @@ eMBMasterPoll( void )
 
             }
             else {
-                xMasterEventGet(ucMBMasterGetDestAddress());
-            	vMBMasterCBRequestSucess( );
-            	vMBMasterRunResRelease( );
-            	//xMBMasterPortEventGet( &eEvent );
-            	eStatus = MB_ENOERR;
-            	MBMasterExec();
-                MBMcnt.execute++;
-                CntSucsses[ucMBMasterGetDestAddress()-1]++;
+              int16_t addr = ucMBMasterGetDestAddress();  
+              //xMasterEventGet(addr);
+              vMBMasterCBRequestSucess( );
+              vMBMasterRunResRelease( );
+              //xMBMasterPortEventGet( &eEvent );
+              eStatus = MB_ENOERR;
+
+              MBMcnt.execute++;
+              if ( addr > 0 ){
+                MBMasterExec( addr-1 );
+                CntSucsses[ addr-1 ]++;
+              }
             }
             break;
 
-        case EV_MASTER_FRAME_SENT: MBMcnt.frame_send++;  // BUG после ресета сразу посылка кадра ???
+        case EV_MASTER_FRAME_SENT: 
+          cntErr = MB_CNT_ERROR;
+          
+             MBMcnt.frame_send++;  // BUG после ресета сразу посылка кадра ???
         	/* Master is busy now. */                    // BUG 6 посылок 2 выполнения 2 таймаута (должно быть 4)
         	vMBMasterGetPDUSndBuf( &ucMBFrame );
 			eStatus = peMBMasterFrameSendCur( ucMBMasterGetDestAddress(), ucMBFrame, usMBMasterGetPDUSndLength() );
-			MBMasterTransmite(ucMBMasterGetDestAddress()-1);
+			xMBMasterPortEventPost(EV_MASTER_READY);
             break;
             
         case EV_MASTER_ERROR_RESPOND_TIMEOUT:
         {
+          cntErr = MB_CNT_ERROR;
           int16_t addr = ucMBMasterGetDestAddress()-1;
           xMasterEventFix( addr, EV_MASTER_ERROR_RESPOND_TIMEOUT );
           xMBMasterPortEventPost(EV_MASTER_READY);
-          MBMasterErrorTO( addr );
+          //MBMasterErrorTO( addr );
           //MBMcnt.timeout++;
           eStatus = MB_ETIMEDOUT;
-          
+          mb_cnt.timeout++;
           if ( addr >= 0 ) 
           {
             CntSucsses[ addr ]--;
             CntrCellsStatus( addr, RESET );//
-          }
+          }else;
         }
           break;
           
         case EV_MASTER_ERROR_PROCESS:
         {
+            cntErr = MB_CNT_ERROR;
         	mb_cnt.error++;
         	MBMasterError();
             int16_t addr = ucMBMasterGetDestAddress()-1;
