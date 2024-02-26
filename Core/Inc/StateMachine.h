@@ -38,6 +38,9 @@ extern "C" {
 #define TIME_OUT_TEST   250
 #define THRESHOLD_CURR_1    100  // 100 A  - пороговый ток включения готовности для ЧПУ
   
+#define PERIOD_MB_MASTER_TO  60  
+#define PERIOD_REQUEST_TO    100
+  
 /*===============================[ PUBLIC TYPES ]==============================*/ 
     // Публичные типы 
 typedef   enum
@@ -153,6 +156,8 @@ typedef  enum
   
   EV_PILOT_ARC_TO   ,
   
+  EV_WRITE_MBM      ,  // период записи в МБ мастер
+  EV_REQUEST_TO     ,  
   PROC_EV_DEBUG     ,
   EV_COUNTS  
 }eProcessCom_t;

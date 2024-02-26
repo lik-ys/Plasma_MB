@@ -140,6 +140,7 @@ void MBMasterInit( uint16_t addr);
 
 void SetMBRgM( uint16_t slave, eMBReg_t numMBReg, uint16_t data );
 uint16_t GetMBRgM( uint16_t slave, eMBReg_t numMBReg );
+void ClrMBmRequest( void );
 
 #endif
 

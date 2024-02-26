@@ -26,6 +26,7 @@
 #include "user_mb_app.h"
 #include "mb_com.hpp"
 
+
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -41,6 +42,9 @@ extern "C" {
 #endif
 
 #include "io_process.h"
+#include "Timer.hpp"
+  
+extern Timer *hTimer ;  
 
 const ModBusCom MB_cntrl( ModBusCom::master ); // связь с чопперами
 const ModBusCom MB_hl( ModBusCom::slave );  // связь с ПК
@@ -87,6 +91,7 @@ void ModBusCom::Init(void )
     SetRcvIdleState();
     for (uint16_t addr = 0; addr < MB_MASTER_TOTAL_SLAVE_NUM; addr++ )  MBMasterInit( addr );
     xMBMasterPortEventPost(EV_MASTER_READY);
+    hTimer->Time_Out( Timer::start, PERIOD_MB_MASTER_TO, EV_WRITE_MBM);
   }  
 }// Init()
 
@@ -179,6 +184,8 @@ bool ModBusCom::Hr_write( mb_addr_t mb_addr, eMBReg_t rg, uint16_t data)
   if ( 1 == gMBactM[ mb_addr - 1 ].request)  return 0;
   MBMasterTransmite( mb_addr - 1);
   gMBMasterReqErrCode = eMBMasterReqWriteHoldingRegister( mb_addr, rg , data, MB_TIME_OUT );
+  hTimer->Time_Out( Timer::start, PERIOD_MB_MASTER_TO, EV_WRITE_MBM);
+  hTimer->Time_Out( Timer::start, PERIOD_REQUEST_TO, EV_REQUEST_TO);
   return TRUE;
 }// write()
 
@@ -195,9 +202,9 @@ bool ModBusCom::Read( void )
   {
     mb_act.response = 0;
     
-    //if ( ++saddr >= MB_cell_end )  saddr = 1;
-    //this->addr  = static_cast<mb_addr_t>(3);
-    //res = Hr_query( this->addr, static_cast<eMBReg_t>(REG_R_CURR_1s) );  /// TODO без опроса запись работает с первого раза
+    if ( ++saddr >= MB_cell_end )  saddr = 1;
+    this->addr  = static_cast<mb_addr_t>(saddr);
+    res = Hr_query( this->addr, static_cast<eMBReg_t>(REG_R_CURR_1s) );  /// TODO без опроса запись работает с первого раза
   }else;// ret = false;  
   return res;
 }// Read()
@@ -209,14 +216,22 @@ bool ModBusCom::Read( void )
 */
 bool ModBusCom::Write( void )
 {
-  if ( isMBmRequest() )  return false;
+  if (0 ==  hTimer->IsTimeOut( EV_WRITE_MBM) ) return;
+  if ( isMBmRequest() )  
+  {
+    if ( 0 ==  hTimer->IsTimeOut( EV_REQUEST_TO) )
+    {
+      ClrMBmRequest();
+    }else return false;  // 
+  }
+  else;
   if (0 == b_write_en_dis) return false;
   bool ret = 0;
   static eMBMasterEventType   	eEvent = EV_MASTER_INIT;
   
   if ( gActiveReg.rg ) 
   {
-    //HAL_Delay(10);  // BUG : 
+
     static uint16_t saddr = 0;
     //this->addr  = static_cast<mb_addr_t>(3);  // 
     if ( gActiveReg.rgCNTRL)
@@ -230,7 +245,8 @@ bool ModBusCom::Write( void )
       rgCntrl = GetMBRgM((uint16_t)this->addr, REG_W_CONTROL);
       rgCntrl |= (1<<0);
       SetMBRgM((uint16_t)this->addr, REG_W_CONTROL, rgCntrl );
-      ret = Hr_write(this->addr, static_cast<eMBReg_t>(REG_W_CONTROL), GetMBRgS(REG_W_CNTRL) );      
+      ret = Hr_write(this->addr, static_cast<eMBReg_t>(REG_W_CONTROL), GetMBRgS(REG_W_CNTRL) );
+      return 1;      
     }else;
     if ( gActiveReg.rgPWM )  
     {      
@@ -244,6 +260,7 @@ bool ModBusCom::Write( void )
       //eEvent = xMasterEventGet(this->addr);
       //if (( EV_MASTER_EXECUTE == eEvent ) || ( EV_MASTER_INIT == eEvent ))
       ret = Hr_write(this->addr, static_cast<eMBReg_t>(REG_W_SET_OUT_PWM), GetMBRgS(REG_W_PWM) );
+      return 1;
     }
     if ( gActiveReg.rgCURR) 
     {
@@ -253,6 +270,7 @@ bool ModBusCom::Write( void )
       }      
       this->addr  = static_cast<mb_addr_t>(saddr);            
       ret = Hr_write(this->addr, static_cast<eMBReg_t>(REG_W_SET_OUT_CURRENT), GetMBRgS(REG_W_CURR) );
+      return 1;
     }
     if ( gActiveReg.rgSLOP_1){
       if ( ++saddr >= MB_cell_end )  {
@@ -261,34 +279,43 @@ bool ModBusCom::Write( void )
       }      
       this->addr  = static_cast<mb_addr_t>(saddr);                        
       ret = Hr_write(this->addr, static_cast<eMBReg_t>(REG_W_FIRST_DAC), GetMBRgS(REG_W_SLOP_1) );      
+      return 1;
     }
     if ( gActiveReg.rgSLOP_2){
       if ( ++saddr >= MB_cell_end )  {
         saddr = 0;
         gActiveReg.rgSLOP_2 = 0;return 1;
       }                  
+      this->addr  = static_cast<mb_addr_t>(saddr);
       ret = Hr_write(this->addr, static_cast<eMBReg_t>(REG_W_LAST_DAC), GetMBRgS(REG_W_SLOP_2) );    
+      return 1;
     }
     if ( gActiveReg.rgP){
       if ( ++saddr >= MB_cell_end )  {
         saddr = 0;
         gActiveReg.rgP = 0;return 1;
       }            
+      this->addr  = static_cast<mb_addr_t>(saddr);
       ret = Hr_write(this->addr, static_cast<eMBReg_t>(REG_W_PID_P), GetMBRgS(REG_W_P) );      
+      return 1;
     }
     if ( gActiveReg.rgI){
       if ( ++saddr >= MB_cell_end )  {
         saddr = 0;
         gActiveReg.rgI = 0;return 1;
       }      
+      this->addr  = static_cast<mb_addr_t>(saddr);
       ret = Hr_write(this->addr, static_cast<eMBReg_t>(REG_W_PID_I), GetMBRgS(REG_W_I) );
+      return 1;
     }    
     if ( gActiveReg.rgD){
       if ( ++saddr >= MB_cell_end )  {
         saddr = 0;
         gActiveReg.rgD = 0;return 1;
       }      
+      this->addr  = static_cast<mb_addr_t>(saddr);
       ret = Hr_write(this->addr, static_cast<eMBReg_t>(REG_W_PID_D), GetMBRgS(REG_W_D) );
+      return 1;
     }     
   }  
   return ret;

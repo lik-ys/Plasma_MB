@@ -112,6 +112,16 @@ uint16_t isMBmRequest(void)
 }//
 
 /*
+*
+*/
+void ClrMBmRequest( void )
+{
+  for ( uint16_t addr = 0 ; addr < MB_MASTER_TOTAL_SLAVE_NUM; addr++ )
+  {
+    gMBactM[addr].request  = 0;
+  }  
+}/// 
+/*
  * not response, not connect
  */
 void MBMasterError(void )
