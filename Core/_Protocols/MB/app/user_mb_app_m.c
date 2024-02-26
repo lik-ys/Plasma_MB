@@ -265,7 +265,10 @@ eMBErrorCode eMBMasterRegHoldingCB(UCHAR * pucRegBuffer, USHORT usAddress, USHOR
     USHORT          usRegHoldStart;
     uint16_t addr_slave;
     
-    pusRegHoldingBuf = usMRegHoldBuf[ addr_slave = ucMBMasterGetDestAddress() - 1];
+    addr_slave = ucMBMasterGetDestAddress();
+    if ( addr_slave > 0 ) addr_slave -= 1;
+    
+    pusRegHoldingBuf = usMRegHoldBuf[ addr_slave ];
     REG_HOLDING_START = M_REG_HOLDING_START;
     REG_HOLDING_NREGS = M_REG_HOLDING_NREGS;
     usRegHoldStart = usMRegHoldStart;
