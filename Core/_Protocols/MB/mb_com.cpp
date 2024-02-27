@@ -231,34 +231,15 @@ bool ModBusCom::Write( void )
   
   if ( gActiveReg.rg ) 
   {
-
     static uint16_t saddr = 0;
-    //this->addr  = static_cast<mb_addr_t>(3);  // 
-    if ( gActiveReg.rgCNTRL)
-    {
-      if ( ++saddr >= MB_cell_end )  {
-        saddr = 0;
-        gActiveReg.rgCNTRL = 0; return 1;
-      }      
-      this->addr  = static_cast<mb_addr_t>(saddr);
-      uint16_t rgCntrl;      
-      rgCntrl = GetMBRgM((uint16_t)this->addr, REG_W_CONTROL);
-      rgCntrl |= (1<<0);
-      SetMBRgM((uint16_t)this->addr, REG_W_CONTROL, rgCntrl );
-      ret = Hr_write(this->addr, static_cast<eMBReg_t>(REG_W_CONTROL), GetMBRgS(REG_W_CNTRL) );
-      return 1;      
-    }else;
     if ( gActiveReg.rgPWM )  
     {      
       if ( ++saddr >= MB_cell_end )  {
         saddr = 0;
         gActiveReg.rgPWM = 0;
         return 1;
-      }
-      //saddr = 2;
+      }      
       this->addr  = static_cast<mb_addr_t>(saddr);
-      //eEvent = xMasterEventGet(this->addr);
-      //if (( EV_MASTER_EXECUTE == eEvent ) || ( EV_MASTER_INIT == eEvent ))
       ret = Hr_write(this->addr, static_cast<eMBReg_t>(REG_W_SET_OUT_PWM), GetMBRgS(REG_W_PWM) );
       return 1;
     }
@@ -317,6 +298,20 @@ bool ModBusCom::Write( void )
       ret = Hr_write(this->addr, static_cast<eMBReg_t>(REG_W_PID_D), GetMBRgS(REG_W_D) );
       return 1;
     }     
+    if ( gActiveReg.rgCNTRL)
+    {
+      if ( ++saddr >= MB_cell_end )  {
+        saddr = 0;
+        gActiveReg.rgCNTRL = 0; return 1;
+      }      
+      this->addr  = static_cast<mb_addr_t>(saddr);
+      uint16_t rgCntrl;      
+      rgCntrl = GetMBRgM((uint16_t)this->addr, REG_W_CONTROL);
+      rgCntrl |= (1<<0);
+      SetMBRgM((uint16_t)this->addr, REG_W_CONTROL, rgCntrl );
+      ret = Hr_write(this->addr, static_cast<eMBReg_t>(REG_W_CONTROL), GetMBRgS(REG_W_CNTRL) );
+      return 1;      
+    }else;    
   }  
   return ret;
 }// Write()
