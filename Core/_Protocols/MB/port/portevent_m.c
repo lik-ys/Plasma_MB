@@ -70,8 +70,8 @@ void vMBMasterOsResInit( void )
  * @return resource taked result
  */
 BOOL xMBMasterRunResTake( LONG lTimeOut )
-{
-	//HAL_Delay(lTimeOut);
+{   
+    //if ( hTimer->Time_Out( Timer::start, PERIOD_REQUEST_TO, EV_REQUEST_TO);
 	return TRUE;
 }
 

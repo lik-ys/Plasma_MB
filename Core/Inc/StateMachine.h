@@ -40,6 +40,7 @@ extern "C" {
   
 #define PERIOD_MB_MASTER_TO  70  
 #define PERIOD_REQUEST_TO    100
+#define PERIOD_READ_TO       40  
   
 /*===============================[ PUBLIC TYPES ]==============================*/ 
     // ѕубличные типы 
@@ -158,7 +159,9 @@ typedef  enum
   
   EV_WRITE_MBM      ,  // период записи в ћЅ мастер
   EV_REQUEST_TO     ,  
+  EV_READ_TO        ,  // период опроса €чеек
   PROC_EV_DEBUG     ,
+  
   EV_COUNTS  
 }eProcessCom_t;
 

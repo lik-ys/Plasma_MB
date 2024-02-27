@@ -98,7 +98,18 @@ void MBMasterTransmite(uint16_t addr )
   mb_act.execute = 0;
   mb_act.err_time_out = 0;
 }
-
+/*
+*
+*/
+uint16_t isMBmRead(uint16_t addr )
+{
+  uint8_t bRead = 0;  
+  if ( (1 == gMBactM[addr].response) || (1 == gMBactM[addr].err_time_out )) 
+      bRead = 1;
+  if ( (0 == gMBactM[addr].response) && (0 == gMBactM[addr].err_time_out )) 
+      bRead = 1;
+  return bRead;
+}
 /*
 *
 */

@@ -92,6 +92,7 @@ void ModBusCom::Init(void )
     for (uint16_t addr = 0; addr < MB_MASTER_TOTAL_SLAVE_NUM; addr++ )  MBMasterInit( addr );
     xMBMasterPortEventPost(EV_MASTER_READY);
     hTimer->Time_Out( Timer::start, PERIOD_MB_MASTER_TO, EV_WRITE_MBM);
+    hTimer->Time_Out( Timer::start, PERIOD_READ_TO, EV_READ_TO);
   }  
 }// Init()
 
@@ -170,7 +171,7 @@ bool ModBusCom::Hr_query( mb_addr_t mb_addr, eMBReg_t saddr_rg )
 	bool ret = true;
 
     gMBMasterReqErrCode = eMBMasterReqReadHoldingRegister( mb_addr, saddr_rg, 8, MB_TIME_OUT );
-    // if (gMBMasterReqErrCode )...
+    ///if (gMBMasterReqErrCode )...
 
 	return ret;
 }// Hr_query(); 
@@ -196,12 +197,13 @@ bool ModBusCom::Read( void )
 {
   if ( gActiveReg.rg ) return false;
   if ( 0 == b_read_en_dis ) return false;
+  if ( 0 ==  hTimer->IsTimeOut( EV_READ_TO) ) return false;
+  
   static uint16_t saddr = 0;
   bool res = false;
-  if ( mb_act.response )
+  //saddr = 1;
+  if ( isMBmRead(saddr) )
   {
-    mb_act.response = 0;
-    
     if ( ++saddr >= MB_cell_end )  saddr = 1;
     this->addr  = static_cast<mb_addr_t>(saddr);
     res = Hr_query( this->addr, static_cast<eMBReg_t>(REG_R_CURR_1s) );  /// TODO без опроса запись работает с первого раза

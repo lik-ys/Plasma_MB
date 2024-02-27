@@ -7,17 +7,22 @@ RegStatusM_t         RgStatus[ MB_MASTER_TOTAL_SLAVE_NUM];
 RegStatusProces_t   RgProcess[MB_MASTER_TOTAL_SLAVE_NUM ];
 static int CntMBRg[6] = {0,};
 
+#define CNT_CELL_STATUS 7
 /***
 **
 */
 void CntrCellsStatus( uint16_t addr, FlagStatus st )
 {
+  static int16_t cnt = CNT_CELL_STATUS;
   if ( st )
   {
-    gCells.reg |=   1 << (addr + 1); 
+    gCells.reg |=   1 << (addr + 1);
   }else
   {
-    gCells.reg &= ~(1 << (addr + 1)); 
+    if ( --cnt < 0) {
+      gCells.reg &= ~(1 << (addr + 1)); 
+      cnt = CNT_CELL_STATUS;
+    }
   }
   SetMBRgS( REG_R_ST_CELLS, gCells.reg );  
 }//CntrCellsStatus()

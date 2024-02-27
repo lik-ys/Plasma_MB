@@ -142,6 +142,8 @@ void SetMBRgM( uint16_t slave, eMBReg_t numMBReg, uint16_t data );
 uint16_t GetMBRgM( uint16_t slave, eMBReg_t numMBReg );
 void ClrMBmRequest( void );
 
+uint16_t isMBmRead(uint16_t addr );
+
 #endif
 
 #ifdef __cplusplus
