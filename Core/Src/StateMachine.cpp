@@ -212,7 +212,7 @@ void SM_Tick( void )
   {
   case ST_COMM_START:                
       if ( 1 == gStateSM.st.bCommStart ) 
-      {             
+      {        
         gStateSM.st.bCommStart = 0;
         gMbStatus.bit.bStartCNC = 1;            
         SetMBRgS( REG_R_STATUS, gMbStatus.reg );          

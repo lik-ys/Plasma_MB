@@ -260,9 +260,15 @@ void CmdStartStopPwm( void )
 static
 void CmdStartPwm( void )
 {
+    gActiveReg.rgCNTRL = 1;   // эмуляция работы черезе МБ
+    gMbCntrl.reg |= 1;
+    gMbCntrl.bit.bChopperStart = 1;
+    UpateActiveRg();
+        
     pExtSync->Instance->CNT = 0;
     HAL_TIM_PWM_Start( pExtSync, TIM_CHANNEL_1 ); 
     gMbStatus.bit.bOnOffPwr = 1;
+    gMbCntrl.bit.bOnOffPwr = 1;
     SetMBRgS( REG_R_STATUS, gMbStatus.reg );
     hCmd->num = P_PILOT_ARC_START;
     gMbCntrl.bit.bFireStart = 1;  

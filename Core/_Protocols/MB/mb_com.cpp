@@ -115,7 +115,7 @@ bool ModBusCom::Loop( void )
     this->counter++;
     if ( 0 == eMBMasterIsEnabled()) return false;
     
-    Read();
+    //Read();
     Write();
     
     gMBErrorCode = eMBMasterPoll( );
