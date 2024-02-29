@@ -190,11 +190,17 @@ typedef union
     uint16_t bAutoManualM   : 1;    // 3 - 1 - автомат 0 - ручной TODO
     uint16_t bOverHeat_t    : 1;    // 4 Ц перегрев
     uint16_t bFaseFail_t    : 1;    // 5 Ц обрыв фазы
-    uint16_t bChillerFail_t : 1;    // 6 Ц ошибка чиллера    
-       
+    uint16_t bChillerFail_t : 1;    // 6 Ц ошибка чиллера           
     uint16_t bStartCNC      : 1;    // 7 - 1 - Start, 0 - Stop CNC
-    uint16_t bFireIn        : 1;    // todo внешний поджиг    
-    uint16_t bChopperStart  : 1;    // 7 - синхронное выключение €чеек от команды  bit0 в  REG_W_CNTRL_START    
+   
+    uint16_t bChopperStart  : 1;    // 8 - синхронное выключение €чеек от команды  bit0 в  REG_W_CNTRL_START  
+    uint16_t bFireIn        : 1;    // 9 - todo внешний поджиг     
+    uint16_t bReserv10      : 1;
+    uint16_t bReserv11      : 1;
+    uint16_t bReserv12      : 1;
+    uint16_t bReserv13      : 1;
+    uint16_t bReserv14      : 1;
+    uint16_t bWriteEEPROM   : 1;      // 15 - EEprom write TODO
   }bit;   
 }RgCntrl_t;
 

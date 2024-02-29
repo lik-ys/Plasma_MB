@@ -284,7 +284,7 @@ eMBErrorCode eMBMasterRegHoldingCB(UCHAR * pucRegBuffer, USHORT usAddress, USHOR
     REG_HOLDING_NREGS = M_REG_HOLDING_NREGS;
     usRegHoldStart = usMRegHoldStart;
     /* if mode is read, the master will write the received date to buffer. */
-    eMode = MB_REG_WRITE;
+    //eMode = MB_REG_WRITE;
 
     /* it already plus one in modbus function method. */
     usAddress--;
@@ -298,9 +298,11 @@ eMBErrorCode eMBMasterRegHoldingCB(UCHAR * pucRegBuffer, USHORT usAddress, USHOR
         case MB_REG_READ:
             while (usNRegs > 0)
             {
+                //*pucRegBuffer++ = (UCHAR) (pusRegHoldingBuf[iRegIndex] >> 8);
+                //*pucRegBuffer++ = (UCHAR) (pusRegHoldingBuf[iRegIndex] & 0xFF); 
+                pusRegHoldingBuf[ iRegIndex ]  = *pucRegBuffer++ << 8;
+                pusRegHoldingBuf[ iRegIndex ] |= *pucRegBuffer++;                
                 UpDateReadRgM(addr_slave, iRegIndex );
-                *pucRegBuffer++ = (UCHAR) (pusRegHoldingBuf[iRegIndex] >> 8);
-                *pucRegBuffer++ = (UCHAR) (pusRegHoldingBuf[iRegIndex] & 0xFF);
                 iRegIndex++;
                 usNRegs--;
             }

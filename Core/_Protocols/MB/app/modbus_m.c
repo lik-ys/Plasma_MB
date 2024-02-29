@@ -43,7 +43,24 @@ void UpDateReadRgM( uint16_t addr, eMBReg_t numRg )
       break;
     case REG_R_CURR_2s        : break;    
     case REG_R_IN_VOLTs       : break;
-    case REG_R_STATE_UNIT     : break;   
+    case REG_R_STATE_UNIT     : // получили регистр от €чеки - передать его в рг ћЅ мат.платы
+    {
+      RgCntrl_t tmpRg; 
+      tmpRg.reg = gMbStatus.reg;      
+      gMbStatus.reg = GetMBRgM( addr, numRg ); 
+      
+      if (tmpRg.bit.bPilotArc){
+        gMbStatus.bit.bPilotArc = tmpRg.bit.bPilotArc;
+      }
+      if (tmpRg.bit.bFireStart){
+        gMbStatus.bit.bFireStart = tmpRg.bit.bFireStart;
+      }
+      if (tmpRg.bit.bAutoManualM){
+        gMbStatus.bit.bAutoManualM  = tmpRg.bit.bAutoManualM;
+      }      
+      SetMBRgS( REG_R_STATUS, gMbStatus.reg );
+    }
+      break;   
     case REG_R_STATE_PROCESS  : break;   
     case REG_R_PWM           : break;   
  

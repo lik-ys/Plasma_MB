@@ -44,14 +44,14 @@ void Command::Start( start_func_t start )
 */
 void Command:: Proc( void )
 {  
-  static int num = 0;
+  static int n = 0;
   if ( gMbStatus.bit.bStartCNC ) return;
-  if ( gMbActiveCntrl.reg & (1 << num ) )
+  if ( gMbActiveCntrl.reg & (1 << n ) )
   { 
-    if ( NULL != TableExcFunc[num] ) TableExcFunc[num]();
-    gMbActiveCntrl.reg  &= ~( 1 << num );
+    if ( NULL != TableExcFunc[n] ) TableExcFunc[n]();
+    gMbActiveCntrl.reg  &= ~( 1 << n );
   }else;
-  if ( num++ >= NUMBERS_CNTL_BIT ) num = 0;  
+  if ( n++ >= NUMBERS_CNTRL_BIT ) n = 0;  
 }// Proc()
 
 void Command::InitTechProc(void)
@@ -65,6 +65,7 @@ void Command::InitTechProc(void)
 */
 void Command::TechProc(void)
 {
+  if ( gActiveReg.rg ) return;
   if ( gMbStatus.bit.bStartCNC ) {
     if ( 0 >= repeat )
     {
@@ -72,7 +73,8 @@ void Command::TechProc(void)
       num = 0;
     }
     else 
-      if (tblThechProc[num] != NULL ) tblThechProc[num]();   
+      if ((num < P_END)&&(tblThechProc[num]) != NULL ) 
+        tblThechProc[num]();   
   }
 }// TechProc()
 
@@ -239,9 +241,9 @@ void CmdStartStopPwm( void )
   {
     pExtSync->Instance->CNT = 0;
     HAL_TIM_PWM_Start( pExtSync, TIM_CHANNEL_1 ); 
-    gMbStatus.bit.bOnOffPwr = 1;
+
     gMbCntrl.bit.bOnOffPwr = 1;
-    SetMBRgS( REG_R_STATUS, gMbStatus.reg );
+
     hCmd->num = P_PILOT_ARC_START;
     gMbCntrl.bit.bFireStart = 1;
   }else if (1 == gMbStatus.bit.bOnOffPwr || gMbStatus.bit.bChopperStart )
@@ -260,18 +262,18 @@ void CmdStartStopPwm( void )
 static
 void CmdStartPwm( void )
 {
-    gActiveReg.rgCNTRL = 1;   // эмуляция работы черезе МБ
-    gMbCntrl.reg |= 1;
+    //gActiveReg.rgCNTRL = 1;   
+    gMbCntrl.bit.bOnOffPwr = 1;
     gMbCntrl.bit.bChopperStart = 1;
-    UpateActiveRg();
-        
+    UpateActiveRg(); // эмуляция работы черезе МБ
+    SetMBRgS(REG_W_CNTRL, gMbCntrl.reg);    
     pExtSync->Instance->CNT = 0;
     HAL_TIM_PWM_Start( pExtSync, TIM_CHANNEL_1 ); 
     gMbStatus.bit.bOnOffPwr = 1;
     gMbCntrl.bit.bOnOffPwr = 1;
     SetMBRgS( REG_R_STATUS, gMbStatus.reg );
     hCmd->num = P_PILOT_ARC_START;
-    gMbCntrl.bit.bFireStart = 1;  
+    gMbCntrl.bit.bPilotArc = 1;  
 }//StartPwm()
 /**
 * выключение синхрочастоты
@@ -279,6 +281,12 @@ void CmdStartPwm( void )
 static
 void CmdStopPwm( void )
 {
+    
+    gMbCntrl.bit.bOnOffPwr = 0;
+    gMbCntrl.bit.bChopperStart = 0;
+    SetMBRgS(REG_W_CNTRL, gMbCntrl.reg); 
+    UpateActiveRg(); // эмуляция работы черезе МБ
+    
     pExtSync->Instance->CNT = 0;
     HAL_TIM_PWM_Stop( pExtSync, TIM_CHANNEL_1 );
     gMbStatus.bit.bOnOffPwr = 0;

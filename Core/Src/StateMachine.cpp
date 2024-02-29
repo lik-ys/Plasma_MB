@@ -189,24 +189,6 @@ void SM_Tick( void )
 
   if (     1 == gStateSM.st.bStart )  gStateSM.proc = ST_COMM_START;
   else if (1  == gStateSM.st.bStop )  gStateSM.proc = ST_COMM_STOP;
-  
-  /*Передача уставок. StartCNC->1.PilotArc->TO(1sec)->FireON->Curr1 Compare 100A->CNC_OUT_RELAY
-  if (gMbStatus.bit.bStartCNC && 0 == gMbCntrl.bit.bPilotArc )
-  {
-    WR_DEBUG("--1-- PilotARC Timer Start on TIME_START = %i s. \r\n",TIME_START/1000);
-    gMbCntrl.bit.bPilotArc = 1;  // Деж. дуга
-    gMbActiveCntrl.bit.bPilotArc = 1;
-    hTimer->Time_Out( Timer::start, TIME_START, EV_COMM_START);    
-  }
-  if ( gMbStatus.bit.bStartCNC && hTimer->IsTimeOut( EV_COMM_START ) )
-  {
-    WR_DEBUG("--2-- FireSstart\r\n");
-        
-    gStateSM.st.bFireStrat = 1;
-    UpateActiveRg();
-    SetMBRgS( REG_R_STATUS, gMbStatus.reg );
-  }else;
-*/
 
   switch( gStateSM.proc )
   {
@@ -215,7 +197,7 @@ void SM_Tick( void )
       {        
         gStateSM.st.bCommStart = 0;
         gMbStatus.bit.bStartCNC = 1;            
-        SetMBRgS( REG_R_STATUS, gMbStatus.reg );          
+         
         WR_DEBUG("Start from CNC \r\n");    
       }else;
       gStateSM.st.bStart = 0;
@@ -232,8 +214,7 @@ void SM_Tick( void )
         UpateActiveRg();
         gMbActiveCntrl.bit.bOnOffPwr = 1;
         gMbStatus.bit.bStartCNC = 0;        
-        //gMbStatus.bit.bPilotArc = 0;
-        SetMBRgS( REG_R_STATUS, gMbStatus.reg ); 
+
         hCmd->InitTechProc();
         WR_DEBUG("Stop from CNC \r\n");    
       }else;
@@ -242,11 +223,12 @@ void SM_Tick( void )
   case ST_HIGHT_PROCESS:
     gStateSM.time.b10ms = 0;
     gStateSM.proc = ST_IDLE;
+    hCmd->Proc();
     break;
   case ST_MEDIUM_PROCESS:
     InRead();
     FireProcess();   
-    hCmd->Proc();
+    
     hCmd->TechProc();
     ReadStart( );
     gStateSM.time.b100ms = 0;
@@ -362,7 +344,7 @@ int8_t  FindActiveBit( uint16_t ActiveBitRg )
 {
   uint8_t nb = 0;        // номер бита
 
-  for ( nb = 0; nb < NUMBERS_CNTL_BIT; nb ++ )
+  for ( nb = 0; nb < NUMBERS_CNTRL_BIT; nb ++ )
   {
     if ( ActiveBitRg & (1 << nb ) ) break;
   }
