@@ -211,10 +211,18 @@ void SM_Tick( void )
         gMbCntrl.bit.bFireStart = 0;
         gStateSM.st.bCommStart = 0;        
         gStateSM.st.bFireStrat = 0;
+        SetMBRgS( REG_W_CNTRL, gMbCntrl.reg );
         UpateActiveRg();
         gMbActiveCntrl.bit.bOnOffPwr = 1;
-        gMbStatus.bit.bStartCNC = 0;        
+        gMbStatus.bit.bStartCNC = 0;  
+        
+        gActiveReg.rgCNTRL = 1; // выключить все в €чейках
 
+        pExtSync->Instance->CNT = 0;
+        HAL_TIM_PWM_Stop( pExtSync, TIM_CHANNEL_1 );
+        gMbStatus.bit.bOnOffPwr = 0;
+        SetMBRgS( REG_R_STATUS, gMbStatus.reg );
+        
         hCmd->InitTechProc();
         WR_DEBUG("Stop from CNC \r\n");    
       }else;

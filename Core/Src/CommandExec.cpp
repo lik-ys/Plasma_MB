@@ -244,6 +244,10 @@ void CmdStartStopPwm( void )
 
     gMbCntrl.bit.bOnOffPwr = 1;
 
+    gActiveReg.rgPWM =1; // т.к. Ячейки ресетим после останова ШИМ, закиним уставки
+    gActiveReg.rgSLOP_1 = 1;
+    gActiveReg.rgSLOP_2 = 1;    
+
     hCmd->num = P_PILOT_ARC_START;
     gMbCntrl.bit.bFireStart = 1;
   }else if (1 == gMbStatus.bit.bOnOffPwr || gMbStatus.bit.bChopperStart )
@@ -262,10 +266,18 @@ void CmdStartStopPwm( void )
 static
 void CmdStartPwm( void )
 {
-    //gActiveReg.rgCNTRL = 1;   
+    gActiveReg.rgCNTRL = 1;   // эмуляция работы МБ ВУ
+    gActiveReg.rgPWM =1;
+    gActiveReg.rgP = 1;
+    gActiveReg.rgI = 1;    
+    gActiveReg.rgD = 1;
+    gActiveReg.rgCURR = 1;
+    gActiveReg.rgSLOP_1 = 1;
+    gActiveReg.rgSLOP_2 = 1;
+    
     gMbCntrl.bit.bOnOffPwr = 1;
     gMbCntrl.bit.bChopperStart = 1;
-    UpateActiveRg(); // эмуляция работы черезе МБ
+    UpateActiveRg(); 
     SetMBRgS(REG_W_CNTRL, gMbCntrl.reg);    
     pExtSync->Instance->CNT = 0;
     HAL_TIM_PWM_Start( pExtSync, TIM_CHANNEL_1 ); 

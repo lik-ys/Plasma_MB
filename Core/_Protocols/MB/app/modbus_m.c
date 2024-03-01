@@ -48,7 +48,7 @@ void UpDateReadRgM( uint16_t addr, eMBReg_t numRg )
       RgCntrl_t tmpRg; 
       tmpRg.reg = gMbStatus.reg;      
       gMbStatus.reg = GetMBRgM( addr, numRg ); 
-      
+      // Биты МБ сохраняем
       if (tmpRg.bit.bPilotArc){
         gMbStatus.bit.bPilotArc = tmpRg.bit.bPilotArc;
       }
@@ -57,6 +57,14 @@ void UpDateReadRgM( uint16_t addr, eMBReg_t numRg )
       }
       if (tmpRg.bit.bAutoManualM){
         gMbStatus.bit.bAutoManualM  = tmpRg.bit.bAutoManualM;
+      } 
+      if (tmpRg.bit.bStartCNC)
+      {
+        gMbStatus.bit.bStartCNC = tmpRg.bit.bStartCNC;
+      }
+      if (tmpRg.bit.bChillerFail_t)
+      {
+        gMbStatus.bit.bChillerFail_t = tmpRg.bit.bChillerFail_t;
       }      
       SetMBRgS( REG_R_STATUS, gMbStatus.reg );
     }
