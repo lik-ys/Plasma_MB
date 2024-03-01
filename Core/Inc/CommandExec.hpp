@@ -47,6 +47,7 @@ void CmdMetalContact( void );
 void CmdTimeOut( void );
 void CmdRepeat( void );
 void CmdWiteCurrent( void );
+void CmdStopPwm( void );
 
 /**
 *
@@ -67,11 +68,11 @@ typedef enum
   NUMBERS_CNTRL_BIT   // 10
 }eCntrlRegBits_t;//
 
-typedef enum {
-  P_START_PWM       , // 0
-  P_PILOT_ARC_START , // 1
-  P_PILOT_ARC       , // 2
-  P_TIME_OUT_0      , // 3
+typedef enum {  
+  P_PILOT_ARC_START , // 0
+  P_PILOT_ARC       , // 1
+  P_TIME_OUT_0      , // 2
+  P_START_PWM       , // 3  
   P_FIRE_START      , // 4
   P_WAIT_CURR       , // 5
   P_TIME_OUT_1      , // 6   
@@ -104,8 +105,8 @@ public:
   typedef uint8_t NumTechProc_t;
   int8_t repeat;
   NumTechProc_t num; // 0,1,..7
-  const NumTechProc_t tbl[ CNT_PROC ]       = {P_PILOT_ARC_START, P_TIME_OUT_0,     P_PILOT_ARC,  P_START_PWM, P_FIRE_START, P_WAIT_CURR,   P_TIME_OUT_1, P_CMD_REPEAT };
-  const pExecFunc_t tblThechProc[ CNT_PROC ]= {CmdStartPwm,       CmdPilotArcStart, CmdPilotArc,  CmdTimeOut,  CmdFireStart, CmdWiteCurrent,CmdTimeOut,   CmdRepeat,NULL    };
+  const NumTechProc_t tbl[ CNT_PROC ]       = {P_PILOT_ARC_START,  P_PILOT_ARC,   P_TIME_OUT_0,  P_START_PWM, P_FIRE_START, P_WAIT_CURR,   P_TIME_OUT_1, P_CMD_REPEAT, P_STOP_PWM };
+  const pExecFunc_t tblThechProc[ CNT_PROC ]= {CmdPilotArcStart,   CmdPilotArc,   CmdTimeOut,    CmdStartPwm, CmdFireStart, CmdWiteCurrent,CmdTimeOut,   CmdRepeat,    CmdStopPwm    };
   void TechProc( void );
   void InitTechProc(void );
 

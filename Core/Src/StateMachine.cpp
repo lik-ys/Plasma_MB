@@ -194,10 +194,10 @@ void SM_Tick( void )
   {
   case ST_COMM_START:                
       if ( 1 == gStateSM.st.bCommStart ) 
-      {        
+      {  
+        hCmd->InitTechProc(); 
         gStateSM.st.bCommStart = 0;
         gMbStatus.bit.bStartCNC = 1;            
-         
         WR_DEBUG("Start from CNC \r\n");    
       }else;
       gStateSM.st.bStart = 0;
@@ -223,7 +223,6 @@ void SM_Tick( void )
         gMbStatus.bit.bOnOffPwr = 0;
         SetMBRgS( REG_R_STATUS, gMbStatus.reg );
         
-        hCmd->InitTechProc();
         WR_DEBUG("Stop from CNC \r\n");    
       }else;
       gStateSM.st.bStop = 0;

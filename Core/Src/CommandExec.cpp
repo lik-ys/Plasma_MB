@@ -101,6 +101,9 @@ void  CmdPilotArc(void )
     gMbStatus.bit.bPilotArc = 1;
     hCmd->num = P_TIME_OUT_0; 
     // timer start    
+    gMbCntrl.bit.bOnOffPwr = 1; 
+    gMbCntrl.bit.bPilotArc = 0;
+    //hCmd->num = P_START_PWM;
   }else
   {
     WR_DEBUG("PILOT_ARC RESET \r\n");    
@@ -191,7 +194,7 @@ void CmdTimeOut( void )
       break;
     case P_TIME_OUT_0:  
       if ( hTimer->IsTimeOut( EV_COMM_START ) ) {
-        hCmd->num = P_FIRE_START;     
+        hCmd->num = P_START_PWM;     
         WR_DEBUG("-------- TimeOut is EV_COMM_START \r\n");
       }
       break;
@@ -213,6 +216,7 @@ void CmdTimeOut( void )
       hCmd->num = P_START_PWM;
       break;
     case P_START_PWM:
+      hCmd->num =  P_FIRE_START;
       break;
     default:
       break;
@@ -248,7 +252,7 @@ void CmdStartStopPwm( void )
     gActiveReg.rgSLOP_1 = 1;
     gActiveReg.rgSLOP_2 = 1;    
 
-    hCmd->num = P_PILOT_ARC_START;
+    hCmd->num = P_TIME_OUT_0;
     gMbCntrl.bit.bFireStart = 1;
   }else if (1 == gMbStatus.bit.bOnOffPwr || gMbStatus.bit.bChopperStart )
   {
@@ -284,7 +288,7 @@ void CmdStartPwm( void )
     gMbStatus.bit.bOnOffPwr = 1;
     gMbCntrl.bit.bOnOffPwr = 1;
     SetMBRgS( REG_R_STATUS, gMbStatus.reg );
-    hCmd->num = P_PILOT_ARC_START;
+    hCmd->num = P_FIRE_START;
     gMbCntrl.bit.bPilotArc = 1;  
 }//StartPwm()
 /**
@@ -305,6 +309,7 @@ void CmdStopPwm( void )
     gMbStatus.bit.bChopperStart = 0;
     SetMBRgS( REG_R_STATUS, gMbStatus.reg );
     hCmd->num = P_END;
+    gMbCntrl.bit.bPilotArc =0;
 }//StartPwm()
 
 /** (END OF FILE  : CommandExec.cpp.cpp) 
