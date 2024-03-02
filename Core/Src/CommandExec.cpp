@@ -147,7 +147,8 @@ static void  CmdFireStart( void )
 static 
 void CmdWiteCurrent(void )
 {
-  if ( GetMBRgS( REG_R_CURR_1) > THRESHOLD_CURR_1 )  //
+  static int16_t cnt = 3;
+  if (1)//( GetMBRgS( REG_R_CURR_1) > THRESHOLD_CURR_1 )  //
   {
     gStateSM.st.bIgnitionOk = 1;
     CncWrite( cnc_out0, GPIO_PIN_SET );   
@@ -156,6 +157,12 @@ void CmdWiteCurrent(void )
   { 
     if (hTimer->IsTimeOut( EV_COMM_FIRE ))
     {
+      if (cnt> 0 )cnt--;
+      else {
+        hCmd->num = P_END; 
+        cnt = 3;
+        return;
+      }
       hCmd->num = P_CMD_REPEAT;
     }else;    
   }
@@ -213,7 +220,7 @@ void CmdTimeOut( void )
       break; 
     case P_CMD_REPEAT:        
       WR_DEBUG("-------- P_CMD_REPEAT \r\n");
-      hCmd->num = P_START_PWM;
+      hCmd->num = P_CMD_REPEAT;
       break;
     case P_START_PWM:
       hCmd->num =  P_FIRE_START;

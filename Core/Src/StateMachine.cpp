@@ -193,7 +193,7 @@ void SM_Tick( void )
   switch( gStateSM.proc )
   {
   case ST_COMM_START:                
-      if ( 1 == gStateSM.st.bCommStart ) 
+      if ((0 == gMbStatus.bit.bStartCNC) && (1 == gStateSM.st.bCommStart) ) 
       {  
         hCmd->InitTechProc(); 
         gStateSM.st.bCommStart = 0;

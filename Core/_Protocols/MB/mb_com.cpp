@@ -214,14 +214,14 @@ bool ModBusCom::Read( void )
 #include "mbport.h"  
 #include "mb_m.h"
 /***
-**  write to slave cell
+**  write to slave cell  TODO проверять usMRegHoldBufх[][] включен ли ШИМ
 */
 bool ModBusCom::Write( void )
 {
   if (0 ==  hTimer->IsTimeOut( EV_WRITE_MBM) ) return;
   if ( isMBmRequest() )  
   {
-    if ( 0 ==  hTimer->IsTimeOut( EV_REQUEST_TO) )
+    if ( 1 ==  hTimer->IsTimeOut( EV_REQUEST_TO) )
     {
       ClrMBmRequest();
     }else return false;  // 
