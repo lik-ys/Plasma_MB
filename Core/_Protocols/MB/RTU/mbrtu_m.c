@@ -446,7 +446,7 @@ xMBMasterRTUTimerExpired(void)
     {
       xMBMasterPortEventPost( EV_MASTER_ERROR_RESPOND_TIMEOUT );  
       MBMcntIncTO();
-      MBMasterErrorTO( ucMBMasterGetDestAddress()-1 );
+      MBMasterErrorTO( ucMBMasterGetDestAddress());
       
     }
 	return xNeedPoll;

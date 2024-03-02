@@ -103,6 +103,7 @@ void MBMasterTransmite(uint16_t addr )
 */
 uint16_t isMBmRead(uint16_t addr )
 {
+  if (addr <= 0 || (addr >= MB_MASTER_TOTAL_SLAVE_NUM)) return 0;
   uint8_t bRead = 0;  
   if ( (1 == gMBactM[addr].response) || (1 == gMBactM[addr].err_time_out )) 
       bRead = 1;
@@ -113,24 +114,31 @@ uint16_t isMBmRead(uint16_t addr )
 /*
 *
 */
-uint16_t isMBmRequest(void)
+uint16_t isMBError(uint16_t addr )
 {
-  for ( uint16_t addr = 0 ; addr < MB_MASTER_TOTAL_SLAVE_NUM; addr++ )
-  {
-    if (1 == gMBactM[addr].request && (0 == gMBactM[addr].response )) return 1;
-  }
+  if (addr <= 0 || (addr >= MB_MASTER_TOTAL_SLAVE_NUM)) return 0;
+  if ( gCells.reg & ( 1<< (addr) ))      
+  if ((1 == gMBactM[addr - 1].error) || ( 1 == gMBactM[addr - 1].err_time_out) ) return 1;
+  
+  return 0;
+}
+/*
+*
+*/
+uint16_t isMBmRequest( uint16_t addr )
+{
+  if (addr <= 0 || (addr >= MB_MASTER_TOTAL_SLAVE_NUM)) return 0;
+  if ( 1 == gMBactM[ addr - 1 ].request && (0 == gMBactM[ addr - 1 ].response ) ) return 1;
   return 0; 
 }//
 
 /*
 *
 */
-void ClrMBmRequest( void )
+void ClrMBmRequest( uint16_t addr )
 {
-  for ( uint16_t addr = 0 ; addr < MB_MASTER_TOTAL_SLAVE_NUM; addr++ )
-  {
-    gMBactM[addr].request  = 0;
-  }  
+  if ( (addr <= 0) || (addr >= MB_MASTER_TOTAL_SLAVE_NUM)) return;
+  gMBactM[ addr - 1 ].request  = 0;
 }/// 
 /*
  * not response, not connect
@@ -148,12 +156,12 @@ void MBMasterError(void )
  */
 void MBMasterErrorTO( uint16_t addr )
 {
-  if ( addr < MB_MASTER_TOTAL_SLAVE_NUM )
+  if ( (addr > 0) &&  addr < MB_MASTER_TOTAL_SLAVE_NUM )
   {
    //gMBactM[addr].response = 1;
-    gMBactM[addr].request = 0;
+    gMBactM[addr-1].request = 0;
     //gMBactM[addr].error = 0;
-    gMBactM[addr].err_time_out = 1;   
+    gMBactM[addr-1].err_time_out = 1;   
   }else;  
   mb_act.err_time_out = 1;  
 } //MBMasterErrorTO() 
@@ -163,7 +171,7 @@ void MBMasterErrorTO( uint16_t addr )
  */
 void MBMasterExec( uint16_t addr )
 {
-  if ( addr < MB_MASTER_TOTAL_SLAVE_NUM )
+  if ( (addr >= 0) && addr < MB_MASTER_TOTAL_SLAVE_NUM )
   {
     gMBactM[addr].execute = 1;
     gMBactM[addr].response = 0;

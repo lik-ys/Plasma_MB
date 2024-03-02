@@ -492,7 +492,7 @@ eMBMasterPoll( void )
             MBMcnt.ev_false++;
 			eMBMasterEnable( );
 			cntErr = MB_CNT_ERROR;
-			MBMasterErrorTO(ucMBMasterGetDestAddress()-1 );
+			MBMasterErrorTO(ucMBMasterGetDestAddress() );
             //MBMasterRecieved();
             MBMasterError();
 			SetRcvIdleState( );

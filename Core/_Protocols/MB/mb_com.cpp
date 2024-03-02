@@ -185,8 +185,8 @@ bool ModBusCom::Hr_write( mb_addr_t mb_addr, eMBReg_t rg, uint16_t data)
   if ( 1 == gMBactM[ mb_addr - 1 ].request)  return 0;
   MBMasterTransmite( mb_addr - 1);
   gMBMasterReqErrCode = eMBMasterReqWriteHoldingRegister( mb_addr, rg , data, MB_TIME_OUT );
-  hTimer->Time_Out( Timer::start, PERIOD_MB_MASTER_TO, EV_WRITE_MBM);
-  hTimer->Time_Out( Timer::start, PERIOD_REQUEST_TO, EV_REQUEST_TO);
+  hTimer->Time_Out( Timer::start, PERIOD_MB_MASTER_TO, EV_WRITE_MBM );
+  hTimer->Time_Out( Timer::start, PERIOD_REQUEST_TO, EV_REQUEST_TO );
   return TRUE;
 }// write()
 
@@ -199,15 +199,15 @@ bool ModBusCom::Read( void )
   if ( 0 == b_read_en_dis ) return false;
   if ( 0 ==  hTimer->IsTimeOut( EV_READ_TO) ) return false;
   
-  static uint16_t saddr = 0;
+  static uint16_t saddr = 1;
   bool res = false;
   //saddr = 1;
   if ( isMBmRead(saddr) )
-  {
-    if ( ++saddr >= MB_cell_end )  saddr = 1;
+  {    
     this->addr  = static_cast<mb_addr_t>(saddr);
     res = Hr_query( this->addr, static_cast<eMBReg_t>(REG_R_CURR_1s) );  /// TODO без опроса запись работает с первого раза
   }else;// ret = false;  
+  if ( ++saddr >= MB_cell_end )  saddr = 1;
   return res;
 }// Read()
 
@@ -218,12 +218,12 @@ bool ModBusCom::Read( void )
 */
 bool ModBusCom::Write( void )
 {
-  if (0 ==  hTimer->IsTimeOut( EV_WRITE_MBM) ) return;
-  if ( isMBmRequest() )  
+  if ( 0 ==  hTimer->IsTimeOut( EV_WRITE_MBM) ) return false;
+  if ( isMBmRequest( this->addr) )  
   {
     if ( 1 ==  hTimer->IsTimeOut( EV_REQUEST_TO) )
     {
-      ClrMBmRequest();
+      ClrMBmRequest( this->addr );
     }else return false;  // 
   }
   else;
@@ -233,15 +233,30 @@ bool ModBusCom::Write( void )
   
   if ( gActiveReg.rg ) 
   {
-    static uint16_t saddr = 0;
+    static uint16_t saddr = 0;  // 1...6
+    static  uint16_t cnt_error = 0;
     if ( gActiveReg.rgPWM )  
-    {      
-      if ( ++saddr >= MB_cell_end )  {
-        saddr = 0;
-        gActiveReg.rgPWM = 0;
-        return 1;
+    {       
+      if ( isMBError(saddr) )    // gMBactM   gCells  // ошибка записи
+      {         
+        WR_DEBUG("--MB_error!!! CNT = %i Repeat write !!! cell == %i \r\n", cnt_error, saddr);  // -> repeat N
+        if (++cnt_error > 10 ) 
+        {
+          cnt_error = 0;
+          if ( ++saddr >= MB_cell_end ) 
+            saddr = 0;
+        }        
+      }else 
+      {
+        cnt_error = 0;
+        if ( ++saddr >= MB_cell_end )  
+        {
+          saddr = 0;
+          gActiveReg.rgPWM = 0;
+          return 1;
+        }
       }      
-      this->addr  = static_cast<mb_addr_t>(saddr);
+      this->addr  = static_cast<mb_addr_t>(saddr);  
       ret = Hr_write(this->addr, static_cast<eMBReg_t>(REG_W_SET_OUT_PWM), GetMBRgS(REG_W_PWM) );
       return 1;
     }

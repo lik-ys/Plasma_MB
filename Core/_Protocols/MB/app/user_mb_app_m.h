@@ -130,7 +130,7 @@ extern mb_cnt_t 	mb_cnt;
 extern uint16_t   usMRegHoldBuf[ MB_MASTER_TOTAL_SLAVE_NUM ][ M_REG_HOLDING_NREGS ];
 extern mb_action_t gMBactM[MB_MASTER_TOTAL_SLAVE_NUM];
 
-uint16_t isMBmRequest(void);
+uint16_t isMBmRequest(uint16_t addr);
 void MBMasterRecieved( uint16_t addr );
 void MBMasterTransmite(uint16_t addr );
 void MBMasterError(void );
@@ -140,7 +140,8 @@ void MBMasterInit( uint16_t addr);
 
 void SetMBRgM( uint16_t slave, eMBReg_t numMBReg, uint16_t data );
 uint16_t GetMBRgM( uint16_t slave, eMBReg_t numMBReg );
-void ClrMBmRequest( void );
+void ClrMBmRequest( uint16_t addr );
+uint16_t isMBError(uint16_t addr );
 
 uint16_t isMBmRead(uint16_t addr );
 

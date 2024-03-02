@@ -38,8 +38,8 @@ extern "C" {
 #define TIME_OUT_TEST   250
 #define THRESHOLD_CURR_1    100  // 100 A  - пороговый ток включения готовности для ЧПУ
   
-#define PERIOD_MB_MASTER_TO  70  
-#define PERIOD_REQUEST_TO    100
+#define PERIOD_MB_MASTER_TO  120  
+#define PERIOD_REQUEST_TO    170
 #define PERIOD_READ_TO       40  
   
 /*===============================[ PUBLIC TYPES ]==============================*/ 
