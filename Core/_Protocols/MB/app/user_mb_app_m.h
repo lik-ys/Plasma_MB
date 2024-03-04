@@ -39,8 +39,8 @@ typedef enum _MB_REG_SLAVE
   REG_R_STATE_PROCESS   = 4,   // соотвествует REG_W_CNTRL_PROCESS (Ожидание, поджиг, Резка, Тушение, True Hole)
   
   REG_R_PWM             = 5,
-  REW_R_RESERV          = 6,
-  REW_R_RESERV0         = 7,
+  REW_R_RESERV          = 6,   //  REG_W_FIRST_DAC
+  REW_R_RESERV0         = 7,   //  REG_W_LAST_DAC
   
   REG_W_PID_P           = 40,
   REG_W_PID_I           = 41,

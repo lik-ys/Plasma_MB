@@ -96,6 +96,34 @@ void ModBusCom::Init(void )
   }  
 }// Init()
 
+static void CompareReg( uint16_t addr )
+{
+  if ( 0 == gActiveReg.rg )
+  {
+    if ( GetMBRgS(REG_W_PWM) != GetMBRgM(addr,REG_R_PWM) )
+    {
+      gActiveReg.rgPWM = 1;
+    }
+    if ( GetMBRgS(REG_W_SLOP_1) != GetMBRgM(addr,REW_R_RESERV) )
+    {
+      gActiveReg.rgSLOP_1 = 1;
+    }
+    if ( GetMBRgS(REG_W_SLOP_2) != GetMBRgM(addr,REW_R_RESERV0) )
+    {
+      gActiveReg.rgSLOP_2 = 1;
+    }   
+  }
+}
+
+static void CompareSets( void )
+{
+  if (gCells.bit.bCell_1) CompareReg(0);
+  if (gCells.bit.bCell_2) CompareReg(1);
+  if (gCells.bit.bCell_3) CompareReg(2);
+  if (gCells.bit.bCell_4) CompareReg(3);
+  if (gCells.bit.bCell_5) CompareReg(4);
+  if (gCells.bit.bCell_6) CompareReg(5);
+}
 
 /*
 *
@@ -116,6 +144,7 @@ bool ModBusCom::Loop( void )
     if ( 0 == eMBMasterIsEnabled()) return false;
     
     Read();
+    //CompareSets();
     Write();
     
     gMBErrorCode = eMBMasterPoll( );
@@ -183,7 +212,7 @@ bool ModBusCom::Hr_write( mb_addr_t mb_addr, eMBReg_t rg, uint16_t data)
 { // TODO зафиксировать номер регистра. при получении ответа проверить номер 
   // TODO НОвая запись только после получения ответа
   if ( 1 == gMBactM[ mb_addr - 1 ].request)  return 0;
-  MBMasterTransmite( mb_addr - 1);
+  MBMasterTransmite( mb_addr );
   gMBMasterReqErrCode = eMBMasterReqWriteHoldingRegister( mb_addr, rg , data, MB_TIME_OUT );
   hTimer->Time_Out( Timer::start, PERIOD_MB_MASTER_TO, EV_WRITE_MBM );
   hTimer->Time_Out( Timer::start, PERIOD_REQUEST_TO, EV_REQUEST_TO );
@@ -201,7 +230,7 @@ bool ModBusCom::Read( void )
   
   static uint16_t saddr = 1;
   bool res = false;
-  //saddr = 1;
+  //saddr = 6;
   if ( isMBmRead(saddr) )
   {    
     this->addr  = static_cast<mb_addr_t>(saddr);

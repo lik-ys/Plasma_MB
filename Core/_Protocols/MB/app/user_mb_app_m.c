@@ -84,13 +84,13 @@ void MBMasterTransmite(uint16_t addr )
   {
     mb_cnt.tx  = 0;
   }  
-  if ( addr < MB_MASTER_TOTAL_SLAVE_NUM )
+  if (0 < addr && addr <= MB_MASTER_TOTAL_SLAVE_NUM )
   {
-    gMBactM[addr].request = 1;
-    gMBactM[addr].execute = 0;
-    gMBactM[addr].response = 0;    
-    gMBactM[addr].error = 0;
-    gMBactM[addr].err_time_out = 0;   
+    gMBactM[addr-1].request = 1;
+    gMBactM[addr-1].execute = 0;
+    gMBactM[addr-1].response = 0;    
+    gMBactM[addr-1].error = 0;
+    gMBactM[addr-1].err_time_out = 0;   
   }else;
   mb_act.response = 0;
   mb_act.request = 1;
@@ -105,9 +105,9 @@ uint16_t isMBmRead(uint16_t addr )
 {
   if (addr <= 0 || (addr >= MB_MASTER_TOTAL_SLAVE_NUM)) return 0;
   uint8_t bRead = 0;  
-  if ( (1 == gMBactM[addr].response) || (1 == gMBactM[addr].err_time_out )) 
+  if ( (1 == gMBactM[addr-1].response) || (1 == gMBactM[addr-1].err_time_out )) 
       bRead = 1;
-  if ( (0 == gMBactM[addr].response) && (0 == gMBactM[addr].err_time_out )) 
+  if ( (0 == gMBactM[addr-1].response) && (0 == gMBactM[addr-1].err_time_out )) 
       bRead = 1;
   return bRead;
 }
@@ -162,7 +162,10 @@ void MBMasterErrorTO( uint16_t addr )
     gMBactM[addr-1].request = 0;
     //gMBactM[addr].error = 0;
     gMBactM[addr-1].err_time_out = 1;   
-  }else;  
+  }else
+  {
+    WR_DEBUG("Error addr = %i \r\n", addr);
+  }  
   mb_act.err_time_out = 1;  
 } //MBMasterErrorTO() 
   
@@ -173,11 +176,11 @@ void MBMasterExec( uint16_t addr )
 {
   if ( (addr >= 0) && addr < MB_MASTER_TOTAL_SLAVE_NUM )
   {
-    gMBactM[addr].execute = 1;
-    gMBactM[addr].response = 0;
-    gMBactM[addr].request = 0;
-    gMBactM[addr].error = 0;
-    gMBactM[addr].err_time_out = 0;   
+    gMBactM[addr-1].execute = 1;
+    gMBactM[addr-1].response = 0;
+    gMBactM[addr-1].request = 0;
+    gMBactM[addr-1].error = 0;
+    gMBactM[addr-1].err_time_out = 0;   
   }else;  
 	mb_act.execute = 1;
 	mb_cnt.ex++;
