@@ -103,7 +103,7 @@ void MBMasterTransmite(uint16_t addr )
 */
 uint16_t isMBmRead(uint16_t addr )
 {
-  if (addr <= 0 || (addr >= MB_MASTER_TOTAL_SLAVE_NUM)) return 0;
+  if (addr <= 0 || (addr > MB_MASTER_TOTAL_SLAVE_NUM)) return 0;
   uint8_t bRead = 0;  
   if ( (1 == gMBactM[addr-1].response) || (1 == gMBactM[addr-1].err_time_out )) 
       bRead = 1;
@@ -116,7 +116,7 @@ uint16_t isMBmRead(uint16_t addr )
 */
 uint16_t isMBError(uint16_t addr )
 {
-  if (addr <= 0 || (addr >= MB_MASTER_TOTAL_SLAVE_NUM)) return 0;
+  if (addr <= 0 || (addr > MB_MASTER_TOTAL_SLAVE_NUM)) return 0;
   if ( gCells.reg & ( 1<< (addr) ))      
   if ((1 == gMBactM[addr - 1].error) || ( 1 == gMBactM[addr - 1].err_time_out) ) return 1;
   
@@ -127,7 +127,7 @@ uint16_t isMBError(uint16_t addr )
 */
 uint16_t isMBmRequest( uint16_t addr )
 {
-  if (addr <= 0 || (addr >= MB_MASTER_TOTAL_SLAVE_NUM)) return 0;
+  if (addr <= 0 || (addr > MB_MASTER_TOTAL_SLAVE_NUM)) return 0;
   if ( 1 == gMBactM[ addr - 1 ].request && (0 == gMBactM[ addr - 1 ].response ) ) return 1;
   return 0; 
 }//
@@ -137,7 +137,7 @@ uint16_t isMBmRequest( uint16_t addr )
 */
 void ClrMBmRequest( uint16_t addr )
 {
-  if ( (addr <= 0) || (addr >= MB_MASTER_TOTAL_SLAVE_NUM)) return;
+  if ( (addr <= 0) || (addr > MB_MASTER_TOTAL_SLAVE_NUM)) return;
   gMBactM[ addr - 1 ].request  = 0;
 }/// 
 /*
@@ -156,7 +156,7 @@ void MBMasterError(void )
  */
 void MBMasterErrorTO( uint16_t addr )
 {
-  if ( (addr > 0) &&  addr < MB_MASTER_TOTAL_SLAVE_NUM )
+  if ( (addr > 0) &&  addr <= MB_MASTER_TOTAL_SLAVE_NUM )
   {
    //gMBactM[addr].response = 1;
     gMBactM[addr-1].request = 0;
@@ -174,7 +174,7 @@ void MBMasterErrorTO( uint16_t addr )
  */
 void MBMasterExec( uint16_t addr )
 {
-  if ( (addr >= 0) && addr < MB_MASTER_TOTAL_SLAVE_NUM )
+  if ( (addr > 0) && addr <= MB_MASTER_TOTAL_SLAVE_NUM )
   {
     gMBactM[addr-1].execute = 1;
     gMBactM[addr-1].response = 0;
