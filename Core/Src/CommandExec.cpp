@@ -148,7 +148,7 @@ static
 void CmdWiteCurrent(void )
 {
   static int16_t cnt = 3;
-  if (1)//( GetMBRgS( REG_R_CURR_1) > THRESHOLD_CURR_1 )  //
+  if ( GetMBRgS( REG_R_CURR_1) > THRESHOLD_CURR_1 )  //
   {
     gStateSM.st.bIgnitionOk = 1;
     CncWrite( cnc_out0, GPIO_PIN_SET );   

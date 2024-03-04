@@ -489,6 +489,7 @@ eMBMasterPoll( void )
     {    	
 		if ( cntErr-- < 0 )
 		{   
+            eMBMasterRTUStart(); // fis bug: looping MB
             MBMcnt.ev_false++;
 			eMBMasterEnable( );
 			cntErr = MB_CNT_ERROR;

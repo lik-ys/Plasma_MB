@@ -62,9 +62,9 @@ void UpDateReadRgM( uint16_t addr, eMBReg_t numRg )
       {
         gMbStatus.bit.bStartCNC = tmpRg.bit.bStartCNC;
       }
-      if (tmpRg.bit.bChillerFail_t)
+      if (tmpRg.bit.bChillerFail)
       {
-        gMbStatus.bit.bChillerFail_t = tmpRg.bit.bChillerFail_t;
+        gMbStatus.bit.bChillerFail = tmpRg.bit.bChillerFail;
       }      
       SetMBRgS( REG_R_STATUS, gMbStatus.reg );
     }
