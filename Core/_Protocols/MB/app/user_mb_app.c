@@ -92,29 +92,18 @@ void UpDateWriteRg( eMBRegS_t numRg )
       
       if ( GetMBRgS( numRg )&(1<<0) )
             gMbCntrl.bit.bChopperStart = 1;
-      else  gMbCntrl.bit.bChopperStart = 0; 
-      
+      else  gMbCntrl.bit.bChopperStart = 0;       
       UpateActiveRg();
       break;
-    case REG_W_PWM:    
-      break;
-    case REG_W_CURR:
-      break;
-    case REG_W_SLOP_1:
-      break;
-    case REG_W_SLOP_2: 
-      break;
-    case REG_W_P:
-
-      break;
+    case REG_W_PWM:break;
+    case REG_W_CURR:break;
+    case REG_W_SLOP_1:break;
+    case REG_W_SLOP_2:break;
+    case REG_W_P:break;
     case REG_W_I:break;
-    case REG_W_D:break;
-    
-    case REG_W_CNC_OUT:
-      break;
-    case REG_W_FREQ:
-          break;      
-      
+    case REG_W_D:break;    
+    case REG_W_CNC_OUT:break;
+    case REG_W_FREQ:break;            
     default:
       break;
   } // switch(  )

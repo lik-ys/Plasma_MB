@@ -38,9 +38,9 @@ extern "C" {
 #define TIME_OUT_TEST   250
 #define THRESHOLD_CURR_1    100  // 100 A  - пороговый ток включения готовности для ЧПУ
   
-#define PERIOD_MB_MASTER_TO  120  
-#define PERIOD_REQUEST_TO    170
-#define PERIOD_READ_TO       40  
+#define PERIOD_MB_MASTER_TO  60  
+#define PERIOD_REQUEST_TO    100
+#define PERIOD_READ_TO       50  
   
 /*===============================[ PUBLIC TYPES ]==============================*/ 
     // Публичные типы 
@@ -236,6 +236,7 @@ typedef union
   uint16_t mbReg[ 9 ];  
 }CntrlCellsRg_t;
 
+extern uint16_t    gProblemAddr;
 extern eProcess_t  eSM_proc;
 extern ADC_data_t  ADCdata[ ADC_BUF_LENGHT ];
 extern ADC_data_t  ADCdat;

@@ -96,6 +96,9 @@ void ModBusCom::Init(void )
   }  
 }// Init()
 
+/*
+*
+**/
 static void CompareReg( uint16_t addr )
 {
   if ( 0 == gActiveReg.rg )
@@ -103,26 +106,32 @@ static void CompareReg( uint16_t addr )
     if ( GetMBRgS(REG_W_PWM) != GetMBRgM(addr,REG_R_PWM) )
     {
       gActiveReg.rgPWM = 1;
+      gProblemAddr = addr;
     }
     if ( GetMBRgS(REG_W_SLOP_1) != GetMBRgM(addr,REW_R_RESERV) )
     {
       gActiveReg.rgSLOP_1 = 1;
+      gProblemAddr = addr;
     }
     if ( GetMBRgS(REG_W_SLOP_2) != GetMBRgM(addr,REW_R_RESERV0) )
     {
       gActiveReg.rgSLOP_2 = 1;
+      gProblemAddr = addr;
     }   
+    //if ( addr == gProblemAddr )
   }
-}
-
+}//CompareReg()
+/*
+*
+**/
 static void CompareSets( void )
 {
-  if (gCells.bit.bCell_1) CompareReg(0);
-  if (gCells.bit.bCell_2) CompareReg(1);
-  if (gCells.bit.bCell_3) CompareReg(2);
-  if (gCells.bit.bCell_4) CompareReg(3);
-  if (gCells.bit.bCell_5) CompareReg(4);
-  if (gCells.bit.bCell_6) CompareReg(5);
+  if ( gCells.bit.bCell_1 ) CompareReg( 0 );
+  if ( gCells.bit.bCell_2 ) CompareReg( 1 );
+  if ( gCells.bit.bCell_3 ) CompareReg( 2 );
+  if ( gCells.bit.bCell_4 ) CompareReg( 3 );
+  if ( gCells.bit.bCell_5 ) CompareReg( 4 );
+  if ( gCells.bit.bCell_6 ) CompareReg( 5 );
 }
 
 /*
@@ -144,7 +153,7 @@ bool ModBusCom::Loop( void )
     if ( 0 == eMBMasterIsEnabled()) return false;
     
     Read();
-    //CompareSets();
+    CompareSets();
     Write();
     
     gMBErrorCode = eMBMasterPoll( );
@@ -240,6 +249,35 @@ bool ModBusCom::Read( void )
   return res;
 }// Read()
 
+/* 
+* актуальный адрес записи, получаем из анализа 
+* статуса операции МБ и актиного бита записи
+*/
+uint16_t GetActualAddr( uint16_t  saddr)
+{  
+  static  uint16_t cnt_error = 0;     
+  if ( isMBError(saddr) )    // ошибка записи -> повторяем передачу
+  {         
+    WR_DEBUG("--MB_error!!! CNT = %i Repeat write !!! cell == %i \r\n", cnt_error, saddr);  // -> repeat N
+    if (++cnt_error > 10 ) 
+    {
+      cnt_error = 0;
+      if ( ++saddr >= MB_cell_end ) 
+        saddr = 0;
+    }        
+    return saddr;
+  }else  
+  if ( 0 != gProblemAddr )  // ячейка с несовпадением содержимого регистра -> повторяем передачу
+  {
+    saddr = gProblemAddr; 
+    gProblemAddr = 0;
+    return saddr;
+  }else{
+    cnt_error = 0;
+    if ( ++saddr >= MB_cell_end ) saddr = 0;
+    return saddr;
+  }
+}
 #include "mbport.h"  
 #include "mb_m.h"
 /***
@@ -261,102 +299,93 @@ bool ModBusCom::Write( void )
   static eMBMasterEventType   	eEvent = EV_MASTER_INIT;
   
   if ( gActiveReg.rg ) 
-  {
-    static uint16_t saddr = 0;  // 1...6
-    static  uint16_t cnt_error = 0;
+  { 
+    static uint16_t saddr = 0;
     if ( gActiveReg.rgPWM )  
-    {       
-      if ( isMBError(saddr) )    // gMBactM   gCells  // ошибка записи
-      {         
-        WR_DEBUG("--MB_error!!! CNT = %i Repeat write !!! cell == %i \r\n", cnt_error, saddr);  // -> repeat N
-        if (++cnt_error > 10 ) 
-        {
-          cnt_error = 0;
-          if ( ++saddr >= MB_cell_end ) 
-            saddr = 0;
-        }        
-      }else 
-      {
-        cnt_error = 0;
-        if ( ++saddr >= MB_cell_end )  
-        {
-          saddr = 0;
-          gActiveReg.rgPWM = 0;
-          return 1;
-        }
-      }      
-      this->addr  = static_cast<mb_addr_t>(saddr);  
-      ret = Hr_write(this->addr, static_cast<eMBReg_t>(REG_W_SET_OUT_PWM), GetMBRgS(REG_W_PWM) );
-      return 1;
+    {    
+      saddr =  GetActualAddr(saddr);
+      if ( 0 == saddr ){gActiveReg.rgPWM = 0;}
+      else {
+        this->addr  = static_cast<mb_addr_t>(saddr);  
+        ret = Hr_write(this->addr, static_cast<eMBReg_t>(REG_W_SET_OUT_PWM), GetMBRgS(REG_W_PWM) );
+        return 1;
+      }
     }
-    if ( gActiveReg.rgCURR) 
+    if ( gActiveReg.rgCURR ) 
     {
-      if ( ++saddr >= MB_cell_end )  {
-        saddr = 0;
-        gActiveReg.rgCURR = 0; return 1;
-      }      
-      this->addr  = static_cast<mb_addr_t>(saddr);            
-      ret = Hr_write(this->addr, static_cast<eMBReg_t>(REG_W_SET_OUT_CURRENT), GetMBRgS(REG_W_CURR) );
-      return 1;
+      saddr =  GetActualAddr(saddr);
+      if ( 0 == saddr )  { gActiveReg.rgCURR = 0; }
+      else{
+        this->addr  = static_cast<mb_addr_t>(saddr);            
+        ret = Hr_write(this->addr, static_cast<eMBReg_t>(REG_W_SET_OUT_CURRENT), GetMBRgS(REG_W_CURR) );
+        return 1;
+      }
     }
-    if ( gActiveReg.rgSLOP_1){
-      if ( ++saddr >= MB_cell_end )  {
-        saddr = 0;
-        gActiveReg.rgSLOP_1 = 0; return 1;
-      }      
-      this->addr  = static_cast<mb_addr_t>(saddr);                        
-      ret = Hr_write(this->addr, static_cast<eMBReg_t>(REG_W_FIRST_DAC), GetMBRgS(REG_W_SLOP_1) );      
-      return 1;
+    if ( gActiveReg.rgSLOP_1)
+    {
+      saddr =  GetActualAddr( saddr );
+      if ( 0 == saddr )  { gActiveReg.rgSLOP_1 = 0; }      
+      else
+      {
+        this->addr  = static_cast<mb_addr_t>(saddr);                        
+        ret = Hr_write(this->addr, static_cast<eMBReg_t>(REG_W_FIRST_DAC), GetMBRgS(REG_W_SLOP_1) );      
+        return 1;
+      }
     }
-    if ( gActiveReg.rgSLOP_2){
-      if ( ++saddr >= MB_cell_end )  {
-        saddr = 0;
-        gActiveReg.rgSLOP_2 = 0;return 1;
-      }                  
-      this->addr  = static_cast<mb_addr_t>(saddr);
-      ret = Hr_write(this->addr, static_cast<eMBReg_t>(REG_W_LAST_DAC), GetMBRgS(REG_W_SLOP_2) );    
-      return 1;
+    if ( gActiveReg.rgSLOP_2)
+    {
+      saddr =  GetActualAddr( saddr );
+      if ( 0 == saddr )  { gActiveReg.rgSLOP_2 = 0;}                  
+      else
+      {
+        this->addr  = static_cast<mb_addr_t>(saddr);
+        ret = Hr_write(this->addr, static_cast<eMBReg_t>(REG_W_LAST_DAC), GetMBRgS(REG_W_SLOP_2) );    
+        return 1;
+      }
     }
-    if ( gActiveReg.rgP){
-      if ( ++saddr >= MB_cell_end )  {
-        saddr = 0;
-        gActiveReg.rgP = 0;return 1;
-      }            
-      this->addr  = static_cast<mb_addr_t>(saddr);
-      ret = Hr_write(this->addr, static_cast<eMBReg_t>(REG_W_PID_P), GetMBRgS(REG_W_P) );      
-      return 1;
+    if ( gActiveReg.rgP )
+    {
+      saddr =  GetActualAddr( saddr);
+      if ( 0 == saddr )  {gActiveReg.rgP = 0;}            
+      else{
+        this->addr  = static_cast<mb_addr_t>(saddr);
+        ret = Hr_write(this->addr, static_cast<eMBReg_t>(REG_W_PID_P), GetMBRgS(REG_W_P) );      
+        return 1;
+      }
     }
-    if ( gActiveReg.rgI){
-      if ( ++saddr >= MB_cell_end )  {
-        saddr = 0;
-        gActiveReg.rgI = 0;return 1;
-      }      
-      this->addr  = static_cast<mb_addr_t>(saddr);
-      ret = Hr_write(this->addr, static_cast<eMBReg_t>(REG_W_PID_I), GetMBRgS(REG_W_I) );
-      return 1;
+    if ( gActiveReg.rgI )
+    {
+      saddr =  GetActualAddr(saddr);
+      if ( 0 == saddr )  {gActiveReg.rgI = 0;}      
+      {
+        this->addr  = static_cast<mb_addr_t>(saddr);
+        ret = Hr_write(this->addr, static_cast<eMBReg_t>(REG_W_PID_I), GetMBRgS(REG_W_I) );
+        return 1;
+      }
     }    
-    if ( gActiveReg.rgD){
-      if ( ++saddr >= MB_cell_end )  {
-        saddr = 0;
-        gActiveReg.rgD = 0;return 1;
-      }      
-      this->addr  = static_cast<mb_addr_t>(saddr);
-      ret = Hr_write(this->addr, static_cast<eMBReg_t>(REG_W_PID_D), GetMBRgS(REG_W_D) );
-      return 1;
+    if ( gActiveReg.rgD )
+    {
+      saddr =  GetActualAddr(saddr);
+      if ( 0 == saddr )  {gActiveReg.rgD = 0;}
+      else{
+        this->addr  = static_cast<mb_addr_t>(saddr);
+        ret = Hr_write(this->addr, static_cast<eMBReg_t>(REG_W_PID_D), GetMBRgS(REG_W_D) );
+        return 1;
+      }
     }     
     if ( gActiveReg.rgCNTRL)
     {
-      if ( ++saddr >= MB_cell_end )  {
-        saddr = 0;
-        gActiveReg.rgCNTRL = 0; return 1;
-      }      
-      this->addr  = static_cast<mb_addr_t>(saddr);
-      uint16_t rgCntrl;      
-      rgCntrl = GetMBRgM((uint16_t)this->addr, REG_W_CONTROL);
-      rgCntrl |= (1<<0);
-      SetMBRgM((uint16_t)this->addr, REG_W_CONTROL, rgCntrl );
-      ret = Hr_write(this->addr, static_cast<eMBReg_t>(REG_W_CONTROL), GetMBRgS(REG_W_CNTRL) );
-      return 1;      
+      saddr =  GetActualAddr(saddr);
+      if ( 0 == saddr )  {gActiveReg.rgCNTRL = 0;}      
+      else{
+        this->addr  = static_cast<mb_addr_t>(saddr);
+        uint16_t rgCntrl;      
+        rgCntrl = GetMBRgM((uint16_t)this->addr, REG_W_CONTROL);
+        rgCntrl |= (1<<0);
+        SetMBRgM((uint16_t)this->addr, REG_W_CONTROL, rgCntrl );
+        ret = Hr_write(this->addr, static_cast<eMBReg_t>(REG_W_CONTROL), GetMBRgS(REG_W_CNTRL) );
+        return 1;      
+      }
     }else;    
   }  
   return ret;

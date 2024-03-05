@@ -49,6 +49,7 @@ State_t     gStateSM = { TIME_10ms, TIME_100ms, TIME_1000ms, ST_IDLE, {0,0,0},{0
 
 CntrlCellsRg_t  gCntrlCell = {0,}; // eMBRegS_t
 bActivRg_t      gActiveReg = {0,}; // 
+uint16_t        gProblemAddr = 0;  // Номер ячейки с несовпадением содержимого регистров
 
 RgCntrl_t   gMbCntrl   = {0,};
 RegStatus_t gMbSt      = {0,};
