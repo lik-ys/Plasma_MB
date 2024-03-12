@@ -75,6 +75,16 @@ void Command::TechProc(void)
     else 
       if ((num < P_END)&&(tblThechProc[num]) != NULL ) 
         tblThechProc[num]();   
+  }else{}
+  // Выключение напряжения по завершении процесса резки: ток 0 - выкл ШИМ
+  if ( 1 == gStateSM.st.bIgnitionOk )
+  {
+    // wait end current
+    if ( GetMBRgS( REG_R_CURR_1 ) < THRESHOLD_CURR_OFF )
+    { 
+      CmdStopPwm(); 
+      gStateSM.st.bIgnitionOk = 0;
+    }else;
   }
 }// TechProc()
 
@@ -152,7 +162,10 @@ void CmdWiteCurrent(void )
   {
     gStateSM.st.bIgnitionOk = 1;
     CncWrite( cnc_out0, GPIO_PIN_SET );   
-    hCmd->num = P_END;
+    hCmd->num = P_CURR_MONITOR;
+
+    hTimer->Time_Out( Timer::start, PILOT_ARC_OFF_TO, EV_IGNITION );
+    
   }else
   { 
     if (hTimer->IsTimeOut( EV_COMM_FIRE ))
@@ -319,5 +332,20 @@ void CmdStopPwm( void )
     gMbCntrl.bit.bPilotArc =0;
 }//StartPwm()
 
+/**
+*   процесс реза, мониторим ток, через 1сек выключаем дежурку, если обрыв тока - выключаем ШИМ
+*/
+static void CmdMonitor(void )
+{
+  if ( 1 == gMbCntrl.bit.bPilotArc)
+  {
+    if ( hTimer->IsTimeOut( EV_IGNITION ) )  // PILOT_ARC_OFF_TO
+    {
+      gMbCntrl.bit.bPilotArc = 0;
+      CmdPilotArc( ); 
+    }
+  }
+  
+}
 /** (END OF FILE  : CommandExec.cpp.cpp) 
 *******************************/ 

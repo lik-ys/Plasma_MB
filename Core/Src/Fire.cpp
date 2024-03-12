@@ -197,7 +197,6 @@ void ReadStart( void )
 */
 static void IrqProc( void )
 {
-
   ReadStart();
   if ( 1 == gStateSM.st.bCommFire     )  
   {

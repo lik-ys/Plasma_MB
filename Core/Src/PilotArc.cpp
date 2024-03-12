@@ -75,7 +75,7 @@ void PilotArc::Proc( void )
      if ( GetMBRgS( REG_R_CURR_1) > THRESHOLD_CURR_1 )  //
     {
       gStateSM.st.bIgnitionOk = 1;
-      CncWrite( cnc_out0, GPIO_PIN_SET );      
+      CncWrite( cnc_out0, GPIO_PIN_SET );  // команда ЧПУ "Готовность"    
     }else
     {
       // Еще две попытки включения если не дождались роста тока

@@ -47,6 +47,7 @@ void CmdMetalContact( void );
 void CmdTimeOut( void );
 void CmdRepeat( void );
 void CmdWiteCurrent( void );
+void CmdMonitor(void);
 void CmdStopPwm( void );
 
 /**
@@ -77,8 +78,9 @@ typedef enum {
   P_WAIT_CURR       , // 5
   P_TIME_OUT_1      , // 6   
   P_CMD_REPEAT      , // 7
-  P_STOP_PWM        , // 8
-  P_END               // 9
+  P_CURR_MONITOR            , // 8 - процесс реза, мониторим ток, через 1сек выключаем дежурку, если обрыв тока - выключаем ШИМ
+  P_STOP_PWM        , // 9
+  P_END               // 10
 }tech_proc_t;
   
 #define CNT_PROC   P_END
@@ -105,8 +107,8 @@ public:
   typedef uint8_t NumTechProc_t;
   int8_t repeat;
   NumTechProc_t num; // 0,1,..7
-  const NumTechProc_t tbl[ CNT_PROC ]       = {P_PILOT_ARC_START,  P_PILOT_ARC,   P_TIME_OUT_0,  P_START_PWM, P_FIRE_START, P_WAIT_CURR,   P_TIME_OUT_1, P_CMD_REPEAT, P_STOP_PWM };
-  const pExecFunc_t tblThechProc[ CNT_PROC ]= {CmdPilotArcStart,   CmdPilotArc,   CmdTimeOut,    CmdStartPwm, CmdFireStart, CmdWiteCurrent,CmdTimeOut,   CmdRepeat,    CmdStopPwm    };
+  const NumTechProc_t tbl[ CNT_PROC ]       = {P_PILOT_ARC_START,  P_PILOT_ARC,   P_TIME_OUT_0,  P_START_PWM, P_FIRE_START, P_WAIT_CURR,   P_TIME_OUT_1, P_CMD_REPEAT,  P_CURR_MONITOR,  P_STOP_PWM };
+  const pExecFunc_t tblThechProc[ CNT_PROC ]= {CmdPilotArcStart,   CmdPilotArc,   CmdTimeOut,    CmdStartPwm, CmdFireStart, CmdWiteCurrent,CmdTimeOut,   CmdRepeat,    CmdMonitor, CmdStopPwm };
   void TechProc( void );
   void InitTechProc(void );
 

@@ -37,6 +37,7 @@ extern "C" {
   
 #define TIME_OUT_TEST   250
 #define THRESHOLD_CURR_1    100  // 100 A  - пороговый ток включения готовности для ЧПУ
+#define THRESHOLD_CURR_OFF  20  // 20 A  - пороговый ток выключения ШИМ на всех ячейкаях
   
 #define PERIOD_MB_MASTER_TO  60  
 #define PERIOD_REQUEST_TO    100
@@ -156,6 +157,7 @@ typedef  enum
   EV_COMM_FIRE      ,
   
   EV_PILOT_ARC_TO   ,
+  EV_IGNITION       , // Поджиг есть - мониторим ток
   
   EV_WRITE_MBM      ,  // период записи в МБ мастер
   EV_REQUEST_TO     ,  
