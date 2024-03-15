@@ -55,9 +55,6 @@ void UpDateReadRgM( uint16_t addr, eMBReg_t numRg )
       if (tmpRg.bit.bFireStart){
         gMbStatus.bit.bFireStart = tmpRg.bit.bFireStart;
       }
-      if (tmpRg.bit.bAutoManualM){
-        gMbStatus.bit.bAutoManualM  = tmpRg.bit.bAutoManualM;
-      } 
       if (tmpRg.bit.bStartCNC)
       {
         gMbStatus.bit.bStartCNC = tmpRg.bit.bStartCNC;
