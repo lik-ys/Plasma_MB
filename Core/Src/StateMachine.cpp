@@ -327,12 +327,12 @@ void ADC_Process( void )
       pre_cur1 = ADCdat.Current1;
       SetMBRgS( REG_R_CURR_1, (uint16_t)floor((ADCdat.Current1 - adc_zero) / CURR1_COEF));   // TODO  
       DBG_ITM_Event(ITM_CH1, ADCdat.Current1);
-      gActiveReg.c1 = 1;
+      ////gActiveReg.c1 = 1;
     }
     if (abs(ADCdat.Current2 - pre_cur2) > THRESHOLD_V) {    
       pre_cur2 = ADCdat.Current2;
       SetMBRgS( REG_R_CURR_2, (uint16_t)floor((ADCdat.Current2 - adc_zero) / CURR2_COEF));   // 50A - 424 ///  22.5 - 192// 0 - 7
-      gActiveReg.c2 = 1;
+      ////gActiveReg.c2 = 1;
     }
     if (abs(ADCdat.Voltage - pre_volt) > THRESHOLD_V) {
       pre_volt = ADCdat.Voltage;
