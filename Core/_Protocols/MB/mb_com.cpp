@@ -386,7 +386,29 @@ bool ModBusCom::Write( void )
         ret = Hr_write(this->addr, static_cast<eMBReg_t>(REG_W_CONTROL), GetMBRgS(REG_W_CNTRL) );
         return 1;      
       }
-    }else;    
+    }else;     
+    /*/ for testing Reg.
+    if ( gActiveReg.c1)
+    {
+      saddr =  GetActualAddr(saddr);
+      if ( 0 == saddr )  {gActiveReg.c1 = 0;}
+      else{
+        this->addr  = static_cast<mb_addr_t>(saddr);
+        ret = Hr_write(this->addr, static_cast<eMBReg_t>(REG_R_CURR_1s), GetMBRgS(REG_R_CURR_1) );
+        return 1;
+      }      
+    }else;
+    if ( gActiveReg.c2)
+    {
+      saddr =  GetActualAddr(saddr);
+      if ( 0 == saddr )  {gActiveReg.c2 = 0;}
+      else{
+        this->addr  = static_cast<mb_addr_t>(saddr);
+        ret = Hr_write(this->addr, static_cast<eMBReg_t>(REG_R_CURR_2s), GetMBRgS(REG_R_CURR_2) );
+        return 1;
+      }      
+    }else; 
+    // */
   }  
   return ret;
 }// Write()
