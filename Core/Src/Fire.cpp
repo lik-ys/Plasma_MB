@@ -165,7 +165,7 @@ void FireProcess( void )
   }
 } // FireProcess()
 
-#define  CNT_FIRE_READ 5
+#define  CNT_FIRE_READ 10
 void ReadStart( void )
 {
     static uint16_t cnt = 0;

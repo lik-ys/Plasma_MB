@@ -200,6 +200,7 @@ void SM_Tick( void )
         gStateSM.st.bCommStart = 0;
         gMbStatus.bit.bStartCNC = 1;            
         WR_DEBUG("Start from CNC \r\n");    
+        //HAL_NVIC_DisableIRQ(EXTI4_IRQn);
       }else;
       gStateSM.st.bStart = 0;
     break;

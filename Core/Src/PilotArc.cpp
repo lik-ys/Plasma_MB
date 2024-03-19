@@ -90,7 +90,7 @@ void PilotArc::Proc( void )
         hTimer->Time_Out( Timer::stop, TIME_OUT_FIRE_OFF, EV_FIRE_OFF );
       }
     }
-  };  
+  }; // Защита: выключаем  если ком.ЧПУ снята
   if ( 0 == gMbStatus.bit.bStartCNC )
   {
       gStateSM.st.bIgnitionOk = 0;

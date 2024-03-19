@@ -219,8 +219,8 @@ typedef union{
       uint16_t rgI        : 1; 
       uint16_t rgD        : 1;  
       //for debug
-      uint16_t c1   :1;
-      uint16_t c2   :1;
+      //uint16_t c1   :1;
+      //uint16_t c2   :1;
   };
 }bActivRg_t;  
 
