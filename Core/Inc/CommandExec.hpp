@@ -108,7 +108,7 @@ public:
   int8_t repeat;
   NumTechProc_t num; // 0,1,..7
   const NumTechProc_t tbl[ CNT_PROC ]       = {P_PILOT_ARC_START,  P_PILOT_ARC,   P_TIME_OUT_0,  P_START_PWM, P_FIRE_START, P_WAIT_CURR,   P_TIME_OUT_1, P_CMD_REPEAT,  P_CURR_MONITOR,  P_STOP_PWM };
-  const pExecFunc_t tblThechProc[ CNT_PROC ]= {CmdPilotArcStart,   CmdPilotArc,   CmdTimeOut,    CmdStartPwm, CmdFireStart, CmdWiteCurrent,CmdTimeOut,   CmdRepeat,    CmdMonitor, CmdStopPwm };
+  const pExecFunc_t tblThechProc[ CNT_PROC ]= {CmdPilotArcStart,   CmdPilotArc,   CmdTimeOut,    CmdStartPwm , CmdFireStart, CmdWiteCurrent,CmdTimeOut,   CmdRepeat,    CmdMonitor, CmdStopPwm };       // CmdStartPwm
   void TechProc( void );
   void InitTechProc(void );
 

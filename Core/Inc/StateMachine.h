@@ -42,6 +42,9 @@ extern "C" {
 #define PERIOD_MB_MASTER_TO  60  
 #define PERIOD_REQUEST_TO    100
 #define PERIOD_READ_TO       50  
+#define PERIOD_MB_MASTER_TO  60  // 60
+#define PERIOD_REQUEST_TO    100 // 100
+#define PERIOD_READ_TO       50 //  40
   
 /*===============================[ PUBLIC TYPES ]==============================*/ 
     // Публичные типы 

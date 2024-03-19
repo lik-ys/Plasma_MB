@@ -83,6 +83,7 @@ void PilotArc::Proc( void )
       {
         WR_DEBUG("--3-- EV_PILOT_ARC_TO \r\n");
         hTimer->Time_Out( Timer::stop, PA_TIME_OUT, EV_PILOT_ARC_TO );
+        
       }
       if ( htim->IsTimeOut( EV_FIRE_OFF) )
       {        

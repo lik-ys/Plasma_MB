@@ -59,13 +59,14 @@ void Command::InitTechProc(void)
   gMbStatus.bit.bStartCNC = 0;
   num = 0;
   repeat = CNT_REPEAT;
+  gMbStatus.bit.bOnOffPwr = 0;
 }
 /**
 * 
 */
 void Command::TechProc(void)
 {
-  if ( gActiveReg.rg ) return;
+  //if ( gActiveReg.rg ) return;
   if ( gMbStatus.bit.bStartCNC ) {
     if ( 0 >= repeat )
     {
@@ -122,7 +123,7 @@ void  CmdPilotArc(void )
   SetMBRgS( REG_R_STATUS, gMbStatus.reg );
   gMbActiveCntrl.bit.bPilotArc = 0;
     
-  hTimer->Time_Out( Timer::start, PA_TIME_OUT, EV_PILOT_ARC_TO );
+
 } //CmdPilotArc()
 
 /**
@@ -130,6 +131,7 @@ void  CmdPilotArc(void )
 */
 static void  CmdFireStart( void )
 {  
+  if ( 0 == gMbStatus.bit.bStartCNC ) return;
   gStateSM.st.bFireStrat = 1;  // -> FireProcess() -> ST_FIRE_START:
   WR_DEBUG("FIRE_START \r\n");
   hCmd->num = P_WAIT_CURR;
@@ -191,6 +193,7 @@ void CmdRepeat( void )
 static
 void CmdTimeOut( void )
 {
+
   switch( hCmd->num )    // 
   {
     case P_PILOT_ARC_START:   
@@ -274,12 +277,16 @@ void CmdStartStopPwm( void )
 static
 void CmdStartPwm( void )
 {
+  if ( hCmd->repeat <= 0) 
+  {
+    hCmd->num = P_END;  return;
+  }
     gActiveReg.rgCNTRL = 1;   // эмуляция работы МБ ВУ
     gActiveReg.rgPWM =1;
-    gActiveReg.rgP = 1;
-    gActiveReg.rgI = 1;    
-    gActiveReg.rgD = 1;
-    gActiveReg.rgCURR = 1;
+    //gActiveReg.rgP = 1;
+    //gActiveReg.rgI = 1;    
+    //gActiveReg.rgD = 1;
+    //gActiveReg.rgCURR = 1;
     gActiveReg.rgSLOP_1 = 1;
     gActiveReg.rgSLOP_2 = 1;
     
@@ -289,10 +296,21 @@ void CmdStartPwm( void )
     SetMBRgS(REG_W_CNTRL, gMbCntrl.reg);    
     pExtSync->Instance->CNT = 0;
     HAL_TIM_PWM_Start( pExtSync, TIM_CHANNEL_1 ); 
-    gMbStatus.bit.bOnOffPwr = 1;
-    SetMBRgS( REG_R_STATUS, gMbStatus.reg );
-    hCmd->num = P_FIRE_START;
+
+    if (0 == gMbStatus.bit.bOnOffPwr) {
+      hTimer->Time_Out( Timer::start, PA_TIME_OUT, EV_PILOT_ARC_TO );
+      gMbStatus.bit.bOnOffPwr = 1;
+      SetMBRgS( REG_R_STATUS, gMbStatus.reg ); 
+    }
+    
+    ///if (Timer::start != hTimer->GetState(EV_PILOT_ARC_TO)) gMbStatus.bit.bOnOffPwr = 0;
+   
     gMbCntrl.bit.bPilotArc = 1;  
+   
+    if ( hTimer->IsTimeOut( EV_PILOT_ARC_TO ) )
+    {
+      hCmd->num = P_FIRE_START;
+    }    
 }//StartPwm()
 /**
 * выключение синхрочастоты

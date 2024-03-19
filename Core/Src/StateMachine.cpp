@@ -93,7 +93,7 @@ void ProcessInit( void )
   pMBcntrl->Init();
   
   hTimer->Time_Out( Timer::start, TIME_OUT_TEST, EV_WRITE_MBM );
-  
+  gMbStatus.bit.bOnOffPwr = 0;
   //gMbCntrl.bit.bChopperStart = 1;
   //CmdStartStopPwm( );
 }// ProcessInit()
@@ -216,8 +216,11 @@ void SM_Tick( void )
         SetMBRgS( REG_W_CNTRL, gMbCntrl.reg );
         UpateActiveRg();
         gMbActiveCntrl.bit.bOnOffPwr = 1;
-        gMbStatus.bit.bStartCNC = 0;  
+        gMbActiveCntrl.bit.bPilotArc = 1;
+        gMbActiveCntrl.bit.bFireStart= 1; 
+        gMbActiveCntrl.bit.bChopperStart = 1;
         
+        gMbStatus.bit.bStartCNC = 0;             
         gActiveReg.rgCNTRL = 1; // выключить все в €чейках
 
         pExtSync->Instance->CNT = 0;
