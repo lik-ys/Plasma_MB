@@ -66,7 +66,7 @@ void Command::InitTechProc(void)
 */
 void Command::TechProc(void)
 {
-  //if ( gActiveReg.rg ) return;
+  //if ( gActiveReg.rg ) return;  // BUG: блокирует код - активные биты не кончаются
   if ( gMbStatus.bit.bStartCNC ) {
     if ( 0 >= repeat )
     {
