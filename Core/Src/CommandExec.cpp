@@ -83,12 +83,23 @@ void Command::TechProc(void)
     // wait end current
     if ( GetMBRgS( REG_R_CURR_1 ) < THRESHOLD_CURR_OFF )
     { 
-      CmdStopPwm(); 
+      CmdStopPwm(); //- TODO : выключение стаутса готовности ЧПУ что бы он остановился 
       gStateSM.st.bIgnitionOk = 0;
+      CncWrite( cnc_out0, GPIO_PIN_RESET);
     }else;
   }
 }// TechProc()
 
+/*  // TODO
+1 - подать ШИМ на 1 сек
+2 -  ток есть -> КЗ
+3 - тока нет ОК
+*/
+static 
+void TestShortCurrent( void )
+{
+  WR_DEBUG("--0-- TestShortCurrent() time= %i s. \r\n",SHORT_CURR_TO/1000);  
+}
 static
 void  CmdPilotArcStart(void )
 {
@@ -122,8 +133,7 @@ void  CmdPilotArc(void )
   } 
   SetMBRgS( REG_R_STATUS, gMbStatus.reg );
   gMbActiveCntrl.bit.bPilotArc = 0;
-    
-
+  
 } //CmdPilotArc()
 
 /**
@@ -131,12 +141,14 @@ void  CmdPilotArc(void )
 */
 static void  CmdFireStart( void )
 {  
-  if ( 0 == gMbStatus.bit.bStartCNC ) return;
-  gStateSM.st.bFireStrat = 1;  // -> FireProcess() -> ST_FIRE_START:
-  WR_DEBUG("FIRE_START \r\n");
-  hCmd->num = P_WAIT_CURR;
-  UpateActiveRg();
-  SetMBRgS( REG_R_STATUS, gMbStatus.reg );  
+  if ( 1 == gMbStatus.bit.bStartCNC || 1 == gMbCntrl.bit.bFireStart )
+  {
+    gStateSM.st.bFireStrat = 1;  // -> FireProcess() -> ST_FIRE_START:
+    WR_DEBUG("FIRE_START \r\n");
+    hCmd->num = P_WAIT_CURR;
+    UpateActiveRg();
+    SetMBRgS( REG_R_STATUS, gMbStatus.reg );  
+  }else return;
 }// CmdFireStart()
 
 /**
@@ -154,7 +166,7 @@ void CmdWiteCurrent(void )
     hTimer->Time_Out( Timer::start, PILOT_ARC_OFF_TO, EV_IGNITION );    
   }else
   { 
-    if ( hTimer->IsTimeOut( EV_COMM_FIRE ))
+    if ( hTimer->IsTimeOut( EV_FIRE_OFF ))
     {
       if (cnt> 0 )cnt--;
       else {
@@ -162,6 +174,7 @@ void CmdWiteCurrent(void )
         cnt = 3;
         return;
       }
+      // Выключить поджиг и повторить включение
       hCmd->num = P_CMD_REPEAT;  // -> CmdRepeat()
     }else;    
   }
@@ -254,7 +267,7 @@ void CmdStartStopPwm( void )
     HAL_TIM_PWM_Start( pExtSync, TIM_CHANNEL_1 ); 
 
     gMbCntrl.bit.bOnOffPwr = 1;
-
+    gActiveReg.rgCNTRL  = 1;
     gActiveReg.rgPWM =1; // т.к. Ячейки ресетим после останова ШИМ, закиним уставки
     gActiveReg.rgSLOP_1 = 1;
     gActiveReg.rgSLOP_2 = 1;    
@@ -271,6 +284,28 @@ void CmdStartStopPwm( void )
   }   
 }//StartPwm()
 
+/*
+  Проверка включения ШИМ на всех явчейках
+*/
+static 
+uint16_t PwmOnAllCells( void )
+{    
+  uint16_t bPwm = 1;
+  if ( gCells.bit.bCell_1 )
+    if (0 == gMbSlaveSt[0].bit.bOnOffPwr ) bPwm = 0;
+  if ( gCells.bit.bCell_2 )
+    if (0 == gMbSlaveSt[1].bit.bOnOffPwr ) bPwm = 0;
+  if ( gCells.bit.bCell_3 )
+    if (0 == gMbSlaveSt[2].bit.bOnOffPwr ) bPwm = 0;
+  if ( gCells.bit.bCell_4 )
+    if (0 == gMbSlaveSt[3].bit.bOnOffPwr ) bPwm = 0;
+  if ( gCells.bit.bCell_5 )
+    if (0 == gMbSlaveSt[4].bit.bOnOffPwr ) bPwm = 0;
+  if ( gCells.bit.bCell_6 )
+    if (0 == gMbSlaveSt[5].bit.bOnOffPwr ) bPwm = 0;  
+  return bPwm;
+}//PwmOnAllCells()
+
 /**
 * включение синхрочастоты
 */
@@ -281,44 +316,41 @@ void CmdStartPwm( void )
   {
     hCmd->num = P_END;  return;
   }
-    gActiveReg.rgCNTRL = 1;   // эмуляция работы МБ ВУ
-    gActiveReg.rgPWM =1;
-    //gActiveReg.rgP = 1;
-    //gActiveReg.rgI = 1;    
-    //gActiveReg.rgD = 1;
-    //gActiveReg.rgCURR = 1;
-    gActiveReg.rgSLOP_1 = 1;
-    gActiveReg.rgSLOP_2 = 1;
-    
-    gMbCntrl.bit.bOnOffPwr = 1;
-    gMbCntrl.bit.bChopperStart = 1;
-    UpateActiveRg(); 
-    SetMBRgS(REG_W_CNTRL, gMbCntrl.reg);    
-    pExtSync->Instance->CNT = 0;
-    HAL_TIM_PWM_Start( pExtSync, TIM_CHANNEL_1 ); 
-
-    if (0 == gMbStatus.bit.bOnOffPwr) {
+    if (0 == gMbStatus.bit.bOnOffPwr) {  
+      gActiveReg.rgCNTRL = 1;   // эмуляция работы МБ ВУ
+      gActiveReg.rgPWM =1;
+      //gActiveReg.rgP = 1;
+      //gActiveReg.rgI = 1;    
+      //gActiveReg.rgD = 1;
+      //gActiveReg.rgCURR = 1;
+      gActiveReg.rgSLOP_1 = 1;
+      gActiveReg.rgSLOP_2 = 1;
+      
+      gMbCntrl.bit.bOnOffPwr = 1;
+      gMbCntrl.bit.bChopperStart = 1;
+      UpateActiveRg(); 
+      SetMBRgS(REG_W_CNTRL, gMbCntrl.reg);    
+      pExtSync->Instance->CNT = 0;
+      HAL_TIM_PWM_Start( pExtSync, TIM_CHANNEL_1 ); 
       hTimer->Time_Out( Timer::start, PA_TIME_OUT, EV_PILOT_ARC_TO );
       gMbStatus.bit.bOnOffPwr = 1;
       SetMBRgS( REG_R_STATUS, gMbStatus.reg ); 
     }
-    
-    ///if (Timer::start != hTimer->GetState(EV_PILOT_ARC_TO)) gMbStatus.bit.bOnOffPwr = 0;
-   
-    gMbCntrl.bit.bPilotArc = 1;  
-   
-    if ( hTimer->IsTimeOut( EV_PILOT_ARC_TO ) )
+    if ( PwmOnAllCells() )
     {
-      hCmd->num = P_FIRE_START;
+      hCmd->num = P_FIRE_START;      
     }    
+    if ( hTimer->IsTimeOut( EV_PILOT_ARC_TO ) )
+    {       
+      gMbCntrl.bit.bPilotArc = 1; 
+    }
 }//StartPwm()
 /**
 * выключение синхрочастоты
 */
 static
 void CmdStopPwm( void )
-{
-    
+{    
     gMbCntrl.bit.bOnOffPwr = 0;
     gMbCntrl.bit.bChopperStart = 0;
     SetMBRgS(REG_W_CNTRL, gMbCntrl.reg); 
@@ -338,7 +370,7 @@ void CmdStopPwm( void )
 */
 static void CmdMonitor(void )
 {
-  if ( 1 == gMbCntrl.bit.bPilotArc)
+  if ( 1 == gMbStatus.bit.bPilotArc)
   {
     if ( hTimer->IsTimeOut( EV_IGNITION ) )  // PILOT_ARC_OFF_TO
     {

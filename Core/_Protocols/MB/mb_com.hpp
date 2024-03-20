@@ -68,6 +68,9 @@ inline _MB_ADDR operator++( _MB_ADDR c ) {
   const int i = static_cast<int>(c);
   return static_cast<_MB_ADDR>(i+1);
 }
+
+void TestCntrl( void );
+
 // Special behavior for _MB_ADDR++
 //inline _MB_ADDR operator++( _MB_ADDR &c, int ) {
 //

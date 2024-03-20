@@ -11,7 +11,8 @@ extern "C" {
 #define TIME_START          1000 //
 #define PA_TIME_OUT         7000
 #define TIME_FIRE_START     800
-#define PILOT_ARC_OFF_TO    2500 // EV_IGNITION - ждем  PILOT_ARC_OFF_TO выключаем деж. дугу.
+#define PILOT_ARC_OFF_TO    4500 // EV_IGNITION - ждем  PILOT_ARC_OFF_TO выключаем деж. дугу.
+#define SHORT_CURR_TO       1000 //
 
 #include "io_process.h"  
 /***

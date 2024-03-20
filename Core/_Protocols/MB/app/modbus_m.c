@@ -48,6 +48,7 @@ void UpDateReadRgM( uint16_t addr, eMBReg_t numRg )
       RgCntrl_t tmpRg; 
       tmpRg.reg = gMbStatus.reg;      
       gMbStatus.reg = GetMBRgM( addr, numRg ); 
+      gMbSlaveSt[addr].reg = gMbStatus.reg;
       // Биты МБ сохраняем
       if (tmpRg.bit.bPilotArc){
         gMbStatus.bit.bPilotArc = tmpRg.bit.bPilotArc;

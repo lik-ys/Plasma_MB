@@ -70,6 +70,7 @@ typedef enum
 }eCntrlRegBits_t;//
 
 typedef enum {  
+  // P_TEST_SHORT_CURR , // Проверка короткого замыкания 
   P_PILOT_ARC_START , // 0
   P_PILOT_ARC       , // 1
   P_TIME_OUT_0      , // 2

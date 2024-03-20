@@ -33,6 +33,8 @@
 /*===============================[ PUBLIC CONSTANTS ]=======================*/ 
 // ¬се частные #defines и constants должны быть объ€влены в данном разделе. 
 
+#define NUMBERS_CELLS   6   // число €чеек
+
 #define MB_ADDR_SLAVE       1
 #define SLAVE_BAUD_RATE     57600 //15200//
 #define MB_ADDR_MASTER      85

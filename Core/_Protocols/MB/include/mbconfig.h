@@ -32,7 +32,7 @@
 #ifndef _MB_CONFIG_H
 #define _MB_CONFIG_H
 
-//#include "port.h"
+#include "config.h"
 
 #ifdef __cplusplus
 extern "C" {
@@ -126,7 +126,7 @@ extern "C" {
 #define MB_MASTER_TIMEOUT_MS_RESPOND            (100 )
 /*! \brief The total slaves in Modbus Master system. Default 16.
  * \note : The slave ID must be continuous from 1.*/
-#define MB_MASTER_TOTAL_SLAVE_NUM               ( 6 )
+#define MB_MASTER_TOTAL_SLAVE_NUM               ( NUMBERS_CELLS )
 
 #endif
 

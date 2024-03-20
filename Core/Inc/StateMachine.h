@@ -20,7 +20,8 @@
 #ifndef __STATE_MASHINE_HPP__ 
 #define __STATE_MASHINE_HPP__ 
 
-#include "main.h"  
+#include "main.h" 
+#include "config.h"
 
 #ifdef __cplusplus
 extern "C" {
@@ -37,7 +38,7 @@ extern "C" {
   
 #define TIME_OUT_TEST   250
 #define THRESHOLD_CURR_1    100  // 100 A  - пороговый ток включения готовности для ЧПУ
-#define THRESHOLD_CURR_OFF  20  // 20 A  - пороговый ток выключения ШИМ на всех ячейкаях
+#define THRESHOLD_CURR_OFF  30  // 20 A  - пороговый ток выключения ШИМ на всех ячейкаях
   
 #define PERIOD_MB_MASTER_TO  60  
 #define PERIOD_REQUEST_TO    100
@@ -256,6 +257,7 @@ extern RgCntrl_t   gMbStatus;
 extern RgCntrl_t   gMbActiveCntrl;
 extern CntrlCellsRg_t  gCntrlCell;
 extern bActivRg_t      gActiveReg;
+extern RgCntrl_t   gMbSlaveSt[ NUMBERS_CELLS ];
 
 void ProcessInit( void );
 

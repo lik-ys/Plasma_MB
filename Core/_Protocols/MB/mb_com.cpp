@@ -134,6 +134,43 @@ static void CompareSets( void )
   if ( gCells.bit.bCell_6 ) CompareReg( 5 );
 }
 
+// Повторная передача бита управления 
+void TestCntrl( void )
+{
+  if (  gMbCntrl.bit.bOnOffPwr != gMbStatus.bit.bOnOffPwr )
+  {
+    gActiveReg.rgCNTRL = 1;
+  }else;
+  
+  if ( gMbStatus.bit.bOnOffPwr )
+  {
+    if ( gCells.bit.bCell_1 ){
+      if (1 != gMbSlaveSt[0].bit.bOnOffPwr )
+        gActiveReg.rgCNTRL = 1;
+    }
+    if ( gCells.bit.bCell_2 ){
+      if (1 != gMbSlaveSt[1].bit.bOnOffPwr )
+        gActiveReg.rgCNTRL = 1;
+    }    
+    if ( gCells.bit.bCell_3 ){
+      if (1 != gMbSlaveSt[2].bit.bOnOffPwr )
+        gActiveReg.rgCNTRL = 1;
+    }
+    if ( gCells.bit.bCell_4 ){
+      if (1 != gMbSlaveSt[3].bit.bOnOffPwr )
+        gActiveReg.rgCNTRL = 1;
+    }
+    if ( gCells.bit.bCell_5 ){
+      if (1 != gMbSlaveSt[4].bit.bOnOffPwr )
+        gActiveReg.rgCNTRL = 1;
+    }
+    if ( gCells.bit.bCell_6 ){
+      if (1 != gMbSlaveSt[5].bit.bOnOffPwr )
+        gActiveReg.rgCNTRL = 1;
+    }    
+  }
+    
+} // 
 /*
 *
 */

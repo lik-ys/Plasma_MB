@@ -56,6 +56,7 @@ RegStatus_t gMbSt      = {0,};
 RgCntrl_t   preMbCntrl = {0,};
 RgCntrl_t   gMbActiveCntrl = {0,};
 RgCntrl_t   gMbStatus  = {0,};
+RgCntrl_t   gMbSlaveSt[NUMBERS_CELLS] = {0,};
 
 ADC_data_t ADCdata[ ADC_BUF_LENGHT ] = {0,0,};
 ADC_data_t ADCdat =  {0,0,0};
@@ -251,7 +252,7 @@ void SM_Tick( void )
     break;
   case ST_SLOW_PROCESS: 
     gStateSM.time.b1000ms = 0;     
-    // TestOut();    
+    TestCntrl( );   
     gStateSM.time.b1000ms = 0; 
     gStateSM.proc = ST_TOGGLE_LED;
     break;
