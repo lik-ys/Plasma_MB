@@ -81,11 +81,12 @@ void Command::TechProc(void)
   if ( 1 == gStateSM.st.bIgnitionOk )
   {
     // wait end current
+    if (hTimer->IsTimeOut( EV_IGNITION1) )
     if ( GetMBRgS( REG_R_CURR_1 ) < THRESHOLD_CURR_OFF )
     { 
-      CmdStopPwm(); //- TODO : выключение стаутса готовности ЧПУ что бы он остановился 
+      //CmdStopPwm(); //- TODO : выключение стаутса готовности ЧПУ что бы он остановился 
       gStateSM.st.bIgnitionOk = 0;
-      CncWrite( cnc_out0, GPIO_PIN_RESET);
+      //CncWrite( cnc_out0, GPIO_PIN_RESET);
     }else;
   }
 }// TechProc()
@@ -163,7 +164,8 @@ void CmdWiteCurrent(void )
     gStateSM.st.bIgnitionOk = 1;
     CncWrite( cnc_out0, GPIO_PIN_SET );  // Готовность для ЧПУ 
     hCmd->num = P_CURR_MONITOR;
-    hTimer->Time_Out( Timer::start, PILOT_ARC_OFF_TO, EV_IGNITION );    
+    hTimer->Time_Out( Timer::start, PILOT_ARC_OFF_TO, EV_IGNITION ); 
+    hTimer->Time_Out( Timer::start, PILOT_ARC_OFF_TO1, EV_IGNITION1);
   }else
   { 
     if ( hTimer->IsTimeOut( EV_FIRE_OFF ))

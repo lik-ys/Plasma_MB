@@ -162,6 +162,7 @@ typedef  enum
   
   EV_PILOT_ARC_TO   ,
   EV_IGNITION       , // Поджиг есть - мониторим ток
+  EV_IGNITION1  ,
   
   EV_WRITE_MBM      ,  // период записи в МБ мастер
   EV_REQUEST_TO     ,  
