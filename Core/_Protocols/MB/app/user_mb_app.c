@@ -101,7 +101,18 @@ void UpDateWriteRg( eMBRegS_t numRg )
     case REG_W_SLOP_2:break;
     case REG_W_P:break;
     case REG_W_I:break;
-    case REG_W_D:break;    
+    case REG_W_D:break;  
+    
+    case REG_W_TIME_OFF_PILOT_ARC:
+      gActiveReg.rgTO_PA_Off = 1;
+      break;
+    case REG_W_TIME_CUR_SLOPE_R:
+      gActiveReg.rgTimeSlopRise = 1;
+      break;
+    case REG_W_TIME_CUR_SLOPE_F:
+      gActiveReg.rgTimeSlopFail = 1;
+      break;    
+    
     case REG_W_CNC_OUT:break;
     case REG_W_FREQ:break;            
     default:

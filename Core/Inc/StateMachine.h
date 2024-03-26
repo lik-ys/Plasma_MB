@@ -222,7 +222,10 @@ typedef union{
       uint16_t rgSLOP_2   : 1; 
       uint16_t rgP        : 1; 
       uint16_t rgI        : 1; 
-      uint16_t rgD        : 1;  
+      uint16_t rgD        : 1; 
+      uint16_t rgTO_PA_Off: 1;
+      uint16_t rgTimeSlopRise:1;
+      uint16_t rgTimeSlopFail:1; // 12
       //for debug
       //uint16_t c1   :1;
       //uint16_t c2   :1;

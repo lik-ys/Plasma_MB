@@ -443,7 +443,7 @@ eMBMasterPoll( void )
           //MBMcnt.timeout++;
           eStatus = MB_ETIMEDOUT;
           mb_cnt.timeout++;
-          if ( addr >= 0 ) 
+          if ( addr >= 0 && addr < MB_MASTER_TOTAL_SLAVE_NUM ) 
           {
             CntSucsses[ addr ]--;
             CntrCellsStatus( addr, RESET );//
@@ -458,7 +458,7 @@ eMBMasterPoll( void )
         	MBMasterError();
             int16_t addr = ucMBMasterGetDestAddress()-1;
             if ( addr > 0 ) CntSucsses[ addr ]--;
-            CntrCellsStatus( addr, RESET );//
+            /// -- сброс в одном месте CntrCellsStatus( addr, RESET );//
         	/* Execute specified error process callback function. */
 			errorType = eMBMasterGetErrorType();
 			vMBMasterGetPDUSndBuf( &ucMBFrame );

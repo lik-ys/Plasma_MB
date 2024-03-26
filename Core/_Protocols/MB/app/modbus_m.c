@@ -9,7 +9,7 @@ static int CntMBRg[6] = {0,};
 
 #define CNT_CELL_STATUS 7
 /***
-**
+**  addr = 0,1...
 */
 void CntrCellsStatus( uint16_t addr, FlagStatus st )
 {
@@ -63,7 +63,8 @@ void UpDateReadRgM( uint16_t addr, eMBReg_t numRg )
       if (tmpRg.bit.bChillerFail)
       {
         gMbStatus.bit.bChillerFail = tmpRg.bit.bChillerFail;
-      }      
+      }    
+      if (tmpRg.bit.bOnOffPwr) gMbStatus.bit.bOnOffPwr =1; // статус не должен моргать 
       SetMBRgS( REG_R_STATUS, gMbStatus.reg );
     }
       break;   

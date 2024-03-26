@@ -425,7 +425,11 @@ bool ModBusCom::Write( void )
         ret = Hr_write(this->addr, static_cast<eMBReg_t>(REG_W_PID_D), GetMBRgS(REG_W_D) );
         return 1;
       }
-    }     
+    } 
+    if (gActiveReg.rgTimeSlopRise)
+    {}    
+    if (gActiveReg.rgTimeSlopFail)
+    {}
     
     /*/ for testing Reg.
     if ( gActiveReg.c1)

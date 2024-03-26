@@ -69,12 +69,16 @@ void PilotArc::Off( void )
 *  Ждем роста тока 
 */
 void PilotArc::Proc( void )
-{   
+{  
+  if (gActiveReg.rgTO_PA_Off) // TODO  обновить значение времени 
+  {
+  }
+  
   if ( 0 ==  gStateSM.st.bIgnitionOk && gStateSM.st.bTestCurr1 )
   {
      if ( GetMBRgS( REG_R_CURR_1) > THRESHOLD_CURR_1 )  //
     {
-      hTimer->Time_Out( Timer::start, PILOT_ARC_OFF_TO, EV_IGNITION );
+      hTimer->Time_Out( Timer::start, time_out_off, event );
       gStateSM.st.bIgnitionOk = 1;
       CncWrite( cnc_out0, GPIO_PIN_SET );  // команда ЧПУ "Готовность"    
     }else
@@ -103,6 +107,16 @@ void PilotArc::Proc( void )
 
 PilotArc::~PilotArc()
 {}
+
+//void SetPilotToOff( uint16_t time_out )
+//{
+//}
+//void SetCurrRise( uint16_t curr )
+//{
+//}
+//void SetCurrFail( uint16_t curr )
+//{
+//}
 
 /** (END OF FILE  : PilotArc.cpp) 
 *******************************/ 

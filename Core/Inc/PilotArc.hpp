@@ -30,9 +30,12 @@ public:
   PilotArc(void );
 
   Timer * htim;
-  port_t    port;     // вывод управления деж. дугой
-  uint16_t  TimeOut;  // время ожиданя 
-  uint16_t  curr;  // уровень напряжения 
+  port_t    port;       // вывод управления деж. дугой
+  uint16_t  TimeOut;    // время ожиданя 
+  uint16_t  curr;       // уровень напряжения 
+  
+  eProcessCom_t event;
+  uint16_t      time_out_off;
   
   void On( void );
   void Off(void );
@@ -41,7 +44,7 @@ public:
   ~PilotArc();
 private:
 };
-    
+
 #endif 
 /** (END OF FILE  : PilotArc.hpp) 
 *******************************/ 

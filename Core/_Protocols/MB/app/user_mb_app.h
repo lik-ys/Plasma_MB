@@ -27,8 +27,13 @@ typedef enum _MB_REG_S
     REG_W_I         = 7,
     REG_W_D         = 8,
     
+    //TODO --
+    REG_W_TIME_OFF_PILOT_ARC = 9,  // Время отключения деж. дуги. 
+    REG_W_TIME_CUR_SLOPE_R   = 10, // Время разворота тока
+    REG_W_TIME_CUR_SLOPE_F   = 11, // Время сворота тока
+    
     REG_W_CNC_OUT       = 16,// дискретные выходы  
-    REG_W_FREQ          = 17,// Частота синхронизации 12345 Гц      
+    REG_W_FREQ          = 17,// Частота синхронизации 12345 Гц          
     // reserv  
     // -- Таблица 4 - регистры состояния материнской платы ИП
     REG_R_STATUS       = 50,// ==  REG_W_CNTRL
