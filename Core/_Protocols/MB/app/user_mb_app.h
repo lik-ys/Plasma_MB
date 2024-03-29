@@ -87,7 +87,7 @@ typedef union STATUS
     uint16_t bPhaseFailure : 1;    // 5 бит Ц обрыв фазы
     uint16_t bChillerErr   : 1;    // 6 бит Ц ошибка чиллера   
     uint16_t bStartCNC     : 1;    // 7 бит - —тарт от „ѕ”
-    uint16_t bReserv8      : 1;
+    uint16_t bShortCircuit : 1;    // 
     uint16_t bReserv9      : 1;
     uint16_t bReserv10     : 1;
     uint16_t bReserv11     : 1;

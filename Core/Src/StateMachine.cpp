@@ -59,7 +59,8 @@ RgCntrl_t   gMbStatus  = {0,};
 RgCntrl_t   gMbSlaveSt[NUMBERS_CELLS] = {0,};
 
 ADC_data_t ADCdata[ ADC_BUF_LENGHT ] = {0,0,};
-ADC_data_t ADCdat =  {0,0,0};
+ADC_data_t ADCdat =  {0, 0, 0};
+PhParam_t  PhParam = {0, 0, 0};
 
 HAL_StatusTypeDef 	HAL_status;
 
@@ -330,13 +331,14 @@ void ADC_Process( void )
     
     if (abs(ADCdat.Current1 - pre_cur1) > THRESHOLD_V) {      
       pre_cur1 = ADCdat.Current1;
-      SetMBRgS( REG_R_CURR_1, (uint16_t)floor((ADCdat.Current1 - adc_zero) / CURR1_COEF));   // TODO  
+      SetMBRgS( REG_R_CURR_1, PhParam.Current1 = (uint16_t)floor((ADCdat.Current1 - adc_zero) / CURR1_COEF));   // TODO  
       DBG_ITM_Event(ITM_CH1, ADCdat.Current1);
       ////gActiveReg.c1 = 1;
     }
     if (abs(ADCdat.Current2 - pre_cur2) > THRESHOLD_V) {    
       pre_cur2 = ADCdat.Current2;
-      SetMBRgS( REG_R_CURR_2, (uint16_t)floor((ADCdat.Current2 - adc_zero) / CURR2_COEF));   // 50A - 424 ///  22.5 - 192// 0 - 7
+      SetMBRgS( REG_R_CURR_2, PhParam.Current2 = (uint16_t)floor((ADCdat.Current2 - adc_zero) / CURR2_COEF));   // 50A - 424 ///  22.5 - 192// 0 - 7
+      PhParam.PilotCurr = abs(ADCdat.Current1 - ADCdat.Current2);
       ////gActiveReg.c2 = 1;
     }
     if (abs(ADCdat.Voltage - pre_volt) > THRESHOLD_V) {
@@ -344,6 +346,7 @@ void ADC_Process( void )
       int16_t voltage  = (int16_t)floor(1*(ADCdat.Voltage + adc_v_zero) / VoltCoef);
       if ( voltage < 0 ) voltage = 0;      
       SetMBRgS( REG_R_VOLT, voltage );   //      
+      voltage = PhParam.Voltage;
     }        
   }else;
 } // ADC_Process()

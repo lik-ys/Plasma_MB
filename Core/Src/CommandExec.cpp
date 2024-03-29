@@ -91,16 +91,6 @@ void Command::TechProc(void)
   }
 }// TechProc()
 
-/*  // TODO
-1 - подать ШИМ на 1 сек
-2 -  ток есть -> КЗ
-3 - тока нет ОК
-*/
-static 
-void TestShortCurrent( void )
-{
-  WR_DEBUG("--0-- TestShortCurrent() time= %i s. \r\n",SHORT_CURR_TO/1000);  
-}
 static
 void  CmdPilotArcStart(void )
 {
@@ -307,6 +297,55 @@ uint16_t PwmOnAllCells( void )
     if (0 == gMbSlaveSt[5].bit.bOnOffPwr ) bPwm = 0;  
   return bPwm;
 }//PwmOnAllCells()
+
+#define SHORT_CURR_TO       1000 //  время проверки короткого замыкания 
+#define OPEN_CIRCUIT_C      5    //  тока ХХ
+#define OPEN_CIRCUIT_V      590  //  напр. ХХ
+#define PWM_SET             10
+                             
+/*  // TODO
+0 - включить дежурку CmdPilotArc()
+1 - подать ШИМ 10 на 1 сек
+2 - ток есть -> КЗ
+3 - тока нет ОК
+*/
+static 
+void CmdTestShortCurr( void )
+{
+  static uint16_t st = 0;
+  WR_DEBUG("--0-- CmdTestShortCurr() time= %i s. \r\n",SHORT_CURR_TO/1000);
+  
+  // дежурка включена - включаем шим
+  if ( gMbStatus.bit.bPilotArc )  st = 1;
+  
+  switch(st)
+  {
+  case 1:
+    gActiveReg.rgPWM = 1;
+    SetMBRgS( REG_W_PWM, PWM_SET );
+    st = 2;
+    break;
+  case 2:   // ожидание появления напряжения 
+    if (0 == gActiveReg.rgPWM)
+    {
+      CmdStartPwm();
+      hTimer->Time_Out( Timer::start, TIME_START, EV_TEST_SHORT_CICUT );      
+    }else; 
+    st = 3;
+    break;
+  case 3:  // - измеряем ток
+    if ( hTimer->IsTimeOut(EV_TEST_SHORT_CICUT) )
+    {
+      st = 0;
+      if ( PhParam.Current1 <=  OPEN_CIRCUIT_C && PhParam.Voltage >= OPEN_CIRCUIT_V )
+        hCmd->num = P_FIRE_START;   
+      else{
+        hCmd->num = P_TEST_SHORT_CURR;                  
+      }
+    }else;    
+    break;
+  }
+}//CmdTestShortCurr()
 
 /**
 * включение синхрочастоты
