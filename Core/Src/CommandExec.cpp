@@ -114,7 +114,7 @@ void  CmdPilotArc(void )
     gMbStatus.bit.bPilotArc = 1;
     hCmd->num = P_TIME_OUT_0; 
     // timer start    
-    gMbCntrl.bit.bOnOffPwr = 1; 
+    ///gMbCntrl.bit.bOnOffPwr = 1; 
     gMbCntrl.bit.bPilotArc = 0;
   }else
   {
@@ -148,7 +148,7 @@ static void  CmdFireStart( void )
 static 
 void CmdWiteCurrent(void )
 {
-  static int16_t cnt = 3;
+  static int16_t cnt = CNT_REPEAT;
   if ( GetMBRgS( REG_R_CURR_1) > THRESHOLD_CURR_1 )  //
   {
     gStateSM.st.bIgnitionOk = 1;
@@ -163,7 +163,7 @@ void CmdWiteCurrent(void )
       if (cnt> 0 )cnt--;
       else {
         hCmd->num = P_END; 
-        cnt = 3;
+        cnt = CNT_REPEAT;
         return;
       }
       // Выключить поджиг и повторить включение
@@ -173,7 +173,7 @@ void CmdWiteCurrent(void )
 }//CmdWiteCurrent()
 
 /**
-*  TODO
+*  TODO  BUG - первый раз выполняется второй раз нет
 */
 static
 void CmdRepeat( void )
@@ -189,9 +189,10 @@ void CmdRepeat( void )
     {
       hCmd->num = P_END;
       WR_DEBUG("P_END \r\n");
+      hCmd->repeat = P_CMD_REPEAT;
     }
   }
-}
+}//CmdRepeat()
 /**
 *
 */
@@ -206,7 +207,7 @@ void CmdTimeOut( void )
       break;
     case P_TIME_OUT_0:  
       if ( hTimer->IsTimeOut( EV_COMM_START ) ) {
-        hCmd->num = P_START_PWM;     
+        hCmd->num = P_TEST_SHORT_CURR;     
         WR_DEBUG("-------- TimeOut is EV_COMM_START \r\n");
       }
       break;
@@ -216,7 +217,9 @@ void CmdTimeOut( void )
     case P_FIRE_START:  
       hCmd->num = P_WAIT_CURR;
       break;
-    case P_WAIT_CURR:   hCmd->num = P_TIME_OUT_1;
+    case P_WAIT_CURR:   
+      hCmd->num = P_TEST_SHORT_CURR;
+      //hCmd->num = P_TIME_OUT_1;
       WR_DEBUG("-------- P_WAIT_CURR \r\n");
       break;
     case P_TIME_OUT_1:  
@@ -227,9 +230,9 @@ void CmdTimeOut( void )
       WR_DEBUG("-------- P_CMD_REPEAT \r\n");
       hCmd->num = P_CMD_REPEAT;
       break;
-    case P_START_PWM:
-      hCmd->num =  P_FIRE_START;
-      break;
+    ///case P_START_PWM:
+      ///hCmd->num =  P_FIRE_START;
+      ///break;
     default:
       break;
   } // switch(  )
@@ -298,7 +301,7 @@ uint16_t PwmOnAllCells( void )
   return bPwm;
 }//PwmOnAllCells()
 
-#define SHORT_CURR_TO       1000 //  время проверки короткого замыкания 
+#define SHORT_CURR_TO       3000 //  время проверки короткого замыкания 
 #define OPEN_CIRCUIT_C      5    //  тока ХХ
 #define OPEN_CIRCUIT_V      590  //  напр. ХХ
 #define PWM_SET             10
@@ -312,36 +315,49 @@ uint16_t PwmOnAllCells( void )
 static 
 void CmdTestShortCurr( void )
 {
-  static uint16_t st = 0;
+  static uint16_t st = 0; static uint16_t sPwm ;
   WR_DEBUG("--0-- CmdTestShortCurr() time= %i s. \r\n",SHORT_CURR_TO/1000);
   
+  if ( 1 == gMbStatus.bit.bShortCircuit ) return;
   // дежурка включена - включаем шим
-  if ( gMbStatus.bit.bPilotArc )  st = 1;
+  if ( (0 == st) && (gMbStatus.bit.bPilotArc) )  st = 1;
   
   switch(st)
   {
   case 1:
-    gActiveReg.rgPWM = 1;
+    gActiveReg.rgPWM = 1;  
+    sPwm = GetMBRgS( REG_W_PWM );
     SetMBRgS( REG_W_PWM, PWM_SET );
     st = 2;
     break;
   case 2:   // ожидание появления напряжения 
     if (0 == gActiveReg.rgPWM)
     {
+      st = 3;
       CmdStartPwm();
-      hTimer->Time_Out( Timer::start, TIME_START, EV_TEST_SHORT_CICUT );      
+      hTimer->Time_Out( Timer::start, SHORT_CURR_TO, EV_TEST_SHORT_CICUT );      
     }else; 
-    st = 3;
+    
     break;
   case 3:  // - измеряем ток
     if ( hTimer->IsTimeOut(EV_TEST_SHORT_CICUT) )
     {
       st = 0;
       if ( PhParam.Current1 <=  OPEN_CIRCUIT_C && PhParam.Voltage >= OPEN_CIRCUIT_V )
-        hCmd->num = P_FIRE_START;   
-      else{
-        hCmd->num = P_TEST_SHORT_CURR;                  
+      {
+        hCmd->num = P_FIRE_START; 
+        gMbStatus.bit.bShortCircuit = 0;
+        gActiveReg.rgPWM = 1;
+        SetMBRgS( REG_W_PWM, sPwm );        
       }
+      else{
+        hCmd->num = P_TEST_SHORT_CURR;  
+        gMbStatus.bit.bShortCircuit = 1; 
+        CmdStopPwm();
+        gMbCntrl.bit.bPilotArc = 0;
+        CmdPilotArc( );
+      }
+      SetMBRgS( REG_R_STATUS, gMbStatus.reg );
     }else;    
     break;
   }

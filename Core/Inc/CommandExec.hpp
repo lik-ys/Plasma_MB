@@ -76,7 +76,7 @@ typedef enum {
   P_PILOT_ARC       , // 1
   P_TIME_OUT_0      , // 2
   P_TEST_SHORT_CURR , // 3
-  P_START_PWM       , // 4  
+  //P_START_PWM       , // 4  
   P_FIRE_START      , // 5
   P_WAIT_CURR       , // 6
   P_TIME_OUT_1      , // 7   
@@ -87,7 +87,7 @@ typedef enum {
 }tech_proc_t;
   
 #define CNT_PROC   P_END
-#define CNT_REPEAT 2    
+#define CNT_REPEAT 3    
   
 class Command// : public Timer
 {

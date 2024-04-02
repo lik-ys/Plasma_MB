@@ -162,6 +162,7 @@ void HAL_IncTick( void )
   {
     gStateSM.div1000 = TIME_1000ms;
     gStateSM.time.b1000ms = 1;  
+    //if ( gMbStatus.bit.bOnOffPwr) HAL_TIM_PWM_Stop( pExtSync, TIM_CHANNEL_1 );
   }else {
     gStateSM.div1000--;    
   }  
@@ -200,7 +201,8 @@ void SM_Tick( void )
       {  
         hCmd->InitTechProc(); 
         gStateSM.st.bCommStart = 0;
-        gMbStatus.bit.bStartCNC = 1;            
+        gMbStatus.bit.bStartCNC = 1; 
+        gMbStatus.bit.bShortCircuit = 0;
         WR_DEBUG("Start from CNC \r\n");    
         //HAL_NVIC_DisableIRQ(EXTI4_IRQn);
       }else;
@@ -226,7 +228,7 @@ void SM_Tick( void )
         gActiveReg.rgCNTRL = 1; // выключить все в €чейках
 
         pExtSync->Instance->CNT = 0;
-        HAL_TIM_PWM_Stop( pExtSync, TIM_CHANNEL_1 );
+        //HAL_TIM_PWM_Stop( pExtSync, TIM_CHANNEL_1 );
         gMbStatus.bit.bOnOffPwr = 0;
         SetMBRgS( REG_R_STATUS, gMbStatus.reg );
         
@@ -346,7 +348,7 @@ void ADC_Process( void )
       int16_t voltage  = (int16_t)floor(1*(ADCdat.Voltage + adc_v_zero) / VoltCoef);
       if ( voltage < 0 ) voltage = 0;      
       SetMBRgS( REG_R_VOLT, voltage );   //      
-      voltage = PhParam.Voltage;
+      PhParam.Voltage = voltage;
     }        
   }else;
 } // ADC_Process()

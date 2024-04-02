@@ -7,7 +7,7 @@ RegStatusM_t         RgStatus[ MB_MASTER_TOTAL_SLAVE_NUM];
 RegStatusProces_t   RgProcess[MB_MASTER_TOTAL_SLAVE_NUM ];
 static int CntMBRg[6] = {0,};
 
-#define CNT_CELL_STATUS 7
+#define CNT_CELL_STATUS 15
 /***
 **  addr = 0,1...
 */
@@ -49,7 +49,12 @@ void UpDateReadRgM( uint16_t addr, eMBReg_t numRg )
       tmpRg.reg = gMbStatus.reg;      
       gMbStatus.reg = GetMBRgM( addr, numRg ); 
       gMbSlaveSt[addr].reg = gMbStatus.reg;
+      //tmpRg.bit.bShortCircuit = 0;
+      //gMbStatus.bit.bShortCircuit = 0;
       // Биты МБ сохраняем
+      if (tmpRg.bit.bShortCircuit){
+        gMbStatus.bit.bShortCircuit = tmpRg.bit.bShortCircuit;
+      }                 
       if (tmpRg.bit.bPilotArc){
         gMbStatus.bit.bPilotArc = tmpRg.bit.bPilotArc;
       }
@@ -64,7 +69,7 @@ void UpDateReadRgM( uint16_t addr, eMBReg_t numRg )
       {
         gMbStatus.bit.bChillerFail = tmpRg.bit.bChillerFail;
       }    
-      if (tmpRg.bit.bOnOffPwr) gMbStatus.bit.bOnOffPwr =1; // статус не должен моргать 
+      //if (tmpRg.bit.bOnOffPwr) gMbStatus.bit.bOnOffPwr =1; // статус не должен моргать 
       SetMBRgS( REG_R_STATUS, gMbStatus.reg );
     }
       break;   
