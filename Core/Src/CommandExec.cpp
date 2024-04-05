@@ -434,8 +434,7 @@ static void CmdMonitor(void )
       gMbCntrl.bit.bPilotArc = 0;
       CmdPilotArc( ); 
     }
-  }
-  
+  }  
 }
 /** (END OF FILE  : CommandExec.cpp.cpp) 
 *******************************/ 

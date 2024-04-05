@@ -162,7 +162,7 @@ void HAL_IncTick( void )
   {
     gStateSM.div1000 = TIME_1000ms;
     gStateSM.time.b1000ms = 1;  
-    //if ( gMbStatus.bit.bOnOffPwr) HAL_TIM_PWM_Stop( pExtSync, TIM_CHANNEL_1 );
+    //if ( gMbStatus.bit.bOnOffPwr) HAL_TIM_PWM_Stop( pExtSync, TIM_CHANNEL_1 ); - не работает нормально
   }else {
     gStateSM.div1000--;    
   }  
@@ -228,7 +228,7 @@ void SM_Tick( void )
         gActiveReg.rgCNTRL = 1; // выключить все в €чейках
 
         pExtSync->Instance->CNT = 0;
-        //HAL_TIM_PWM_Stop( pExtSync, TIM_CHANNEL_1 );
+        //HAL_TIM_PWM_Stop( pExtSync, TIM_CHANNEL_1 );  -- выключение синхрочастоты после выключени€ Ў»ћ, иначе выключение не вреное
         gMbStatus.bit.bOnOffPwr = 0;
         SetMBRgS( REG_R_STATUS, gMbStatus.reg );
         
