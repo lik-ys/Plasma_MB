@@ -108,12 +108,12 @@ static void CompareReg( uint16_t addr )
       gActiveReg.rgPWM = 1;
       gProblemAddr = addr;
     }
-    if ( GetMBRgS(REG_W_SLOP_1) != GetMBRgM(addr,REW_R_RESERV) )
+    if ( GetMBRgS(REG_W_SLOP_1) != GetMBRgM(addr,REG_R_FIRST_DAC) )
     {
       gActiveReg.rgSLOP_1 = 1;
       gProblemAddr = addr;
     }
-    if ( GetMBRgS(REG_W_SLOP_2) != GetMBRgM(addr,REW_R_RESERV0) )
+    if ( GetMBRgS(REG_W_SLOP_2) != GetMBRgM(addr,REG_R_LAST_DAC) )
     {
       gActiveReg.rgSLOP_2 = 1;
       gProblemAddr = addr;
@@ -427,9 +427,25 @@ bool ModBusCom::Write( void )
       }
     } 
     if (gActiveReg.rgTimeSlopRise)
-    {}    
+    {
+      saddr =  GetActualAddr(saddr);
+      if ( 0 == saddr )  {gActiveReg.rgTimeSlopRise = 0;}
+      else{
+        this->addr  = static_cast<mb_addr_t>(saddr);
+        ret = Hr_write(this->addr, static_cast<eMBReg_t>(REG_Ws_TIME_CUR_SLOPE_R), GetMBRgS(REG_W_TIME_CUR_SLOPE_R) );
+        return 1;
+      }      
+    }    
     if (gActiveReg.rgTimeSlopFail)
-    {}
+    {
+      saddr =  GetActualAddr(saddr);
+      if ( 0 == saddr )  {gActiveReg.rgTimeSlopFail = 0;}
+      else{
+        this->addr  = static_cast<mb_addr_t>(saddr);
+        ret = Hr_write(this->addr, static_cast<eMBReg_t>(REG_Ws_TIME_CUR_SLOPE_F), GetMBRgS(REG_W_TIME_CUR_SLOPE_F) );
+        return 1;
+      }      
+    }
     
     /*/ for testing Reg.
     if ( gActiveReg.c1)

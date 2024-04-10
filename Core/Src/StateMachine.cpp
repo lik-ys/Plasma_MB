@@ -228,7 +228,7 @@ void SM_Tick( void )
         gActiveReg.rgCNTRL = 1; // выключить все в ячейках
 
         pExtSync->Instance->CNT = 0;
-        //HAL_TIM_PWM_Stop( pExtSync, TIM_CHANNEL_1 );  -- выключение синхрочастоты после выключения ШИМ, иначе выключение не вреное
+        //HAL_TIM_PWM_Stop( pExtSync, TIM_CHANNEL_1 );  -- выключение синхрочастоты после выключения ШИМ, иначе выключение не верное
         gMbStatus.bit.bOnOffPwr = 0;
         SetMBRgS( REG_R_STATUS, gMbStatus.reg );
         

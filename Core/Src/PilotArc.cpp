@@ -70,15 +70,19 @@ void PilotArc::Off( void )
 */
 void PilotArc::Proc( void )
 {  
-  if (gActiveReg.rgTO_PA_Off) // TODO  обновить значение времени 
+  if ( gActiveReg.rgTO_PA_Off ) // обновить значение времени 
   {
-  }
+    time_out_off = GetMBRgS( REG_W_TIME_OFF_PILOT_ARC );
+    if (time_out_off > 10000 )  time_out_off = PILOT_ARC_OFF_TO;
+    if (time_out_off < 200   )  time_out_off = PILOT_ARC_OFF_TO;
+    gActiveReg.rgTO_PA_Off = 0;
+  }else;
   
   if ( 0 ==  gStateSM.st.bIgnitionOk && gStateSM.st.bTestCurr1 )
   {
-     if ( GetMBRgS( REG_R_CURR_1) > THRESHOLD_CURR_1 )  //
+     if ( PhParam.Current1 > THRESHOLD_CURR_1 )  //
     {
-      hTimer->Time_Out( Timer::start, time_out_off, event );
+      hTimer->Time_Out( Timer::start, time_out_off, EV_IGNITION );  // старт таймера отключения деж. дуги
       gStateSM.st.bIgnitionOk = 1;
       CncWrite( cnc_out0, GPIO_PIN_SET );  // команда ЧПУ "Готовность"    
     }else

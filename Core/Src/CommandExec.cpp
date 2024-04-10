@@ -82,7 +82,7 @@ void Command::TechProc(void)
   {
     // wait end current
     if (hTimer->IsTimeOut( EV_IGNITION1) )
-    if ( GetMBRgS( REG_R_CURR_1 ) < THRESHOLD_CURR_OFF )
+    if ( PhParam.Current1 < THRESHOLD_CURR_OFF )
     { 
       //CmdStopPwm(); //- TODO : выключение стаутса готовности ЧПУ что бы он остановился 
       gStateSM.st.bIgnitionOk = 0;
@@ -149,12 +149,12 @@ static
 void CmdWiteCurrent(void )
 {
   static int16_t cnt = CNT_REPEAT;
-  if ( GetMBRgS( REG_R_CURR_1) > THRESHOLD_CURR_1 )  //
+  if ( PhParam.Current1 > THRESHOLD_CURR_1 )  //
   {
     gStateSM.st.bIgnitionOk = 1;
     CncWrite( cnc_out0, GPIO_PIN_SET );  // Готовность для ЧПУ 
     hCmd->num = P_CURR_MONITOR;
-    hTimer->Time_Out( Timer::start, PILOT_ARC_OFF_TO, EV_IGNITION ); 
+    hTimer->Time_Out( Timer::start, PILOT_ARC_OFF_TO, EV_IGNITION  ); 
     hTimer->Time_Out( Timer::start, PILOT_ARC_OFF_TO1, EV_IGNITION1);
   }else
   { 
@@ -423,7 +423,7 @@ void CmdStopPwm( void )
 }//StartPwm()
 
 /**
-*   процесс реза, мониторим ток, через 1сек выключаем дежурку, если обрыв тока - выключаем ШИМ
+*   процесс реза, мониторим ток, через (hPilotArc->time_out_off) mсек выключаем дежурку, если обрыв тока - выключаем ШИМ
 */
 static void CmdMonitor(void )
 {

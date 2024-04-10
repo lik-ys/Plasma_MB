@@ -39,8 +39,8 @@ typedef enum _MB_REG_SLAVE
   REG_R_STATE_PROCESS   = 4,   // соотвествует REG_W_CNTRL_PROCESS (Ожидание, поджиг, Резка, Тушение, True Hole)
   
   REG_R_PWM             = 5,
-  REW_R_RESERV          = 6,   //  REG_W_FIRST_DAC
-  REW_R_RESERV0         = 7,   //  REG_W_LAST_DAC
+  REG_R_FIRST_DAC       = 6,   //  REG_W_FIRST_DAC
+  REG_R_LAST_DAC        = 7,   //  REG_W_LAST_DAC
   
   REG_W_PID_P           = 40,
   REG_W_PID_I           = 41,
@@ -77,6 +77,10 @@ typedef enum _MB_REG_SLAVE
 
   REG_W_FIRST_DAC         ,//105 точки начала и конца пилы ЦАП
   REG_W_LAST_DAC          ,//106
+
+
+  REG_Ws_TIME_CUR_SLOPE_R   , 
+  REG_Ws_TIME_CUR_SLOPE_F   , 
   
   REG_LASTs                // 107
 } eMBReg_t;// _MB_REG

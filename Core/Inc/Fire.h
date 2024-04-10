@@ -11,7 +11,7 @@ extern "C" {
 #define TIME_START          1000 //
 #define PA_TIME_OUT         7000
 #define TIME_FIRE_START     800
-#define PILOT_ARC_OFF_TO    1000 // EV_IGNITION - ждем  PILOT_ARC_OFF_TO выключаем деж. дугу.
+#define PILOT_ARC_OFF_TO    1000 // время по-умолчанию, событие EV_IGNITION - ждем  t -  выключаем деж.дугу.
 #define PILOT_ARC_OFF_TO1   2500 //
 
 
