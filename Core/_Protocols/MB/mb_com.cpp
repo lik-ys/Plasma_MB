@@ -263,8 +263,11 @@ bool ModBusCom::Hr_query( mb_addr_t mb_addr, eMBReg_t saddr_rg )
 bool ModBusCom::Hr_write( mb_addr_t mb_addr, eMBReg_t rg, uint16_t data)
 { // TODO зафиксировать номер регистра. при получении ответа проверить номер 
   // TODO НОвая запись только после получения ответа
-  if ( 1 == gMBactM[ mb_addr - 1 ].request)  return 0;
-  MBMasterTransmite( mb_addr );
+  if (mb_addr)
+  { 
+    if ( 1 == gMBactM[ mb_addr - 1 ].request)  return 0;
+    MBMasterTransmite( mb_addr );
+  }
   gMBMasterReqErrCode = eMBMasterReqWriteHoldingRegister( mb_addr, rg , data, MB_TIME_OUT );
   hTimer->Time_Out( Timer::start, PERIOD_MB_MASTER_TO, EV_WRITE_MBM );
   hTimer->Time_Out( Timer::start, PERIOD_REQUEST_TO, EV_REQUEST_TO );
@@ -347,9 +350,9 @@ bool ModBusCom::Write( void )
     
     if ( gActiveReg.rgCNTRL)
     {
-      saddr =  GetActualAddr(saddr);
+      saddr =  0;//GetActualAddr(saddr);
       if ( 0 == saddr )  {gActiveReg.rgCNTRL = 0;}      
-      else{
+      //else{
         this->addr  = static_cast<mb_addr_t>(saddr);
         uint16_t rgCntrl;      
         rgCntrl = GetMBRgM((uint16_t)this->addr, REG_W_CONTROL);
@@ -357,18 +360,18 @@ bool ModBusCom::Write( void )
         SetMBRgM((uint16_t)this->addr, REG_W_CONTROL, rgCntrl );
         ret = Hr_write(this->addr, static_cast<eMBReg_t>(REG_W_CONTROL), GetMBRgS(REG_W_CNTRL) );
         return 1;      
-      }
+      //}
     }else; 
     
     if ( gActiveReg.rgPWM )  
     {    
-      saddr =  GetActualAddr(saddr);
+      saddr =  0;//GetActualAddr(saddr);
       if ( 0 == saddr ){gActiveReg.rgPWM = 0;}
-      else {
+      //else {
         this->addr  = static_cast<mb_addr_t>(saddr);  
         ret = Hr_write(this->addr, static_cast<eMBReg_t>(REG_W_SET_OUT_PWM), GetMBRgS(REG_W_PWM) );
         return 1;
-      }
+      //}
     }
     if ( gActiveReg.rgCURR ) 
     {

@@ -68,10 +68,10 @@ void Command::TechProc(void)
 {
   //if ( gActiveReg.rg ) return;  // BUG: блокирует код - активные биты не кончаются
   if ( gMbStatus.bit.bStartCNC ) {
-    if ( 0 >= repeat )
+    if ( 0 >= repeat && (num != P_CURR_MONITOR) )
     {
-      gMbStatus.bit.bStartCNC = 0;
-      num = 0;
+      //gMbStatus.bit.bStartCNC = 0;
+      num = P_CURR_MONITOR;
     }
     else 
       if ((num < P_END)&&(tblThechProc[num]) != NULL ) {
@@ -150,7 +150,6 @@ static void  CmdFireStart( void )
 static 
 void CmdWiteCurrent(void )
 {
-  static int16_t cnt = CNT_REPEAT;
   if ( PhParam.Current1 > THRESHOLD_CURR_1 )  //
   {
     gStateSM.st.bIgnitionOk = 1;
@@ -162,10 +161,9 @@ void CmdWiteCurrent(void )
   { 
     if ( hTimer->IsTimeOut( EV_FIRE_OFF ))
     {
-      if (cnt> 0 )cnt--;
-      else {
+      if (hCmd->repeat <= 0 )
+      {
         hCmd->num = P_END; 
-        cnt = CNT_REPEAT;
         return;
       }
       // Выключить поджиг и повторить включение
@@ -309,7 +307,7 @@ uint16_t PwmOnAllCells( void )
 #define OPEN_CIRCUIT_V      590  //  напр. ХХ
 #define TEST_PWM_SET        10
 #define DEF_PWM_START   50 // 50% - стартовый ШИМ по-умолчанию, от него разварачиваем до уставки ШИМ
-
+static uint16_t sPwm ;
 /*  // TODO
 0 - включить дежурку CmdPilotArc()
 1 - подать ШИМ 10 на 1 сек
@@ -319,7 +317,7 @@ uint16_t PwmOnAllCells( void )
 static 
 void CmdTestShortCurr( void )
 {
-  static uint16_t st = 0; static uint16_t sPwm ;
+  static uint16_t st = 0; 
   WR_DEBUG("--0-- CmdTestShortCurr() time= %i s. \r\n",SHORT_CURR_TO/1000);
   
   if ( 1 == gMbStatus.bit.bShortCircuit ) return;
@@ -427,7 +425,8 @@ void CmdStopPwm( void )
 }//StartPwm()
 
 /**
-*   процесс реза, мониторим ток, через (hPilotArc->time_out_off) mсек выключаем дежурку, если обрыв тока - выключаем ШИМ
+*   процесс реза, мониторим ток, через (hPilotArc->time_out_off) mсек выключаем дежурку, 
+*   если обрыв тока - выключаем ШИМ
 */
 static void CmdMonitor(void )
 {
@@ -438,7 +437,23 @@ static void CmdMonitor(void )
       gMbCntrl.bit.bPilotArc = 0;
       CmdPilotArc( ); 
     }
-  }  
+  }
+  if ( PhParam.Current1 <  50 )
+  {
+    CmdStopPwm();
+    CncWrite( cnc_out0, GPIO_PIN_RESET ); // снимаем "готовность чпу"
+    gMbCntrl.bit.bPilotArc = 0;
+    CmdPilotArc(); 
+  }else
+  {
+    static int16_t cnt = 31;
+    if (--cnt == 30)
+    {
+      gActiveReg.rgPWM = 1;  
+      SetMBRgS( REG_W_PWM, sPwm );    
+    }
+    if (cnt < 0) cnt = 31;
+  }
 }
 /** (END OF FILE  : CommandExec.cpp.cpp) 
 *******************************/ 

@@ -7,7 +7,7 @@ RegStatusM_t         RgStatus[ MB_MASTER_TOTAL_SLAVE_NUM];
 RegStatusProces_t   RgProcess[MB_MASTER_TOTAL_SLAVE_NUM ];
 static int CntMBRg[6] = {0,};
 
-#define CNT_CELL_STATUS 15
+#define CNT_CELL_STATUS 25 // 15 при средней оптимизации
 /***
 **  addr = 0,1...5
 */

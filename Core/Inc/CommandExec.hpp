@@ -87,7 +87,7 @@ typedef enum {
 }tech_proc_t;
   
 #define CNT_PROC   P_END
-#define CNT_REPEAT 3    
+#define CNT_REPEAT 4    
   
 class Command// : public Timer
 {
