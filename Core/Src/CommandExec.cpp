@@ -344,16 +344,16 @@ void CmdTestShortCurr( void )
   case 3:  // - измеряем ток
     if ( hTimer->IsTimeOut(EV_TEST_SHORT_CICUT) )
     {
-      st = 0;
-      if (1 )/////  PhParam.Current1 <=  OPEN_CIRCUIT_C && PhParam.Voltage >= OPEN_CIRCUIT_V )
+      if ( 1 )/////DBG!!!  PhParam.Current1 <=  OPEN_CIRCUIT_C && PhParam.Voltage >= OPEN_CIRCUIT_V )
       {
-        hCmd->num = P_FIRE_START; 
+        st = 4;
         gMbStatus.bit.bShortCircuit = 0;
         gActiveReg.rgPWM = 1;
-        SetMBRgS( REG_W_PWM, DEF_PWM_START );        
+        SetMBRgS( REG_W_PWM, DEF_PWM_START );   // TODO дождаться когда уставка дойдет      
       }
       else{
-        hCmd->num = P_TEST_SHORT_CURR;  
+        st = 0;
+        hCmd->num = P_END;  
         gMbStatus.bit.bShortCircuit = 1; 
         CmdStopPwm();
         gMbCntrl.bit.bPilotArc = 0;
@@ -362,7 +362,14 @@ void CmdTestShortCurr( void )
       SetMBRgS( REG_R_STATUS, gMbStatus.reg );
     }else;    
     break;
-  }
+    case 4: // ждем выставления 50% ШИМа
+      if ( 0 == gActiveReg.rgPWM )  
+      {
+        st = 0; 
+        hCmd->num = P_FIRE_START;  // TODO BUG не успевает доходить 50 %
+      }      
+    break;
+  }//switch()
 }//CmdTestShortCurr()
 
 /**
