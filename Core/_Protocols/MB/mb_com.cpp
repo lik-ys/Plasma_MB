@@ -104,20 +104,25 @@ static void CompareReg( uint16_t addr )
 {
   if ( 0 == gActiveReg.rg )
   {
-    if ( GetMBRgS(REG_W_PWM) != GetMBRgM(addr,REG_R_PWM) )
+    if ( GetMBRgS(REG_W_CNTRL) != GetMBRgM(addr, REG_W_CONTROL) )
+    {
+      gActiveReg.rgCNTRL = 1;
+      gProblemAddr = addr + 1;
+    }
+    if ( GetMBRgS( REG_W_PWM ) != GetMBRgM( addr,REG_R_PWM ) )
     {
       gActiveReg.rgPWM = 1;
-      gProblemAddr = addr;
+      gProblemAddr = addr + 1;
     }
-    if ( GetMBRgS(REG_W_SLOP_1) != GetMBRgM(addr,REG_R_FIRST_DAC) )
+    if ( GetMBRgS( REG_W_SLOP_1) != GetMBRgM( addr,REG_R_FIRST_DAC ) )
     {
       gActiveReg.rgSLOP_1 = 1;
-      gProblemAddr = addr;
+      gProblemAddr = addr + 1;
     }
-    if ( GetMBRgS(REG_W_SLOP_2) != GetMBRgM(addr,REG_R_LAST_DAC) )
+    if ( GetMBRgS( REG_W_SLOP_2 ) != GetMBRgM( addr,REG_R_LAST_DAC ) )
     {
       gActiveReg.rgSLOP_2 = 1;
-      gProblemAddr = addr;
+      gProblemAddr = addr + 1;
     }   
     //if ( addr == gProblemAddr )
   }

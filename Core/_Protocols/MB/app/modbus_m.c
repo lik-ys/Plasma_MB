@@ -43,7 +43,7 @@ void UpDateReadRgM( uint16_t addr, eMBReg_t numRg )
       break;
     case REG_R_CURR_2s        : break;    
     case REG_R_IN_VOLTs       : break;
-    case REG_R_STATE_UNIT     : // получили регистр от €чеки - передать его в рг ћЅ мат.платы
+    case REG_R_STATE_UNIT     : // получили регистр от €чейки - передать его в рг ћЅ мат.платы
     {
       RgCntrl_t tmpRg; 
       tmpRg.reg = gMbStatus.reg;      
@@ -73,8 +73,14 @@ void UpDateReadRgM( uint16_t addr, eMBReg_t numRg )
       SetMBRgS( REG_R_STATUS, gMbStatus.reg );
     }
       break;   
-    case REG_R_STATE_PROCESS  : break;   
-    case REG_R_PWM           : break;   
+    case REG_R_STATE_PROCESS : break;  
+     // TODO BUG: addr == 1 - чтение всех нулей ????
+    case REG_R_PWM           : 
+      break;
+    case REG_R_FIRST_DAC     : 
+      break;
+    case REG_R_LAST_DAC      : 
+      break;
  
     default:
       break;
