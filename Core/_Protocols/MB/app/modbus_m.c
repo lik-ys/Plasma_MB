@@ -9,7 +9,7 @@ static int CntMBRg[6] = {0,};
 
 #define CNT_CELL_STATUS 15
 /***
-**  addr = 0,1...
+**  addr = 0,1...5
 */
 void CntrCellsStatus( uint16_t addr, FlagStatus st )
 {

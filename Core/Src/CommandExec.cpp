@@ -277,6 +277,7 @@ void CmdStartStopPwm( void )
 //    HAL_TIM_PWM_Stop( pExtSync, TIM_CHANNEL_1 );
     gMbStatus.bit.bOnOffPwr = 0;
     SetMBRgS( REG_R_STATUS, gMbStatus.reg );
+    gActiveReg.rgCNTRL  = 1;
     //hCmd->num = P_END;
   }   
 }//StartPwm()
@@ -307,7 +308,8 @@ uint16_t PwmOnAllCells( void )
 #define OPEN_CIRCUIT_C      5    //  тока ХХ
 #define OPEN_CIRCUIT_V      590  //  напр. ХХ
 #define TEST_PWM_SET        10
-                             
+#define DEF_PWM_START   50 // 50% - стартовый ШИМ по-умолчанию, от него разварачиваем до уставки ШИМ
+
 /*  // TODO
 0 - включить дежурку CmdPilotArc()
 1 - подать ШИМ 10 на 1 сек
@@ -350,7 +352,7 @@ void CmdTestShortCurr( void )
         hCmd->num = P_FIRE_START; 
         gMbStatus.bit.bShortCircuit = 0;
         gActiveReg.rgPWM = 1;
-        SetMBRgS( REG_W_PWM, sPwm );        
+        SetMBRgS( REG_W_PWM, DEF_PWM_START );        
       }
       else{
         hCmd->num = P_TEST_SHORT_CURR;  
@@ -414,7 +416,7 @@ void CmdStopPwm( void )
     gMbCntrl.bit.bChopperStart = 0;
     SetMBRgS(REG_W_CNTRL, gMbCntrl.reg); 
     UpateActiveRg(); // эмуляция работы черезе МБ
-    
+    gActiveReg.rgCNTRL = 1;
 //    pExtSync->Instance->CNT = 0;
 //    HAL_TIM_PWM_Stop( pExtSync, TIM_CHANNEL_1 );
     gMbStatus.bit.bOnOffPwr = 0;
