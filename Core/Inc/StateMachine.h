@@ -237,6 +237,7 @@ typedef union{
       uint16_t rgTO_PA_Off: 1;
       uint16_t rgTimeSlopRise:1;
       uint16_t rgTimeSlopFail:1; // 12
+      uint16_t rgProcess    : 1; // номер функции процесса
       //for debug
       //uint16_t c1   :1;
       //uint16_t c2   :1;

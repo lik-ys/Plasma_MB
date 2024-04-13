@@ -74,8 +74,10 @@ void Command::TechProc(void)
       num = 0;
     }
     else 
-      if ((num < P_END)&&(tblThechProc[num]) != NULL ) 
+      if ((num < P_END)&&(tblThechProc[num]) != NULL ) {
         tblThechProc[num]();   
+        if ( num < P_END ) gActiveReg.rgProcess = 1;
+      }
   }else{}
   // Выключение напряжения по завершении процесса резки: ток 0 - выкл ШИМ
   if ( 1 == gStateSM.st.bIgnitionOk )
@@ -263,7 +265,7 @@ void CmdStartStopPwm( void )
 
     gMbCntrl.bit.bOnOffPwr = 1;
     gActiveReg.rgCNTRL  = 1;
-    gActiveReg.rgPWM =1; // т.к. Ячейки ресетим после останова ШИМ, закиним уставки
+    gActiveReg.rgPWM = 1; // т.к. Ячейки ресетим после останова ШИМ, закиним уставки
     gActiveReg.rgSLOP_1 = 1;
     gActiveReg.rgSLOP_2 = 1;    
 
@@ -271,8 +273,8 @@ void CmdStartStopPwm( void )
     gMbCntrl.bit.bFireStart = 1;
   }else if (1 == gMbStatus.bit.bOnOffPwr )
   {
-    pExtSync->Instance->CNT = 0;
-    HAL_TIM_PWM_Stop( pExtSync, TIM_CHANNEL_1 );
+//    pExtSync->Instance->CNT = 0;
+//    HAL_TIM_PWM_Stop( pExtSync, TIM_CHANNEL_1 );
     gMbStatus.bit.bOnOffPwr = 0;
     SetMBRgS( REG_R_STATUS, gMbStatus.reg );
     //hCmd->num = P_END;
@@ -304,7 +306,7 @@ uint16_t PwmOnAllCells( void )
 #define SHORT_CURR_TO       3000 //  время проверки короткого замыкания 
 #define OPEN_CIRCUIT_C      5    //  тока ХХ
 #define OPEN_CIRCUIT_V      590  //  напр. ХХ
-#define PWM_SET             10
+#define TEST_PWM_SET        10
                              
 /*  // TODO
 0 - включить дежурку CmdPilotArc()
@@ -327,7 +329,7 @@ void CmdTestShortCurr( void )
   case 1:
     gActiveReg.rgPWM = 1;  
     sPwm = GetMBRgS( REG_W_PWM );
-    SetMBRgS( REG_W_PWM, PWM_SET );
+    SetMBRgS( REG_W_PWM, TEST_PWM_SET );
     st = 2;
     break;
   case 2:   // ожидание появления напряжения 
@@ -343,7 +345,7 @@ void CmdTestShortCurr( void )
     if ( hTimer->IsTimeOut(EV_TEST_SHORT_CICUT) )
     {
       st = 0;
-      if ( PhParam.Current1 <=  OPEN_CIRCUIT_C && PhParam.Voltage >= OPEN_CIRCUIT_V )
+      if (1 )/////  PhParam.Current1 <=  OPEN_CIRCUIT_C && PhParam.Voltage >= OPEN_CIRCUIT_V )
       {
         hCmd->num = P_FIRE_START; 
         gMbStatus.bit.bShortCircuit = 0;
@@ -413,8 +415,8 @@ void CmdStopPwm( void )
     SetMBRgS(REG_W_CNTRL, gMbCntrl.reg); 
     UpateActiveRg(); // эмуляция работы черезе МБ
     
-    pExtSync->Instance->CNT = 0;
-    HAL_TIM_PWM_Stop( pExtSync, TIM_CHANNEL_1 );
+//    pExtSync->Instance->CNT = 0;
+//    HAL_TIM_PWM_Stop( pExtSync, TIM_CHANNEL_1 );
     gMbStatus.bit.bOnOffPwr = 0;
     gMbStatus.bit.bChopperStart = 0;
     SetMBRgS( REG_R_STATUS, gMbStatus.reg );

@@ -141,6 +141,7 @@ void MBMasterError(void );
 void MBMasterExec( uint16_t addr );
 void MBMasterErrorTO( uint16_t addr );
 void MBMasterInit( uint16_t addr);
+uint16_t isCellPresence(uint16_t addr );
 
 void SetMBRgM( uint16_t slave, eMBReg_t numMBReg, uint16_t data );
 uint16_t GetMBRgM( uint16_t slave, eMBReg_t numMBReg );

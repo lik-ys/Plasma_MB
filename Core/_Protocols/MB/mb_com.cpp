@@ -25,6 +25,7 @@
 #include "user_mb_app_m.h"
 #include "user_mb_app.h"
 #include "mb_com.hpp"
+#include "CommandExec.hpp"
 
 
 #ifdef __cplusplus
@@ -339,7 +340,7 @@ bool ModBusCom::Write( void )
   { 
     static uint16_t saddr = 0;
     
-     if ( gActiveReg.rgCNTRL)
+    if ( gActiveReg.rgCNTRL)
     {
       saddr =  GetActualAddr(saddr);
       if ( 0 == saddr )  {gActiveReg.rgCNTRL = 0;}      
@@ -447,6 +448,16 @@ bool ModBusCom::Write( void )
       }      
     }
     
+    if (gActiveReg.rgProcess)
+    {
+      saddr =  GetActualAddr(saddr);
+      if ( 0 == saddr )  {gActiveReg.rgProcess = 0;}
+      else{
+        this->addr  = static_cast<mb_addr_t>(saddr);
+        ret = Hr_write(this->addr, static_cast<eMBReg_t>(REG_W_CNTRL_PROCESS), (hCmd->num) ); // передаем номер техпроцесса
+        return 1;
+      }      
+    }    
     /*/ for testing Reg.
     if ( gActiveReg.c1)
     {

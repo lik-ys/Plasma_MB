@@ -111,6 +111,13 @@ uint16_t isMBmRead(uint16_t addr )
       bRead = 1;
   return bRead;
 }
+
+
+uint16_t isCellPresence(uint16_t addr )
+{
+  if ( gCells.reg & ( 1<< (addr) )) return 1;
+  else return 0;
+}
 /*
 *
 */

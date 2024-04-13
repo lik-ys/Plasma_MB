@@ -118,6 +118,8 @@ public:
 private:
 };//Command
 
+extern  Command* hCmd;
+
 /*===============================[ PSEUDO/INLINE FUNCTIONS ]===================*/ 
     // Inline функции (методы класса)
 /*===============================[ END REDEFINITION DEFENCE]===================*/ 
