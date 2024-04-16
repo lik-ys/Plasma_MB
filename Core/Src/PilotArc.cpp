@@ -84,7 +84,7 @@ void PilotArc::Proc( void )
     {
       hTimer->Time_Out( Timer::start, time_out_off, EV_IGNITION );  // старт таймера отключения деж. дуги
       gStateSM.st.bIgnitionOk = 1;
-      CncWrite( cnc_out0, GPIO_PIN_SET );  // команда ЧПУ "Готовность"    
+      CncWrite( cnc_redy, GPIO_PIN_SET );  // команда ЧПУ "Готовность"    
     }else
     {
       // Еще две попытки включения если не дождались роста тока
@@ -105,7 +105,7 @@ void PilotArc::Proc( void )
   {
       gStateSM.st.bIgnitionOk = 0;
       gStateSM.st.bTestCurr1  = 0;
-      CncWrite( cnc_out0, GPIO_PIN_RESET );
+      CncWrite( cnc_redy, GPIO_PIN_RESET ); // снимаем "готовность чпу"
   }  
 }// Proc()
 

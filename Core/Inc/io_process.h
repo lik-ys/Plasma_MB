@@ -86,7 +86,7 @@ typedef struct
 */
 typedef enum
 {    
-  cnc_out0 = 0,
+  cnc_redy = 0,
   cnc_out1 = 1,
   cnc_out2 = 2,
   cnc_out3 = 3,

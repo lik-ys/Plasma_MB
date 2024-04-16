@@ -2266,11 +2266,17 @@
                         </file>
                     </group>
                 </group>
+                <group>
+                    <name>Config</name>
+                    <file>
+                        <name>$PROJ_DIR$\..\Core\Inc\config.h</name>
+                    </file>
+                    <file>
+                        <name>$PROJ_DIR$\..\Core\Inc\debug.h</name>
+                    </file>
+                </group>
                 <file>
                     <name>$PROJ_DIR$\..\Core\Src\CommandExec.cpp</name>
-                </file>
-                <file>
-                    <name>$PROJ_DIR$\..\Core\Inc\config.h</name>
                 </file>
                 <file>
                     <name>$PROJ_DIR$\..\Core\Src\Fire.cpp</name>

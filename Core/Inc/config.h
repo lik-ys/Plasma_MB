@@ -33,6 +33,8 @@
 /*===============================[ PUBLIC CONSTANTS ]=======================*/ 
 // ¬се частные #defines и constants должны быть объ€влены в данном разделе. 
 
+#include "debug.h"
+
 #define NUMBERS_CELLS   6   // число €чеек
 
 #define MB_ADDR_SLAVE       1

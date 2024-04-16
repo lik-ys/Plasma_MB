@@ -466,7 +466,7 @@ bool ModBusCom::Write( void )
         return 1;
       }      
     }    
-    /*/ for testing Reg.
+#if (1 == REG_DEBUG ) //  for testing Reg.
     if ( gActiveReg.c1)
     {
       saddr =  GetActualAddr(saddr);
@@ -487,7 +487,7 @@ bool ModBusCom::Write( void )
         return 1;
       }      
     }else; 
-    // */
+#endif
   }  
   return ret;
 }// Write()

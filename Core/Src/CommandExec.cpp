@@ -88,7 +88,7 @@ void Command::TechProc(void)
     { 
       //CmdStopPwm(); //- TODO : выключение стаутса готовности ЧПУ что бы он остановился 
       gStateSM.st.bIgnitionOk = 0;
-      //CncWrite( cnc_out0, GPIO_PIN_RESET);
+      //CncWrite( cnc_redy, GPIO_PIN_RESET);
     }else;
   }
 }// TechProc()
@@ -153,7 +153,7 @@ void CmdWiteCurrent(void )
   if ( PhParam.Current1 > THRESHOLD_CURR_1 )  //
   {
     gStateSM.st.bIgnitionOk = 1;
-    CncWrite( cnc_out0, GPIO_PIN_SET );  // Готовность для ЧПУ 
+    CncWrite( cnc_redy, GPIO_PIN_SET );  // Готовность для ЧПУ 
     hCmd->num = P_CURR_MONITOR;
     hTimer->Time_Out( Timer::start, PILOT_ARC_OFF_TO, EV_IGNITION  ); 
     hTimer->Time_Out( Timer::start, PILOT_ARC_OFF_TO1, EV_IGNITION1);
@@ -448,7 +448,7 @@ static void CmdMonitor(void )
   if ( PhParam.Current1 <  50 )
   {
     CmdStopPwm();
-    CncWrite( cnc_out0, GPIO_PIN_RESET ); // снимаем "готовность чпу"
+    CncWrite( cnc_redy, GPIO_PIN_RESET ); // снимаем "готовность чпу"
     gMbCntrl.bit.bPilotArc = 0;
     CmdPilotArc(); 
   }else
