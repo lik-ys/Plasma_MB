@@ -306,7 +306,7 @@ uint16_t PwmOnAllCells( void )
 #define OPEN_CIRCUIT_C      5    //  тока ХХ
 #define OPEN_CIRCUIT_V      590  //  напр. ХХ
 #define TEST_PWM_SET        10
-#define DEF_PWM_START   50 // 50% - стартовый ШИМ по-умолчанию, от него разварачиваем до уставки ШИМ
+#define DEF_PWM_START   90 // 50% - стартовый ШИМ по-умолчанию, от него разварачиваем до уставки ШИМ
 static uint16_t sPwm ;
 /*  // TODO
 0 - включить дежурку CmdPilotArc()
@@ -344,7 +344,8 @@ void CmdTestShortCurr( void )
   case 3:  // - измеряем ток
     if ( hTimer->IsTimeOut(EV_TEST_SHORT_CICUT) )
     {
-      if ( 1 )/////DBG!!!  PhParam.Current1 <=  OPEN_CIRCUIT_C && PhParam.Voltage >= OPEN_CIRCUIT_V )
+      ///if ( 1 )/////DBG!!! 
+      if ( PhParam.Current1 <=  OPEN_CIRCUIT_C && PhParam.Voltage >= OPEN_CIRCUIT_V )
       {
         st = 4;
         gMbStatus.bit.bShortCircuit = 0;

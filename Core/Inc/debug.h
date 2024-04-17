@@ -59,7 +59,7 @@
 
 #define __ITM_UNLOCK( unlock )     *((volatile unsigned long *)0xE0000FB0) = unlock;
 
-#define REG_DEBUG       1   // передача измерени€ от MB к €чейки
+#define REG_DEBUG       0   // передача измерени€ от MB к €чейки
 
 /*===============================[ TYPE DEFINITIONS ]==========================*/ 
 typedef enum
