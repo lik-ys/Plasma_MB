@@ -345,12 +345,10 @@ bool ModBusCom::Write( void )
   static eMBMasterEventType   	eEvent = EV_MASTER_INIT;
   
   if ( gActiveReg.rg ) 
-  { 
-    static uint16_t saddr = 0;
-    
+  {    
     if ( gActiveReg.rgCNTRL)
     {
-      saddr =  GetActualAddr(saddr);
+      static uint16_t saddr = 0; saddr =  GetActualAddr(saddr);
       if ( 0 == saddr )  {gActiveReg.rgCNTRL = 0;}      
       else{
         this->addr  = static_cast<mb_addr_t>(saddr);
@@ -359,13 +357,14 @@ bool ModBusCom::Write( void )
         rgCntrl |= (1<<0);
         SetMBRgM((uint16_t)this->addr, REG_W_CONTROL, rgCntrl );
         ret = Hr_write(this->addr, static_cast<eMBReg_t>(REG_W_CONTROL), GetMBRgS(REG_W_CNTRL) );
+        WR_DEBUG("Addr = %i \r\n", this->addr );
         return 1;      
       }
     }else; 
     
     if ( gActiveReg.rgPWM )  
     {    
-      saddr =  GetActualAddr(saddr);
+      static uint16_t saddr = 0; saddr =  GetActualAddr(saddr);
       if ( 0 == saddr ){gActiveReg.rgPWM = 0;}
       else {
         this->addr  = static_cast<mb_addr_t>(saddr);  
@@ -375,7 +374,7 @@ bool ModBusCom::Write( void )
     }
     if ( gActiveReg.rgCURR ) 
     {
-      saddr =  GetActualAddr(saddr);
+      static uint16_t saddr = 0; saddr =  GetActualAddr(saddr);
       if ( 0 == saddr )  { gActiveReg.rgCURR = 0; }
       else{
         this->addr  = static_cast<mb_addr_t>(saddr);            
@@ -385,7 +384,7 @@ bool ModBusCom::Write( void )
     }
     if ( gActiveReg.rgSLOP_1)
     {
-      saddr =  GetActualAddr( saddr );
+      static uint16_t saddr = 0; saddr =  GetActualAddr( saddr );
       if ( 0 == saddr )  { gActiveReg.rgSLOP_1 = 0; }      
       else
       {
@@ -396,7 +395,7 @@ bool ModBusCom::Write( void )
     }
     if ( gActiveReg.rgSLOP_2)
     {
-      saddr =  GetActualAddr( saddr );
+      static uint16_t saddr = 0; saddr =  GetActualAddr( saddr );
       if ( 0 == saddr )  { gActiveReg.rgSLOP_2 = 0;}                  
       else
       {
@@ -407,7 +406,7 @@ bool ModBusCom::Write( void )
     }
     if ( gActiveReg.rgP )
     {
-      saddr =  GetActualAddr( saddr);
+      static uint16_t saddr = 0; saddr =  GetActualAddr( saddr);
       if ( 0 == saddr )  {gActiveReg.rgP = 0;}            
       else{
         this->addr  = static_cast<mb_addr_t>(saddr);
@@ -417,7 +416,7 @@ bool ModBusCom::Write( void )
     }
     if ( gActiveReg.rgI )
     {
-      saddr =  GetActualAddr(saddr);
+      static uint16_t saddr = 0; saddr =  GetActualAddr(saddr);
       if ( 0 == saddr )  {gActiveReg.rgI = 0;}      
       {
         this->addr  = static_cast<mb_addr_t>(saddr);
@@ -427,7 +426,7 @@ bool ModBusCom::Write( void )
     }    
     if ( gActiveReg.rgD )
     {
-      saddr =  GetActualAddr(saddr);
+      static uint16_t saddr = 0; saddr =  GetActualAddr(saddr);
       if ( 0 == saddr )  {gActiveReg.rgD = 0;}
       else{
         this->addr  = static_cast<mb_addr_t>(saddr);
@@ -437,7 +436,7 @@ bool ModBusCom::Write( void )
     } 
     if (gActiveReg.rgTimeSlopRise)
     {
-      saddr =  GetActualAddr(saddr);
+      static uint16_t saddr = 0; saddr =  GetActualAddr(saddr);
       if ( 0 == saddr )  {gActiveReg.rgTimeSlopRise = 0;}
       else{
         this->addr  = static_cast<mb_addr_t>(saddr);
@@ -447,7 +446,7 @@ bool ModBusCom::Write( void )
     }    
     if (gActiveReg.rgTimeSlopFail)
     {
-      saddr =  GetActualAddr(saddr);
+      static uint16_t saddr = 0; saddr =  GetActualAddr(saddr);
       if ( 0 == saddr )  {gActiveReg.rgTimeSlopFail = 0;}
       else{
         this->addr  = static_cast<mb_addr_t>(saddr);
@@ -458,7 +457,7 @@ bool ModBusCom::Write( void )
     
     if (gActiveReg.rgProcess)
     {
-      saddr =  GetActualAddr(saddr);
+      static uint16_t saddr = 0; saddr =  GetActualAddr(saddr);
       if ( 0 == saddr )  {gActiveReg.rgProcess = 0;}
       else{
         this->addr  = static_cast<mb_addr_t>(saddr);
@@ -469,7 +468,7 @@ bool ModBusCom::Write( void )
 #if (1 == REG_DEBUG ) //  for testing Reg.
     if ( gActiveReg.c1)
     {
-      saddr =  GetActualAddr(saddr);
+      static uint16_t saddr = 0; saddr =  GetActualAddr(saddr);
       if ( 0 == saddr )  {gActiveReg.c1 = 0;}
       else{
         this->addr  = static_cast<mb_addr_t>(saddr);
@@ -479,7 +478,7 @@ bool ModBusCom::Write( void )
     }else;
     if ( gActiveReg.c2)
     {
-      saddr =  GetActualAddr(saddr);
+      static uint16_t saddr = 0; saddr =  GetActualAddr(saddr);
       if ( 0 == saddr )  {gActiveReg.c2 = 0;}
       else{
         this->addr  = static_cast<mb_addr_t>(saddr);

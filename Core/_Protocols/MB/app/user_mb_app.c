@@ -54,7 +54,12 @@ void UpDateReadRg( eMBRegS_t numRg )
   {
 //    case REG_R_CNC_IN:
 //      break;
-    case REG_R_STATUS:
+    case REG_R_STATUS: 
+      if (gMbCntrl.bit.bOnOffPwr == 0 && 1 == gMbStatus.bit.bOnOffPwr)
+      {
+        gMbStatus.bit.bOnOffPwr = 0;
+        SetMBRgS( REG_R_STATUS, gMbStatus.reg );
+      }
       break;    
     default:
       break;
