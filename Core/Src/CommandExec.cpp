@@ -150,7 +150,7 @@ static void  CmdFireStart( void )
 static 
 void CmdWiteCurrent(void )
 {
-  if ( PhParam.Current1 > THRESHOLD_CURR_1 )  //
+  if ( PhParam.Current2 > THRESHOLD_CURR_1 )  //
   {
     gStateSM.st.bIgnitionOk = 1;
     CncWrite( cnc_redy, GPIO_PIN_SET );  // Готовность для ЧПУ 
@@ -344,8 +344,8 @@ void CmdTestShortCurr( void )
   case 3:  // - измеряем ток
     if ( hTimer->IsTimeOut(EV_TEST_SHORT_CICUT) )
     {
-      ///if ( 1 )/////DBG!!! 
-      if ( PhParam.Current1 <=  OPEN_CIRCUIT_C && PhParam.Voltage >= OPEN_CIRCUIT_V )
+      if ( 1 )/////DBG!!! 
+      //if ( PhParam.Current1 <=  OPEN_CIRCUIT_C && PhParam.Voltage >= OPEN_CIRCUIT_V )
       {
         st = 4;
         gMbStatus.bit.bShortCircuit = 0;
@@ -446,7 +446,7 @@ static void CmdMonitor(void )
       CmdPilotArc( ); 
     }
   }
-  if ( PhParam.Current1 <  50 )
+  if ( PhParam.Current2 <  10 ) //BUG есть непонятное выключения тока при резки
   {
     CmdStopPwm();
     CncWrite( cnc_redy, GPIO_PIN_RESET ); // снимаем "готовность чпу"

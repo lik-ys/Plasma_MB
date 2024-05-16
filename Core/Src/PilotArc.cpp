@@ -80,7 +80,7 @@ void PilotArc::Proc( void )
   
   if ( 0 ==  gStateSM.st.bIgnitionOk && gStateSM.st.bTestCurr1 )
   {
-     if ( PhParam.Current1 > THRESHOLD_CURR_1 )  //
+     if ( PhParam.Current2 > THRESHOLD_CURR_1 )  //
     {
       hTimer->Time_Out( Timer::start, time_out_off, EV_IGNITION );  // старт таймера отключения деж. дуги
       gStateSM.st.bIgnitionOk = 1;
@@ -105,7 +105,7 @@ void PilotArc::Proc( void )
   {
       gStateSM.st.bIgnitionOk = 0;
       gStateSM.st.bTestCurr1  = 0;
-      CncWrite( cnc_redy, GPIO_PIN_RESET ); // снимаем "готовность чпу"
+      //CncWrite( cnc_redy, GPIO_PIN_RESET ); // снимаем "готовность чпу"
   }  
 }// Proc()
 

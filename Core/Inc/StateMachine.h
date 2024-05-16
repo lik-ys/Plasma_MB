@@ -37,7 +37,7 @@ extern "C" {
 #define ADC_BUF_LENGHT  16
   
 #define TIME_OUT_TEST   250
-#define THRESHOLD_CURR_1    100  // 100 A  - пороговый ток включения готовности для ЧПУ
+#define THRESHOLD_CURR_1    90  // 100 A  - пороговый ток включения готовности для ЧПУ
 #define THRESHOLD_CURR_OFF  30  // 20 A  - пороговый ток выключения ШИМ на всех ячейкаях
      
 #define PERIOD_MB_MASTER_TO  60  // 60
@@ -60,6 +60,13 @@ typedef struct
   uint16_t Current2  ; // ток прямой    разница токов == току дежурки
   uint16_t Voltage   ;
 } ADC_data_t;
+
+typedef struct
+{
+  float Current1  ; // ток возврата
+  float Current2  ; // ток прямой    разница токов == току дежурки
+  float Voltage   ;
+} ADC_summ_t;
 
 typedef struct
 {
@@ -262,7 +269,7 @@ typedef union
 extern uint16_t    gProblemAddr;
 extern eProcess_t  eSM_proc;
 extern ADC_data_t  ADCdata[ ADC_BUF_LENGHT ];
-extern ADC_data_t  ADCdat;
+extern ADC_summ_t  ADCdat;
 extern PhParam_t   PhParam;
 extern State_t     gStateSM;
 
