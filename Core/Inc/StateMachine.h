@@ -37,8 +37,8 @@ extern "C" {
 #define ADC_BUF_LENGHT  16
   
 #define TIME_OUT_TEST   250
-#define THRESHOLD_CURR_1    90  // 100 A  - пороговый ток включения готовности для ЧПУ
-#define THRESHOLD_CURR_OFF  30  // 20 A  - пороговый ток выключения ШИМ на всех ячейкаях
+#define THRESHOLD_CURR_1    40  // 100 A  - пороговый ток включения готовности для ЧПУ
+#define THRESHOLD_CURR_OFF  20  // 20 A  - пороговый ток выключения ШИМ на всех ячейкаях
      
 #define PERIOD_MB_MASTER_TO  60  // 60
 #define PERIOD_REQUEST_TO    100 // 100

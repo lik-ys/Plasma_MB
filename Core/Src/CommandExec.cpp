@@ -76,7 +76,7 @@ void Command::TechProc(void)
     else 
       if ((num < P_END)&&(tblThechProc[num]) != NULL ) {
         tblThechProc[num]();   
-        if ( num < P_END ) gActiveReg.rgProcess = 1;
+        gActiveReg.rgProcess = 1;
       }
   }else{}
   // Выключение напряжения по завершении процесса резки: ток 0 - выкл ШИМ
@@ -84,11 +84,12 @@ void Command::TechProc(void)
   {
     // wait end current
     if (hTimer->IsTimeOut( EV_IGNITION1) )
-    if ( PhParam.Current1 < THRESHOLD_CURR_OFF )
+    if ( PhParam.Current2 < THRESHOLD_CURR_OFF ) // PhParam.Current1
     { 
-      //CmdStopPwm(); //- TODO : выключение стаутса готовности ЧПУ что бы он остановился 
+      CmdStopPwm(); //- TODO : выключение стаутса готовности ЧПУ что бы он остановился 
       gStateSM.st.bIgnitionOk = 0;
-      //CncWrite( cnc_redy, GPIO_PIN_RESET);
+      CncWrite( cnc_redy, GPIO_PIN_RESET);
+      
     }else;
   }
 }// TechProc()
@@ -345,7 +346,7 @@ void CmdTestShortCurr( void )
     if ( hTimer->IsTimeOut(EV_TEST_SHORT_CICUT) )
     {
       if ( 1 )/////DBG!!! 
-      //if ( PhParam.Current1 <=  OPEN_CIRCUIT_C && PhParam.Voltage >= OPEN_CIRCUIT_V )
+      ///if ( (PhParam.Current1 <=  OPEN_CIRCUIT_C) && (PhParam.Voltage >= OPEN_CIRCUIT_V ))
       {
         st = 4;
         gMbStatus.bit.bShortCircuit = 0;
@@ -428,7 +429,8 @@ void CmdStopPwm( void )
     gMbStatus.bit.bOnOffPwr = 0;
     gMbStatus.bit.bChopperStart = 0;
     SetMBRgS( REG_R_STATUS, gMbStatus.reg );
-    hCmd->num = P_END;
+    hCmd->num = P_STOP_PWM;
+    gActiveReg.rgProcess = 1;
     gMbCntrl.bit.bPilotArc =0;
 }//StartPwm()
 
@@ -446,12 +448,12 @@ static void CmdMonitor(void )
       CmdPilotArc( ); 
     }
   }
-  if ( PhParam.Current2 <  10 ) //BUG есть непонятное выключения тока при резки
+  if ( PhParam.Current2 <  20 ) //BUG есть непонятное выключения тока при резки
   {
-    CmdStopPwm();
     CncWrite( cnc_redy, GPIO_PIN_RESET ); // снимаем "готовность чпу"
     gMbCntrl.bit.bPilotArc = 0;
     CmdPilotArc(); 
+    CmdStopPwm();
   }else
   {
     static int16_t cnt = 31;
