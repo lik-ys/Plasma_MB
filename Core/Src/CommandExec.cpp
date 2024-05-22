@@ -307,8 +307,10 @@ uint16_t PwmOnAllCells( void )
 #define OPEN_CIRCUIT_C      5    //  тока ХХ
 #define OPEN_CIRCUIT_V      590  //  напр. ХХ
 #define TEST_PWM_SET        10
-#define DEF_PWM_START   90 // на 50% -дуга не зажигается - стартовый ШИМ по-умолчанию, от него разварачиваем до уставки ШИМ
+#define DEF_PWM_START       90 // на 50% -дуга не зажигается - стартовый ШИМ по-умолчанию, от него разварачиваем до уставки ШИМ
+
 static uint16_t sPwm ;
+
 /*  // TODO
 0 - включить дежурку CmdPilotArc()
 1 - подать ШИМ 10 на 1 сек
@@ -450,7 +452,8 @@ static void CmdMonitor(void )
       CmdPilotArc( ); 
     }
   }
-  if ( PhParam.Current2 <  20 ) //BUG есть непонятное выключения тока при резки
+  // ++13.04.24
+  if ( PhParam.Current2 <  THRESHOLD_CURR_OFF ) //BUG есть непонятное выключения тока при резки
   {
     CncWrite( cnc_redy, GPIO_PIN_RESET ); // снимаем "готовность чпу"
     gMbCntrl.bit.bPilotArc = 0;
