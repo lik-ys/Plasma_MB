@@ -407,12 +407,13 @@ void CmdStartPwm( void )
     if ( PwmOnAllCells() )
     {
       hCmd->num = P_FIRE_START;      
-    }    
+    }else;    
     if ( hTimer->IsTimeOut( EV_PILOT_ARC_TO ) )
     {       
       gMbCntrl.bit.bPilotArc = 1; 
-    }
+    }else;
 }//StartPwm()
+
 /**
 * выключение синхрочастоты
 */
@@ -436,6 +437,7 @@ void CmdStopPwm( void )
 
 /**
 *   процесс реза, мониторим ток, через (hPilotArc->time_out_off) mсек выключаем дежурку, 
+*   Переходим на регулятор - даем уставку тока
 *   если обрыв тока - выключаем ШИМ
 */
 static void CmdMonitor(void )
