@@ -82,7 +82,7 @@ void PilotArc::Proc( void )
   
   if ( 0 ==  gStateSM.st.bIgnitionOk && gStateSM.st.bTestCurr1 )
   {
-     if ( PhParam.Current1 > THRESHOLD_CURR_1 )  //
+     if ( PhParam.Current1 > THRESHOLD_CURR_1 )  // PhParam.Current1
     {
       hTimer->Time_Out( Timer::start, time_out_off, EV_IGNITION );  // старт таймера отключения деж. дуги
       gStateSM.st.bIgnitionOk = 1;
