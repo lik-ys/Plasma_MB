@@ -155,7 +155,7 @@ void CmdWiteCurrent(void )
   if ( PhParam.Current1 > THRESHOLD_CURR_1 )  //PhParam.Current1
   {
     gStateSM.st.bIgnitionOk = 1;
-    CncWrite( cnc_redy, GPIO_PIN_SET );  // Готовность для ЧПУ 
+    CncWrite( cnc_redy, GPIO_PIN_SET );  // Готовность для ЧПУ   PD12
     hCmd->num = P_CURR_MONITOR;
     hTimer->Time_Out( Timer::start, PILOT_ARC_OFF_TO, EV_IGNITION  ); 
     hTimer->Time_Out( Timer::start, PILOT_ARC_OFF_TO1, EV_IGNITION1);

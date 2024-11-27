@@ -169,7 +169,7 @@ void FireProcess( void )
 void ReadStart( void )
 {
     static uint16_t cnt = 0;
-    if ( GPIO_PIN_SET == Read( comm_start )) 
+    if ( GPIO_PIN_SET == Read( comm_start ))  // PE2
     {
       if ( cnt++ > CNT_FIRE_READ )
       {
