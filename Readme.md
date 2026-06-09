@@ -109,6 +109,8 @@ EWARM/Project.eww
 
 # 🖥️ Рабочие процессы (State Machine)
 
+```mermaid
+
 stateDiagram-v2
     [*] --> IDLE
 
@@ -136,3 +138,4 @@ stateDiagram-v2
     %% Ошибки / расширения
     IDLE --> FAULT        : ошибка / авария
     FAULT --> IDLE        : сброс
+```
