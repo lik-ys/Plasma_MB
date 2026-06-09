@@ -8,7 +8,7 @@
 extern "C" {
 #endif  
 
-// регистр состояния чоппера REG_R_STATE_UNIT
+// СЂРµРіРёСЃС‚СЂ СЃРѕСЃС‚РѕСЏРЅРёСЏ С‡РѕРїРїРµСЂР° REG_R_STATE_UNIT
 typedef union
 {
   uint16_t rg;
@@ -31,7 +31,7 @@ typedef union
 }RegStatusM_t;  
 
 /*
-* (51)REG_W_CNTRL_PROCESS // рег. сост. процесса соотвествует (4)REG_R_STATE_PROCESS  или регистр режима работы
+* (51)REG_W_CNTRL_PROCESS // СЂРµРі. СЃРѕСЃС‚. РїСЂРѕС†РµСЃСЃР° СЃРѕРѕС‚РІРµСЃС‚РІСѓРµС‚ (4)REG_R_STATE_PROCESS  РёР»Рё СЂРµРіРёСЃС‚СЂ СЂРµР¶РёРјР° СЂР°Р±РѕС‚С‹
 */
 typedef struct
 {

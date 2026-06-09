@@ -1,0 +1,84 @@
+/*******************************************************************************
+*
+* Copyright (C) 2023 Sharopin Yuri
+*
+* File              : CommandExec.hpp
+* Compiler          : IAR EWA 8.32
+* Version           : 0.0
+* Created File      : 15.11.2023
+* Last modified     : 15.11.2023
+*
+* Support mail      : yshar@ngs.ru
+*
+* Target MCU        : MCU:  @ (Xtal = MHz | CPUclk = MHz)
+* Description       : 
+*                   : 
+* Hardware          : 
+*
+********************************************************************************/
+/*===============================[ REDEFINITION DEFENCE ]======================*/ 
+#ifndef __COMMAND_HPP__ 
+#define __COMMAND_HPP__
+
+#include "Timer.hpp"
+#include "StateMachine.h"
+#include "Fire.h"
+#include "user_mb_app.h"
+/*===============================[ SPECIAL ]===================================*/ 
+    // Р‘Р»РѕРє РѕРїРµСЂР°С‚РѕСЂРѕРІ СѓСЃР»РѕРІРЅРѕР№ РєРѕРјРїРёР»СЏС†РёРё 
+/*===============================[ PUBLIC CONSTANTS ]==========================*/ 
+    //  РџСѓР±Р»РёС‡РЅС‹Рµ РєРѕРЅСЃС‚Р°РЅС‚С‹ 
+/*===============================[ PUBLIC TYPES ]==============================*/ 
+    // РџСѓР±Р»РёС‡РЅС‹Рµ С‚РёРїС‹ 
+/*===============================[ FORWARD REFERENCES ]========================*/ 
+    // РЎСЃС‹Р»РєРё РІРїРµСЂРµРґ 
+/*===============================[ PUBLIC VARIABLES ]==========================*/ 
+    // РџСѓР±Р»РёС‡РЅС‹Рµ РїРµСЂРµРјРµРЅРЅС‹Рµ 
+/*===============================[ PUBLIC FUNCTIONS ]==========================*/ 
+    // РџСѓР±Р»РёС‡РЅС‹Рµ С„СѓРЅРєС†РёРё 
+
+
+void CmdPilotArcStart(void);
+void CmdPilotArc( void );
+void CmdFireStart( void);
+void CmdStartStopPwm( void );
+void CmdStartPwm(void);
+void CmdMetalContact( void );
+void CmdTimeOut( void );
+void CmdRepeat( void );
+void CmdWiteCurrent( void );
+void CmdMonitor(void);
+void CmdStopPwm( void );
+void CmdTestShortCurr(void );
+
+/**
+*
+*/
+typedef enum
+{
+  CHOPPER_START     , // 0 СЃРёРЅС…СЂРѕРЅРЅРѕРµ РІС‹РєР»СЋС‡РµРЅРёРµ СЏС‡РµРµРє РѕС‚ РєРѕРјР°РЅРґС‹  bit0 РІ  REG_W_CNTRL_START
+  PILOT_ARC         , // 1 Р’РєР»/РІС‹РєР» РґРµР¶СѓСЂРЅРѕР№ РґСѓРіРё
+  FIRE_START        , // 2 Р’РєР»/РІС‹РєР» РїРѕРґР¶РёРі  
+  RESERV_B__1       , // 3 TODO
+  RESERV_B_0        , // 4 
+  RESERV_B_1        , // 5
+  RESERV_B_2        , // 6
+  RESERV_B_3        , // 7
+  RESERV_B_4        , // 8
+  CHOPPER_OFF       , // 9
+  // 15 bit  -  EEPROM_write TODO
+  NUMBERS_CNTRL_BIT   // 10
+}eCntrlRegBits_t;//
+
+typedef enum {  
+  // P_TEST_SHORT_CURR , // РџСЂРѕРІРµСЂРєР° РєРѕСЂРѕС‚РєРѕРіРѕ Р·Р°РјС‹РєР°РЅРёСЏ 
+  P_PILOT_ARC_START , // 0
+  P_PILOT_ARC       , // 1
+  P_TIME_OUT_0      , // 2
+  P_TEST_SHORT_CURR , // 3
+  //P_START_PWM       , // 4  
+  P_FIRE_START      , // 5
+  P_WAIT_CURR       , // 6
+  P_TIME_OUT_1      , // 7   
+  P_CMD_REPEAT      , // 8
+  P_CURR_MONITOR    , // 9 - РїСЂРѕС†РµСЃСЃ СЂРµР·Р°, РјРѕРЅРёС‚РѕСЂРёРј С‚РѕРє, С‡РµСЂРµР· 1СЃРµРє РІС‹РєР»СЋС‡Р°РµРј РґРµР¶СѓСЂРєСѓ, РµСЃР»Рё РѕР±СЂС‹РІ С‚РѕРєР° - РІС‹РєР»СЋС‡Р°РµРј РЁР

@@ -11,7 +11,7 @@
 * Support mail      : yshar@ngs.ru
 *
 * Target MCU        : MCU @ (Xtal = MHz | CPUclk = MHz)
-* Description       : Описание MB-регистров  подчиненного 
+* Description       : РћРїРёСЃР°РЅРёРµ MB-СЂРµРіРёСЃС‚СЂРѕРІ  РїРѕРґС‡РёРЅРµРЅРЅРѕРіРѕ 
 *                   : 
 * Hardware          : .sch .pcb
 *
@@ -25,10 +25,10 @@
 
 #define REG_HOLDING_START   0x0000      // 
 
-#define REG_INPUT_START     0xA500      // TODO начальный адрес регистра
-#define REG_INPUT_NREGS     1           // TODO количество регистров в контроллере
+#define REG_INPUT_START     0xA500      // TODO РЅР°С‡Р°Р»СЊРЅС‹Р№ Р°РґСЂРµСЃ СЂРµРіРёСЃС‚СЂР°
+#define REG_INPUT_NREGS     1           // TODO РєРѕР»РёС‡РµСЃС‚РІРѕ СЂРµРіРёСЃС‚СЂРѕРІ РІ РєРѕРЅС‚СЂРѕР»Р»РµСЂРµ
 
-#define REG_COILS_START     0xA600      // TODO начальный адрес булевых данных
+#define REG_COILS_START     0xA600      // TODO РЅР°С‡Р°Р»СЊРЅС‹Р№ Р°РґСЂРµСЃ Р±СѓР»РµРІС‹С… РґР°РЅРЅС‹С…
 #define REG_COILS_SIZE      8 
 
 #define MB_SLAVE_ADDR       0x0A
@@ -39,7 +39,7 @@
 /*
  * MB_MASTER_TOTAL_SLAVE_NUM
  * https://plc247.com/fx3u-modbus-rtu-ls-ig5a-vfd-tutorial/
- * ЧП отдает только по 8 регистров
+ * Р§Рџ РѕС‚РґР°РµС‚ С‚РѕР»СЊРєРѕ РїРѕ 8 СЂРµРіРёСЃС‚СЂРѕРІ
  */
 typedef enum _MB_REG
 {
@@ -50,7 +50,7 @@ typedef enum _MB_REG
 	REG_LAST_S                               //
 } eMBRegS_t;
 /*===============================[ END REDEFINITION DEFENCE]===================*/ 
-                         // Окончание однократно включаемого h-файла
+                         // РћРєРѕРЅС‡Р°РЅРёРµ РѕРґРЅРѕРєСЂР°С‚РЅРѕ РІРєР»СЋС‡Р°РµРјРѕРіРѕ h-С„Р°Р№Р»Р°
                        
 #endif
 /** (END OF FILE  : modbus_s.h) 

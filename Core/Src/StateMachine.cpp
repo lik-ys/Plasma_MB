@@ -2,7 +2,7 @@
 *
 * Copyright (C) 2023 Sharopin Yuri
 *
-* File              : StateMaСЃhine.cpp
+* File              : StateMaРЎРѓhine.cpp
 * Compiler          : IAR EWA 8.32
 * Version           : 0.0
 * Created File      : 01.06.2023
@@ -11,14 +11,14 @@
 * Support mail      : yshar@ngs.ru
 *
 * Target MCU        : MCU: f407 @ (Xtal = MHz | CPUclk = MHz)
-* Description       : Главная плата управления плазмотроном
+* Description       : Р“Р»Р°РІРЅР°СЏ РїР»Р°С‚Р° СѓРїСЂР°РІР»РµРЅРёСЏ РїР»Р°Р·РјРѕС‚СЂРѕРЅРѕРј
 *                   : 
 * Hardware          : .sch .pcb
 *
 TODO  
-++ An_in 1 (газ)
-++ An_out 1 (газ)    - PA4 (PA5) -> DAC_OUT
-++ An_in (уствка тока - резистор)
+++ An_in 1 (РіР°Р·)
+++ An_out 1 (РіР°Р·)    - PA4 (PA5) -> DAC_OUT
+++ An_in (СѓСЃС‚РІРєР° С‚РѕРєР° - СЂРµР·РёСЃС‚РѕСЂ)
 
 ********************************************************************************/
 
@@ -49,7 +49,7 @@ State_t     gStateSM = { TIME_10ms, TIME_100ms, TIME_1000ms, ST_IDLE, {0,0,0},{0
 
 CntrlCellsRg_t  gCntrlCell = {0,}; // eMBRegS_t
 bActivRg_t      gActiveReg = {0,}; // 
-uint16_t        gProblemAddr = 0;  // Номер ячейки с несовпадением содержимого регистров
+uint16_t        gProblemAddr = 0;  // РќРѕРјРµСЂ СЏС‡РµР№РєРё СЃ РЅРµСЃРѕРІРїР°РґРµРЅРёРµРј СЃРѕРґРµСЂР¶РёРјРѕРіРѕ СЂРµРіРёСЃС‚СЂРѕРІ
 
 RgCntrl_t   gMbCntrl   = {0,};
 RegStatus_t gMbSt      = {0,};
@@ -162,7 +162,7 @@ void HAL_IncTick( void )
   {
     gStateSM.div1000 = TIME_1000ms;
     gStateSM.time.b1000ms = 1;  
-    //if ( gMbStatus.bit.bOnOffPwr) HAL_TIM_PWM_Stop( pExtSync, TIM_CHANNEL_1 ); - не работает нормально
+    //if ( gMbStatus.bit.bOnOffPwr) HAL_TIM_PWM_Stop( pExtSync, TIM_CHANNEL_1 ); - РЅРµ СЂР°Р±РѕС‚Р°РµС‚ РЅРѕСЂРјР°Р»СЊРЅРѕ
   }else {
     gStateSM.div1000--;    
   }  
@@ -225,10 +225,10 @@ void SM_Tick( void )
         gMbActiveCntrl.bit.bChopperStart = 1;
         
         gMbStatus.bit.bStartCNC = 0;             
-        gActiveReg.rgCNTRL = 1; // выключить все в ячейках
+        gActiveReg.rgCNTRL = 1; // РІС‹РєР»СЋС‡РёС‚СЊ РІСЃРµ РІ СЏС‡РµР№РєР°С…
 
         pExtSync->Instance->CNT = 0;
-        //HAL_TIM_PWM_Stop( pExtSync, TIM_CHANNEL_1 );  -- выключение синхрочастоты после выключения ШИМ, иначе выключение не верное
+        //HAL_TIM_PWM_Stop( pExtSync, TIM_CHANNEL_1 );  -- РІС‹РєР»СЋС‡РµРЅРёРµ СЃРёРЅС…СЂРѕС‡Р°СЃС‚РѕС‚С‹ РїРѕСЃР»Рµ РІС‹РєР»СЋС‡РµРЅРёСЏ РЁРРњ, РёРЅР°С‡Рµ РІС‹РєР»СЋС‡РµРЅРёРµ РЅРµ РІРµСЂРЅРѕРµ
         gMbStatus.bit.bOnOffPwr = 0;
         SetMBRgS( REG_R_STATUS, gMbStatus.reg );
         
@@ -275,14 +275,14 @@ void HAL_ADC_ConvCpltCallback(ADC_HandleTypeDef* hadc)
   gStateSM.st.bAdcCmplt = 1;
     //getADC( );
 }
-#define  NUMBER_TURN_CURR_SENS 3.0 // 1/3 - 3 витка на датчике тока
+#define  NUMBER_TURN_CURR_SENS 3.0 // 1/3 - 3 РІРёС‚РєР° РЅР° РґР°С‚С‡РёРєРµ С‚РѕРєР°
 #define  ADC_ZERO 7
 #define  CURR1_COEF (float)(8.4/NUMBER_TURN_CURR_SENS)
 #define  CURR2_COEF (float)(8.4/NUMBER_TURN_CURR_SENS) 
 #define  ADC_VOLT_COEF  (float)5.17
 
 /*
-Храрактеристика датчика напряжения  LV25-P
+РҐСЂР°СЂР°РєС‚РµСЂРёСЃС‚РёРєР° РґР°С‚С‡РёРєР° РЅР°РїСЂСЏР¶РµРЅРёСЏ  LV25-P
 Uin V     Uout  V
 101         1.1
 200         2.2
@@ -297,7 +297,7 @@ float VoltCoef =  ADC_VOLT_COEF;
 int32_t adc_zero = ADC_ZERO; 
 int32_t adc_v_zero = 17; 
 /**
-  * @brief   // TODO Усреднить что-бы не прыгали значения на ВУ
+  * @brief   // TODO РЈСЃСЂРµРґРЅРёС‚СЊ С‡С‚Рѕ-Р±С‹ РЅРµ РїСЂС‹РіР°Р»Рё Р·РЅР°С‡РµРЅРёСЏ РЅР° Р’РЈ
   * @param
   * @retval
   */
@@ -358,14 +358,14 @@ void ADC_Process( void )
 } // ADC_Process()
 
 /**
-  * @brief  Изменилось управляющие слово - выполнить действие
-  *         Работает для 16р регистра
+  * @brief  РР·РјРµРЅРёР»РѕСЃСЊ СѓРїСЂР°РІР»СЏСЋС‰РёРµ СЃР»РѕРІРѕ - РІС‹РїРѕР»РЅРёС‚СЊ РґРµР№СЃС‚РІРёРµ
+  *         Р Р°Р±РѕС‚Р°РµС‚ РґР»СЏ 16СЂ СЂРµРіРёСЃС‚СЂР°
   * @param
-  * @retval Bit Number, если время еще не прошло выдаем
+  * @retval Bit Number, РµСЃР»Рё РІСЂРµРјСЏ РµС‰Рµ РЅРµ РїСЂРѕС€Р»Рѕ РІС‹РґР°РµРј
   */
 int8_t  FindActiveBit( uint16_t ActiveBitRg )
 {
-  uint8_t nb = 0;        // номер бита
+  uint8_t nb = 0;        // РЅРѕРјРµСЂ Р±РёС‚Р°
 
   for ( nb = 0; nb < NUMBERS_CNTRL_BIT; nb ++ )
   {
@@ -375,5 +375,5 @@ int8_t  FindActiveBit( uint16_t ActiveBitRg )
   if ( nb > 15 )     return -1;
   else               return nb;
 } // FindActiveBit()
-/** (END OF FILE  : StateMaСЃhine.cpp) 
+/** (END OF FILE  : StateMaРЎРѓhine.cpp) 
 *******************************/ 

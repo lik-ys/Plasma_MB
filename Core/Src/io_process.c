@@ -3,7 +3,7 @@
  *
  *  input - output processing
  *
- *  Created on: 01 июн. 2023 г.
+ *  Created on: 01 РёСЋРЅ. 2023 Рі.
  *      Author: luch
  */
 
@@ -18,7 +18,7 @@ port_t  Input[ InLast ] = {
   { CNC_DI_2_Pin, CNC_DI_2_GPIO_Port},
   { CNC_DI_3_Pin, CNC_DI_3_GPIO_Port},
   { FIRE_DI_0_Pin, FIRE_DI_0_GPIO_Port},
-  { DI_METAL_CONTACT_Pin, DI_METAL_CONTACT_GPIO_Port}, // todo CNC - умеет сама отпрыгивать от площадки
+  { DI_METAL_CONTACT_Pin, DI_METAL_CONTACT_GPIO_Port}, // todo CNC - СѓРјРµРµС‚ СЃР°РјР° РѕС‚РїСЂС‹РіРёРІР°С‚СЊ РѕС‚ РїР»РѕС‰Р°РґРєРё
   { COMM_FIRE_Pin, COMM_FIRE_GPIO_Port  }
 };
 
@@ -171,7 +171,7 @@ void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin)
 
 #define CNT_IN_WRITE    5
 /**
-* TODO дребезг
+* TODO РґСЂРµР±РµР·Рі
 */
 void InRead( void )
 {

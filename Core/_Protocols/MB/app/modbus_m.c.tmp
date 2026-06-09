@@ -1,0 +1,10 @@
+
+#include "modbus_m.h" 
+#include "user_mb_app.h"
+#include "user_mb_app_m.h"
+
+RegStatusM_t         RgStatus[ MB_MASTER_TOTAL_SLAVE_NUM];
+RegStatusProces_t   RgProcess[MB_MASTER_TOTAL_SLAVE_NUM ];
+static int CntMBRg[6] = {0,};
+
+#define CNT_CELL_STATUS 25 // 15 Р С—РЎР‚Р С‘ РЎРѓРЎР‚Р ВµР Т‘Р Р…Р ВµР в„– Р С•Р С—РЎвЂљР С‘Р С

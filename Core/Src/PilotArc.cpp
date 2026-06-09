@@ -11,18 +11,18 @@
 * Support mail      : yshar@ngs.ru
 *
 * Target MCU        : MCU:  @ (Xtal = MHz | CPUclk = MHz)
-* Description       : Äåæóðíàÿ äóãà
+* Description       : Ð”ÐµÐ¶ÑƒÑ€Ð½Ð°Ñ Ð´ÑƒÐ³Ð°
 *                   : 
 * Hardware          : .sch .pcb
 
-1. âêëþ÷åíèå äåæóðíîé äóãè
-   âêþ÷àåì âûõoä CNC_DO_0 æäåì èçìåðåíèÿ òîêà â øèíå "-" ( ADC_CURR2 ) 
-   æäåì óðîâíÿ 2/3 îò óñòàâêè â òå÷åíèè 2 ñåêóíä
+1. Ð²ÐºÐ»ÑŽÑ‡ÐµÐ½Ð¸Ðµ Ð´ÐµÐ¶ÑƒÑ€Ð½Ð¾Ð¹ Ð´ÑƒÐ³Ð¸
+   Ð²ÐºÑŽÑ‡Ð°ÐµÐ¼ Ð²Ñ‹Ñ…oÐ´ CNC_DO_0 Ð¶Ð´ÐµÐ¼ Ð¸Ð·Ð¼ÐµÑ€ÐµÐ½Ð¸Ñ Ñ‚Ð¾ÐºÐ° Ð² ÑˆÐ¸Ð½Ðµ "-" ( ADC_CURR2 ) 
+   Ð¶Ð´ÐµÐ¼ ÑƒÑ€Ð¾Ð²Ð½Ñ 2/3 Ð¾Ñ‚ ÑƒÑÑ‚Ð°Ð²ÐºÐ¸ Ð² Ñ‚ÐµÑ‡ÐµÐ½Ð¸Ð¸ 2 ÑÐµÐºÑƒÐ½Ð´
 *
 ********************************************************************************/
  
 /*===============================[ SPECIAL ]===================================*/ 
-//  Óñëîâíàÿ êîìïèëÿöèÿ
+//  Ð£ÑÐ»Ð¾Ð²Ð½Ð°Ñ ÐºÐ¾Ð¼Ð¿Ð¸Ð»ÑÑ†Ð¸Ñ
  
 /*===============================[ IMPORT DECLARATIONS ]=======================*/ 
 
@@ -68,11 +68,11 @@ void PilotArc::Off( void )
  
 
 /***
-*  Æäåì ðîñòà òîêà 
+*  Ð–Ð´ÐµÐ¼ Ñ€Ð¾ÑÑ‚Ð° Ñ‚Ð¾ÐºÐ° 
 */
 void PilotArc::Proc( void )
 {  
-  if ( gActiveReg.rgTO_PA_Off ) // îáíîâèòü çíà÷åíèå âðåìåíè 
+  if ( gActiveReg.rgTO_PA_Off ) // Ð¾Ð±Ð½Ð¾Ð²Ð¸Ñ‚ÑŒ Ð·Ð½Ð°Ñ‡ÐµÐ½Ð¸Ðµ Ð²Ñ€ÐµÐ¼ÐµÐ½Ð¸ 
   {
     time_out_off = GetMBRgS( REG_W_TIME_OFF_PILOT_ARC );
     if (time_out_off > 10000 )  time_out_off = PILOT_ARC_OFF_TO;
@@ -84,12 +84,12 @@ void PilotArc::Proc( void )
   {
      if ( PhParam.Current1 > THRESHOLD_CURR_1 )  // PhParam.Current1
     {
-      hTimer->Time_Out( Timer::start, time_out_off, EV_IGNITION );  // ñòàðò òàéìåðà îòêëþ÷åíèÿ äåæ. äóãè
+      hTimer->Time_Out( Timer::start, time_out_off, EV_IGNITION );  // ÑÑ‚Ð°Ñ€Ñ‚ Ñ‚Ð°Ð¹Ð¼ÐµÑ€Ð° Ð¾Ñ‚ÐºÐ»ÑŽÑ‡ÐµÐ½Ð¸Ñ Ð´ÐµÐ¶. Ð´ÑƒÐ³Ð¸
       gStateSM.st.bIgnitionOk = 1;
-      CncWrite( cnc_redy, GPIO_PIN_SET );  // êîìàíäà ×ÏÓ "Ãîòîâíîñòü"    
+      CncWrite( cnc_redy, GPIO_PIN_SET );  // ÐºÐ¾Ð¼Ð°Ð½Ð´Ð° Ð§ÐŸÐ£ "Ð“Ð¾Ñ‚Ð¾Ð²Ð½Ð¾ÑÑ‚ÑŒ"    
     }else
     {
-      // Åùå äâå ïîïûòêè âêëþ÷åíèÿ åñëè íå äîæäàëèñü ðîñòà òîêà
+      // Ð•Ñ‰Ðµ Ð´Ð²Ðµ Ð¿Ð¾Ð¿Ñ‹Ñ‚ÐºÐ¸ Ð²ÐºÐ»ÑŽÑ‡ÐµÐ½Ð¸Ñ ÐµÑÐ»Ð¸ Ð½Ðµ Ð´Ð¾Ð¶Ð´Ð°Ð»Ð¸ÑÑŒ Ñ€Ð¾ÑÑ‚Ð° Ñ‚Ð¾ÐºÐ°
       if ( htim->IsTimeOut( EV_PILOT_ARC_TO ) )
       {
         WR_DEBUG("--3-- EV_PILOT_ARC_TO \r\n");
@@ -102,12 +102,12 @@ void PilotArc::Proc( void )
         hTimer->Time_Out( Timer::stop, TIME_OUT_FIRE_OFF, EV_FIRE_OFF );
       }
     }
-  }; // Çàùèòà: âûêëþ÷àåì  åñëè êîì.×ÏÓ ñíÿòà
+  }; // Ð—Ð°Ñ‰Ð¸Ñ‚Ð°: Ð²Ñ‹ÐºÐ»ÑŽÑ‡Ð°ÐµÐ¼  ÐµÑÐ»Ð¸ ÐºÐ¾Ð¼.Ð§ÐŸÐ£ ÑÐ½ÑÑ‚Ð°
   if ( 0 == gMbStatus.bit.bStartCNC )
   {
       gStateSM.st.bIgnitionOk = 0;
       gStateSM.st.bTestCurr1  = 0;
-      CncWrite( cnc_redy, GPIO_PIN_RESET ); // ñíèìàåì "ãîòîâíîñòü ÷ïó"
+      CncWrite( cnc_redy, GPIO_PIN_RESET ); // ÑÐ½Ð¸Ð¼Ð°ÐµÐ¼ "Ð³Ð¾Ñ‚Ð¾Ð²Ð½Ð¾ÑÑ‚ÑŒ Ñ‡Ð¿Ñƒ"
       hCmd->num =  P_STOP_PWM;
       gActiveReg.rgProcess = 1;
       

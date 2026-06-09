@@ -7,7 +7,7 @@ RegStatusM_t         RgStatus[ MB_MASTER_TOTAL_SLAVE_NUM];
 RegStatusProces_t   RgProcess[MB_MASTER_TOTAL_SLAVE_NUM ];
 static int CntMBRg[6] = {0,};
 
-#define CNT_CELL_STATUS 25 // 15 при средней оптимизации
+#define CNT_CELL_STATUS 25 // 15 РїСЂРё СЃСЂРµРґРЅРµР№ РѕРїС‚РёРјРёР·Р°С†РёРё
 /***
 **  addr = 0,1...5
 */
@@ -28,7 +28,7 @@ void CntrCellsStatus( uint16_t addr, FlagStatus st )
 }//CntrCellsStatus()
 
 /**
-  * @brief  апдейт регистров чтения ячеек 
+  * @brief  Р°РїРґРµР№С‚ СЂРµРіРёСЃС‚СЂРѕРІ С‡С‚РµРЅРёСЏ СЏС‡РµРµРє 
   * @param
   * @retval
   */
@@ -43,7 +43,7 @@ void UpDateReadRgM( uint16_t addr, eMBReg_t numRg )
       break;
     case REG_R_CURR_2s        : break;    
     case REG_R_IN_VOLTs       : break;
-    case REG_R_STATE_UNIT     : // получили регистр от ячейки - передать его в рг МБ мат.платы
+    case REG_R_STATE_UNIT     : // РїРѕР»СѓС‡РёР»Рё СЂРµРіРёСЃС‚СЂ РѕС‚ СЏС‡РµР№РєРё - РїРµСЂРµРґР°С‚СЊ РµРіРѕ РІ СЂРі РњР‘ РјР°С‚.РїР»Р°С‚С‹
     {
       RgCntrl_t tmpRg; 
       tmpRg.reg = gMbStatus.reg;      
@@ -51,7 +51,7 @@ void UpDateReadRgM( uint16_t addr, eMBReg_t numRg )
       gMbSlaveSt[addr].reg = gMbStatus.reg;
       //tmpRg.bit.bShortCircuit = 0;
       //gMbStatus.bit.bShortCircuit = 0;
-      // Биты МБ сохраняем
+      // Р‘РёС‚С‹ РњР‘ СЃРѕС…СЂР°РЅСЏРµРј
       if (tmpRg.bit.bShortCircuit){
         gMbStatus.bit.bShortCircuit = tmpRg.bit.bShortCircuit;
       }                 
@@ -69,12 +69,12 @@ void UpDateReadRgM( uint16_t addr, eMBReg_t numRg )
       {
         gMbStatus.bit.bChillerFail = tmpRg.bit.bChillerFail;
       }    
-      //if (tmpRg.bit.bOnOffPwr) gMbStatus.bit.bOnOffPwr =1; // статус не должен моргать 
+      //if (tmpRg.bit.bOnOffPwr) gMbStatus.bit.bOnOffPwr =1; // СЃС‚Р°С‚СѓСЃ РЅРµ РґРѕР»Р¶РµРЅ РјРѕСЂРіР°С‚СЊ 
       SetMBRgS( REG_R_STATUS, gMbStatus.reg );
     }
       break;   
     case REG_R_STATE_PROCESS : break;  
-     // TODO BUG: addr == 1 - чтение всех нулей ????
+     // TODO BUG: addr == 1 - С‡С‚РµРЅРёРµ РІСЃРµС… РЅСѓР»РµР№ ????
     case REG_R_PWM           : 
       break;
     case REG_R_FIRST_DAC     : 
@@ -88,7 +88,7 @@ void UpDateReadRgM( uint16_t addr, eMBReg_t numRg )
 }
 
 /**
-  * @brief  апдейт регистров записи
+  * @brief  Р°РїРґРµР№С‚ СЂРµРіРёСЃС‚СЂРѕРІ Р·Р°РїРёСЃРё
   * @param
   * @retval
   */

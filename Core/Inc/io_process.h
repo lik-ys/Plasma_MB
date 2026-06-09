@@ -1,7 +1,7 @@
 /*
  * io_process.h
  *
- *  Created on: 01 июн. 2023 г.
+ *  Created on: 01 РёСЋРЅ. 2023 Рі.
  *      Author: luch
  */
 
@@ -125,7 +125,7 @@ typedef enum
   cmd_gas_fire        ,
   
   cmd_last
-  //TODO  sync_pwr          = SYNC_POWER_Pin, // ??? настроен на TIM1  
+  //TODO  sync_pwr          = SYNC_POWER_Pin, // ??? РЅР°СЃС‚СЂРѕРµРЅ РЅР° TIM1  
 }eCmd_t;
 
 /**

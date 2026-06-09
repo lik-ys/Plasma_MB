@@ -1,0 +1,218 @@
+#include "user_mb_app.h"
+#include "modbus.h"
+#include "modbus_m.h"
+
+#if (MB_SLAVE_ASCII_ENABLED > 0 || MB_SLAVE_RTU_ENABLED > 0 || MB_SLAVE_TCP_ENABLED > 0)
+
+/*------------------------Slave mode use these variables----------------------*/
+
+//Slave mode:DiscreteInputs variables
+#if S_DISCRETE_INPUT_NDISCRETES > 0
+USHORT   usSDiscInStart                               = S_DISCRETE_INPUT_START;
+#if S_DISCRETE_INPUT_NDISCRETES%8
+UCHAR    ucSDiscInBuf[S_DISCRETE_INPUT_NDISCRETES/8+1];
+#else
+UCHAR    ucSDiscInBuf[S_DISCRETE_INPUT_NDISCRETES/8]  ;
+#endif
+#endif
+
+//Slave mode:Coils variables
+#if (S_COIL_NCOILS > 0)
+USHORT   usSCoilStart                                 = S_COIL_START;
+#if (S_COIL_NCOILS%8)
+UCHAR    ucSCoilBuf[S_COIL_NCOILS/8+1]                ;
+#else
+UCHAR    ucSCoilBuf[S_COIL_NCOILS/8]                  ;
+#endif
+#endif
+
+//Slave mode:InputRegister variables
+#if (S_REG_INPUT_NREGS > 0)
+USHORT   usSRegInStart                                = S_REG_INPUT_START;
+USHORT   usSRegInBuf[S_REG_INPUT_NREGS]               ;
+#endif
+
+//Slave mode:HoldingRegister variables
+//#if (S_REG_HOLDING_NREGS > 0)
+USHORT   usSRegHoldStart                              = S_REG_HOLDING_START;
+USHORT   usSRegHoldBuf[S_REG_HOLDING_NREGS]           ;
+//#endif
+
+StatProc_t gStatus = {0, };
+StatCell_t gCells  = {0, };
+
+/*------------------------Slave user code----------------------*/
+
+/**
+  * @brief  Р В°Р С—Р Т‘Р ВµР в„–РЎвЂљ РЎР‚Р ВµР С–Р С‘РЎРѓРЎвЂљРЎР‚Р С•Р Р† РЎвЂЎРЎвЂљР ВµР Р…Р С‘РЎРЏ
+  * @param
+  * @retval
+  */
+void UpDateReadRg( eMBRegS_t numRg )
+{
+  switch( numRg )    // 
+  {
+//    case REG_R_CNC_IN:
+//      break;
+    case REG_R_STATUS: 
+      if (gMbCntrl.bit.bOnOffPwr == 0 && 1 == gMbStatus.bit.bOnOffPwr)
+      {
+        gMbStatus.bit.bOnOffPwr = 0;
+        SetMBRgS( REG_R_STATUS, gMbStatus.reg );
+      }
+      break;    
+    default:
+      break;
+  } // switch(  )
+}
+
+/***
+**
+*/
+void UpateActiveRg( void )
+{
+  if ( preMbCntrl.reg != gMbCntrl.reg )
+  {
+    gMbActiveCntrl.reg  = preMbCntrl.reg ^ gMbCntrl.reg;
+    preMbCntrl.reg = gMbCntrl.reg;
+  }else{
+  };   // TODO
+}// UpateActiveRg()
+
+/**
+  * @brief  Р В°Р С—Р Т‘Р ВµР в„–РЎвЂљ РЎР‚Р ВµР С–Р С‘РЎРѓРЎвЂљРЎР‚Р С•Р Р† Р В·Р В°Р С—Р С‘РЎРѓР С‘ c Р вЂ™Р Р€ -> 6x Cells
+  * @param
+  * @retval
+  */
+void UpDateWriteRg( eMBRegS_t numRg )
+{  
+  if ( numRg <= REG_W_D ) gCntrlCell.mbReg[ numRg ] = usSRegHoldBuf[numRg];
+  
+  gActiveReg.rg  |= 1<< numRg;
+  
+  switch( numRg )    // 
+  {
+    case REG_W_CNTRL:
+      gMbCntrl.reg = GetMBRgS( numRg );
+      
+      if ( GetMBRgS( numRg )&(1<<0) )
+            gMbCntrl.bit.bChopperStart = 1;
+      else  gMbCntrl.bit.bChopperStart = 0;       
+      UpateActiveRg();
+      break;
+    case REG_W_PWM:break;
+    case REG_W_CURR:break;
+    case REG_W_SLOP_1:break;
+    case REG_W_SLOP_2:break;
+    case REG_W_P:break;
+    case REG_W_I:break;
+    case REG_W_D:break;  
+    
+    case REG_W_TIME_OFF_PILOT_ARC:
+      gActiveReg.rgTO_PA_Off = 1;
+      break;
+    case REG_W_TIME_CUR_SLOPE_R:
+      gActiveReg.rgTimeSlopRise = 1;
+      break;
+    case REG_W_TIME_CUR_SLOPE_F:
+      gActiveReg.rgTimeSlopFail = 1;
+      break;    
+    
+    case REG_W_CNC_OUT:break;
+    case REG_W_FREQ:break;            
+    default:
+      break;
+  } // switch(  )
+}// UpDateWriteRg()
+
+/**
+  * @brief
+  * @param  
+  * @retval 
+  */
+void SetMBRgS( eMBRegS_t numMBReg, uint16_t data )
+{  
+  if ( numMBReg >= REG_S_LAST ) 
+  {
+    assert(numMBReg >= REG_S_LAST);
+  } 
+  usSRegHoldBuf[ numMBReg ] = data;  
+} // SetMBRg()
+
+/**
+  * @brief
+  * @param  
+  * @retval 
+  */
+uint16_t GetMBRgS( eMBRegS_t numMBReg )
+{
+  if ( numMBReg >= REG_S_LAST ) 
+  {
+    assert(numMBReg >= REG_S_LAST);
+  }  
+  return usSRegHoldBuf[ numMBReg ];
+}// GetMBRg()
+/*------------------------Slave registers callback function----------------------*/
+
+/**
+ * Modbus slave input register callback function.
+ *
+ * @param pucRegBuffer input register buffer
+ * @param usAddress input register address
+ * @param usNRegs input register number
+ *
+ * @return result
+ */
+eMBErrorCode eMBRegInputCB(UCHAR * pucRegBuffer, USHORT usAddress, USHORT usNRegs )
+{
+#if S_REG_INPUT_NREGS > 0
+    eMBErrorCode    eStatus = MB_ENOERR;
+    USHORT          iRegIndex;
+    USHORT *        pusRegInputBuf;
+    USHORT          REG_INPUT_START;
+    USHORT          REG_INPUT_NREGS;
+    USHORT          usRegInStart;
+
+    pusRegInputBuf = usSRegInBuf;
+    REG_INPUT_START = S_REG_INPUT_START;
+    REG_INPUT_NREGS = S_REG_INPUT_NREGS;
+    usRegInStart = usSRegInStart;
+
+    /* it already plus one in modbus function method. */
+    usAddress--;
+
+    if ((usAddress >= REG_INPUT_START) && (usAddress + usNRegs <= REG_INPUT_START + REG_INPUT_NREGS))
+    {
+        iRegIndex = usAddress - usRegInStart;
+        while (usNRegs > 0)
+        {
+            *pucRegBuffer++ = (UCHAR) (pusRegInputBuf[iRegIndex] >> 8);
+            *pucRegBuffer++ = (UCHAR) (pusRegInputBuf[iRegIndex] & 0xFF);
+            iRegIndex++;
+            usNRegs--;
+        }
+    }
+    else
+    {
+        eStatus = MB_ENOREG;
+    }
+
+    return eStatus;
+#else
+	return MB_ENOREG;
+#endif
+}
+
+/**
+ * Modbus slave holding register callback function.
+ *
+ * @param pucRegBuffer holding register buffer
+ * @param usAddress holding register address
+ * @param usNRegs holding register number
+ * @param eMode read or write
+ *
+ * @return result
+ */
+eMBErrorCode eMBRegHoldingCB(UCHAR * pucRegBuffer, USHORT usAddress, USHORT usNRegs, eMBRegisterMode eMode)
+{
+///#if S_REG_HOLDING_NREGS > 0  - Р С”Р С•Р С

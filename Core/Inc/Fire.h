@@ -6,30 +6,30 @@ extern "C" {
 #endif  
   
 #define TIME_OUT_PWR_ON     800
-#define TIME_HOLD           1000 // время удержавния
-#define TIME_OUT_FIRE_OFF   1500 // время паузы между включениями ОГНЯ
+#define TIME_HOLD           1000 // РІСЂРµРјСЏ СѓРґРµСЂР¶Р°РІРЅРёСЏ
+#define TIME_OUT_FIRE_OFF   1500 // РІСЂРµРјСЏ РїР°СѓР·С‹ РјРµР¶РґСѓ РІРєР»СЋС‡РµРЅРёСЏРјРё РћР“РќРЇ
 #define TIME_START          1000 //
 #define PA_TIME_OUT         7000
 #define TIME_FIRE_START     800
-#define PILOT_ARC_OFF_TO    1000 // время по-умолчанию, событие EV_IGNITION - ждем  t -  выключаем деж.дугу.
+#define PILOT_ARC_OFF_TO    1000 // РІСЂРµРјСЏ РїРѕ-СѓРјРѕР»С‡Р°РЅРёСЋ, СЃРѕР±С‹С‚РёРµ EV_IGNITION - Р¶РґРµРј  t -  РІС‹РєР»СЋС‡Р°РµРј РґРµР¶.РґСѓРіСѓ.
 #define PILOT_ARC_OFF_TO1   2500 //
 
 
 #include "io_process.h"  
 /***
-* выходы управления поджигом
+* РІС‹С…РѕРґС‹ СѓРїСЂР°РІР»РµРЅРёСЏ РїРѕРґР¶РёРіРѕРј
 */ 
 typedef enum eCNTR_FIRE
 {
   cmd_pwr  , // 
-  cmd_lock , // == cmd_fire // работают вместе
+  cmd_lock , // == cmd_fire // СЂР°Р±РѕС‚Р°СЋС‚ РІРјРµСЃС‚Рµ
   cmd_fire , // 
-  //cmd_pilot_arc,    // выход дежурной дуги
+  //cmd_pilot_arc,    // РІС‹С…РѕРґ РґРµР¶СѓСЂРЅРѕР№ РґСѓРіРё
   fire_last
 } eFire_t;
 
 /***
-* входы управления поджигом и стартом
+* РІС…РѕРґС‹ СѓРїСЂР°РІР»РµРЅРёСЏ РїРѕРґР¶РёРіРѕРј Рё СЃС‚Р°СЂС‚РѕРј
 */
 typedef enum eIN_FIRE
 {

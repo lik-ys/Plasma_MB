@@ -44,7 +44,7 @@ StatCell_t gCells  = {0, };
 /*------------------------Slave user code----------------------*/
 
 /**
-  * @brief  ‡Ô‰ÂÈÚ Â„ËÒÚÓ‚ ˜ÚÂÌËˇ
+  * @brief  –∞–ø–¥–µ–π—Ç —Ä–µ–≥–∏—Å—Ç—Ä–æ–≤ —á—Ç–µ–Ω–∏—è
   * @param
   * @retval
   */
@@ -80,7 +80,7 @@ void UpateActiveRg( void )
 }// UpateActiveRg()
 
 /**
-  * @brief  ‡Ô‰ÂÈÚ Â„ËÒÚÓ‚ Á‡ÔËÒË c ¬” -> 6x Cells
+  * @brief  –∞–ø–¥–µ–π—Ç —Ä–µ–≥–∏—Å—Ç—Ä–æ–≤ –∑–∞–ø–∏—Å–∏ c –í–£ -> 6x Cells
   * @param
   * @retval
   */
@@ -215,7 +215,7 @@ eMBErrorCode eMBRegInputCB(UCHAR * pucRegBuffer, USHORT usAddress, USHORT usNReg
  */
 eMBErrorCode eMBRegHoldingCB(UCHAR * pucRegBuffer, USHORT usAddress, USHORT usNRegs, eMBRegisterMode eMode)
 {
-///#if S_REG_HOLDING_NREGS > 0  - ÍÓÏÔËÎˇÚÓ ÌÂ ‚Ë‰ËÚ  ÓÔÂ‰ÂÎÂÌËÏˇ
+///#if S_REG_HOLDING_NREGS > 0  - –∫–æ–º–ø–∏–ª—è—Ç–æ—Ä –Ω–µ –≤–∏–¥–∏—Ç  –æ–ø—Ä–µ–¥–µ–ª–µ–Ω–∏–º—è
     eMBErrorCode    eStatus = MB_ENOERR;
     USHORT          iRegIndex;
     USHORT *        pusRegHoldingBuf;

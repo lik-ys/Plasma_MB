@@ -2,7 +2,7 @@
 *
 * Copyright (C) 2023 Sharopin Yuri
 *
-* File              : StateMaсhine.h
+* File              : StateMaСЃhine.h
 * Compiler          : IAR EWA 8.32
 * Version           : 0.0
 * Created File      : 01.06.2023
@@ -28,24 +28,24 @@ extern "C" {
 #endif
 
 /*===============================[ SPECIAL ]===================================*/ 
-    // Блок операторов условной компиляции 
+    // Р‘Р»РѕРє РѕРїРµСЂР°С‚РѕСЂРѕРІ СѓСЃР»РѕРІРЅРѕР№ РєРѕРјРїРёР»СЏС†РёРё 
 /*===============================[ PUBLIC CONSTANTS ]==========================*/ 
-    //  Публичные константы 
+    //  РџСѓР±Р»РёС‡РЅС‹Рµ РєРѕРЅСЃС‚Р°РЅС‚С‹ 
 #define ADC_MAX         4095
 #define DAC_MAX         4095
 
 #define ADC_BUF_LENGHT  16
   
 #define TIME_OUT_TEST   250
-#define THRESHOLD_CURR_1    100  // 100 A  - пороговый ток включения готовности для ЧПУ
-#define THRESHOLD_CURR_OFF  10  // 20 A  - пороговый ток выключения ШИМ на всех ячейкаях
+#define THRESHOLD_CURR_1    100  // 100 A  - РїРѕСЂРѕРіРѕРІС‹Р№ С‚РѕРє РІРєР»СЋС‡РµРЅРёСЏ РіРѕС‚РѕРІРЅРѕСЃС‚Рё РґР»СЏ Р§РџРЈ
+#define THRESHOLD_CURR_OFF  10  // 20 A  - РїРѕСЂРѕРіРѕРІС‹Р№ С‚РѕРє РІС‹РєР»СЋС‡РµРЅРёСЏ РЁРРњ РЅР° РІСЃРµС… СЏС‡РµР№РєР°СЏС…
      
 #define PERIOD_MB_MASTER_TO  60  // 60
 #define PERIOD_REQUEST_TO    100 // 100
 #define PERIOD_READ_TO       40 //  40
   
 /*===============================[ PUBLIC TYPES ]==============================*/ 
-    // Публичные типы 
+    // РџСѓР±Р»РёС‡РЅС‹Рµ С‚РёРїС‹ 
 typedef   enum
 {
   eCurrent1  ,  // eVoltage
@@ -56,36 +56,36 @@ typedef   enum
 
 typedef struct
 {
-  uint16_t Current1  ; // ток возврата
-  uint16_t Current2  ; // ток прямой    разница токов == току дежурки
+  uint16_t Current1  ; // С‚РѕРє РІРѕР·РІСЂР°С‚Р°
+  uint16_t Current2  ; // С‚РѕРє РїСЂСЏРјРѕР№    СЂР°Р·РЅРёС†Р° С‚РѕРєРѕРІ == С‚РѕРєСѓ РґРµР¶СѓСЂРєРё
   uint16_t Voltage   ;
 } ADC_data_t;
 
 typedef struct
 {
-  float Current1  ; // ток возврата
-  float Current2  ; // ток прямой    разница токов == току дежурки
+  float Current1  ; // С‚РѕРє РІРѕР·РІСЂР°С‚Р°
+  float Current2  ; // С‚РѕРє РїСЂСЏРјРѕР№    СЂР°Р·РЅРёС†Р° С‚РѕРєРѕРІ == С‚РѕРєСѓ РґРµР¶СѓСЂРєРё
   float Voltage   ;
 } ADC_summ_t;
 
 typedef struct
 {
-  uint16_t Current1  ; // ток возврата
-  uint16_t Current2  ; // ток прямой    разница токов == току дежурки
+  uint16_t Current1  ; // С‚РѕРє РІРѕР·РІСЂР°С‚Р°
+  uint16_t Current2  ; // С‚РѕРє РїСЂСЏРјРѕР№    СЂР°Р·РЅРёС†Р° С‚РѕРєРѕРІ == С‚РѕРєСѓ РґРµР¶СѓСЂРєРё
   uint16_t Voltage   ; // 
-  uint16_t PilotCurr ; // ток дежурной дуги 
+  uint16_t PilotCurr ; // С‚РѕРє РґРµР¶СѓСЂРЅРѕР№ РґСѓРіРё 
 }PhParam_t;
 
 /*===============================[ FORWARD REFERENCES ]========================*/ 
-    // Ссылки вперед 
+    // РЎСЃС‹Р»РєРё РІРїРµСЂРµРґ 
 /*===============================[ PUBLIC VARIABLES ]==========================*/ 
-    // Публичные переменные 
+    // РџСѓР±Р»РёС‡РЅС‹Рµ РїРµСЂРµРјРµРЅРЅС‹Рµ 
 /*===============================[ PUBLIC FUNCTIONS ]==========================*/ 
-    // Публичные функции  
+    // РџСѓР±Р»РёС‡РЅС‹Рµ С„СѓРЅРєС†РёРё  
 /*===============================[ PSEUDO/INLINE FUNCTIONS ]===================*/ 
-    // Inline функции (методы класса)
+    // Inline С„СѓРЅРєС†РёРё (РјРµС‚РѕРґС‹ РєР»Р°СЃСЃР°)
 /*===============================[ END REDEFINITION DEFENCE]===================*/ 
-    // Окончание однократно включаемого h-файла
+    // РћРєРѕРЅС‡Р°РЅРёРµ РѕРґРЅРѕРєСЂР°С‚РЅРѕ РІРєР»СЋС‡Р°РµРјРѕРіРѕ h-С„Р°Р№Р»Р°
    
 typedef enum
 {
@@ -100,7 +100,7 @@ typedef enum
   ST_FIRE_ON,
   ST_FIRE_OFF,
   
-  ST_COMM_START     , // на зымыкание Устанавливаю состояние START на размыкание выключаем реле cnc0
+  ST_COMM_START     , // РЅР° Р·С‹РјС‹РєР°РЅРёРµ РЈСЃС‚Р°РЅР°РІР»РёРІР°СЋ СЃРѕСЃС‚РѕСЏРЅРёРµ START РЅР° СЂР°Р·РјС‹РєР°РЅРёРµ РІС‹РєР»СЋС‡Р°РµРј СЂРµР»Рµ cnc0
   ST_COMM_STOP      ,
   ST_METAL_CONTACT  , // TODO
   ST_COMM_FIRE      , 
@@ -133,8 +133,8 @@ typedef struct
   uint16_t bMetalContact: 1;
   uint16_t bCommFire    : 1;
   
-  uint16_t bTestCurr1   : 1; // Начать проверять рост тока дуги
-  uint16_t bIgnitionOk  : 1; // Поджиг сработал - выдать на ЧПУ сигнал готовоность
+  uint16_t bTestCurr1   : 1; // РќР°С‡Р°С‚СЊ РїСЂРѕРІРµСЂСЏС‚СЊ СЂРѕСЃС‚ С‚РѕРєР° РґСѓРіРё
+  uint16_t bIgnitionOk  : 1; // РџРѕРґР¶РёРі СЃСЂР°Р±РѕС‚Р°Р» - РІС‹РґР°С‚СЊ РЅР° Р§РџРЈ СЃРёРіРЅР°Р» РіРѕС‚РѕРІРѕРЅРѕСЃС‚СЊ
   
   uint16_t bHightProc   : 1;
   uint16_t bMediumProc  : 1;
@@ -169,19 +169,19 @@ typedef  enum
   EV_FIRE_ON,
   EV_FIRE_OFF,
 
-  EV_COMM_START     , // ЧПУ -> START -> состояние СТАРТ. Леха, камандует ПОДЖИГ, ожидаем тока 20мс, выключаем поджиг
+  EV_COMM_START     , // Р§РџРЈ -> START -> СЃРѕСЃС‚РѕСЏРЅРёРµ РЎРўРђР Рў. Р›РµС…Р°, РєР°РјР°РЅРґСѓРµС‚ РџРћР”Р–РР“, РѕР¶РёРґР°РµРј С‚РѕРєР° 20РјСЃ, РІС‹РєР»СЋС‡Р°РµРј РїРѕРґР¶РёРі
   EV_METAL_CONTACT  ,
   EV_COMM_FIRE      ,
   
   EV_PILOT_ARC_TO   ,
-  EV_IGNITION       , // Поджиг есть - мониторим ток
+  EV_IGNITION       , // РџРѕРґР¶РёРі РµСЃС‚СЊ - РјРѕРЅРёС‚РѕСЂРёРј С‚РѕРє
   EV_IGNITION1      ,
   
   EV_TEST_SHORT_CICUT,
   
-  EV_WRITE_MBM      ,  // период записи в МБ мастер
+  EV_WRITE_MBM      ,  // РїРµСЂРёРѕРґ Р·Р°РїРёСЃРё РІ РњР‘ РјР°СЃС‚РµСЂ
   EV_REQUEST_TO     ,  
-  EV_READ_TO        ,  // период опроса ячеек
+  EV_READ_TO        ,  // РїРµСЂРёРѕРґ РѕРїСЂРѕСЃР° СЏС‡РµРµРє
   PROC_EV_DEBUG     ,
   
   EV_COUNTS  
@@ -206,17 +206,17 @@ typedef union
 {  
   uint16_t reg;
   struct {
-    uint16_t bOnOffPwr      : 1;    // 0 - вкл-выкл источника
-    uint16_t bPilotArc      : 1;    // 1 - вкл-выкл дежурной дуги     
-    uint16_t bFireStart     : 1;    // 2 - вкл-выкл поджига
-    uint16_t bAutoManualM   : 1;    // 3 - 1 - автомат 0 - ручной TODO
-    uint16_t bOverHeat_t    : 1;    // 4 – перегрев
-    uint16_t bShortCircuit  : 1;    // 5 – тест на КЗ
-    uint16_t bChillerFail   : 1;    // 6 – ошибка чиллера           
+    uint16_t bOnOffPwr      : 1;    // 0 - РІРєР»-РІС‹РєР» РёСЃС‚РѕС‡РЅРёРєР°
+    uint16_t bPilotArc      : 1;    // 1 - РІРєР»-РІС‹РєР» РґРµР¶СѓСЂРЅРѕР№ РґСѓРіРё     
+    uint16_t bFireStart     : 1;    // 2 - РІРєР»-РІС‹РєР» РїРѕРґР¶РёРіР°
+    uint16_t bAutoManualM   : 1;    // 3 - 1 - Р°РІС‚РѕРјР°С‚ 0 - СЂСѓС‡РЅРѕР№ TODO
+    uint16_t bOverHeat_t    : 1;    // 4 вЂ“ РїРµСЂРµРіСЂРµРІ
+    uint16_t bShortCircuit  : 1;    // 5 вЂ“ С‚РµСЃС‚ РЅР° РљР—
+    uint16_t bChillerFail   : 1;    // 6 вЂ“ РѕС€РёР±РєР° С‡РёР»Р»РµСЂР°           
     uint16_t bStartCNC      : 1;    // 7 - 1 - Start, 0 - Stop CNC
    
-    uint16_t bReserv8  : 1;    // 8 - синхронное выключение ячеек от команды  bit0 в  REG_W_CNTRL_START  
-    uint16_t bFireIn        : 1;    // 9 - todo внешний поджиг     
+    uint16_t bReserv8  : 1;    // 8 - СЃРёРЅС…СЂРѕРЅРЅРѕРµ РІС‹РєР»СЋС‡РµРЅРёРµ СЏС‡РµРµРє РѕС‚ РєРѕРјР°РЅРґС‹  bit0 РІ  REG_W_CNTRL_START  
+    uint16_t bFireIn        : 1;    // 9 - todo РІРЅРµС€РЅРёР№ РїРѕРґР¶РёРі     
     uint16_t bReserv10      : 1;
     uint16_t bReserv11      : 1;
     uint16_t bReserv12      : 1;
@@ -241,7 +241,7 @@ typedef union{
       uint16_t rgTO_PA_Off: 1;
       uint16_t rgTimeSlopRise:1;
       uint16_t rgTimeSlopFail:1; // 12
-      uint16_t rgProcess    : 1; // номер функции процесса
+      uint16_t rgProcess    : 1; // РЅРѕРјРµСЂ С„СѓРЅРєС†РёРё РїСЂРѕС†РµСЃСЃР°
 #if (1 ==  REG_DEBUG )     //for debug
       uint16_t c1   :1;
       uint16_t c2   :1;
@@ -249,7 +249,7 @@ typedef union{
   };
 }bActivRg_t;  
 
-// регистры управления ячейкой 
+// СЂРµРіРёСЃС‚СЂС‹ СѓРїСЂР°РІР»РµРЅРёСЏ СЏС‡РµР№РєРѕР№ 
 typedef union
 { 
   struct{

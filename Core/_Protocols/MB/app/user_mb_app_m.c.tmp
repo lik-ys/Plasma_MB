@@ -1,0 +1,335 @@
+
+#include "user_mb_app_m.h"
+#include "user_mb_app.h"
+
+mb_action_t gMBactM[ MB_MASTER_TOTAL_SLAVE_NUM ] = {0,};
+
+mb_action_t mb_act  = { 0, 1, 0, 0, 0 };
+mb_cnt_t 	mb_cnt  = { 0, 0, 0, 0, 0 };
+
+#if (MB_MASTER_ASCII_ENABLED > 0 || MB_MASTER_RTU_ENABLED > 0 || MB_MASTER_TCP_ENABLED > 0)
+/*-----------------------Master mode use these variables----------------------*/
+#if M_DISCRETE_INPUT_NDISCRETES > 0
+//Master mode:DiscreteInputs variables
+USHORT   usMDiscInStart                             = M_DISCRETE_INPUT_START;
+#if      M_DISCRETE_INPUT_NDISCRETES%8
+UCHAR    ucMDiscInBuf[MB_MASTER_TOTAL_SLAVE_NUM][M_DISCRETE_INPUT_NDISCRETES/8+1];
+#else
+UCHAR    ucMDiscInBuf[MB_MASTER_TOTAL_SLAVE_NUM][M_DISCRETE_INPUT_NDISCRETES/8];
+#endif
+#endif
+
+//Master mode:Coils variables
+#if M_COIL_NCOILS > 0
+USHORT   usMCoilStart                               = M_COIL_START;
+#if      M_COIL_NCOILS%8
+UCHAR    ucMCoilBuf[MB_MASTER_TOTAL_SLAVE_NUM][M_COIL_NCOILS/8+1];
+#else
+UCHAR    ucMCoilBuf[MB_MASTER_TOTAL_SLAVE_NUM][M_COIL_NCOILS/8];
+#endif
+#endif
+
+//Master mode:InputRegister variables
+#if M_REG_INPUT_NREGS > 0
+USHORT   usMRegInStart                              = M_REG_INPUT_START;
+USHORT   usMRegInBuf[MB_MASTER_TOTAL_SLAVE_NUM][M_REG_INPUT_NREGS];
+#endif
+
+//Master mode:HoldingRegister variables
+#if (M_REG_HOLDING_NREGS > 0)
+USHORT   usMRegHoldStart                            = M_REG_HOLDING_START;
+USHORT   usMRegHoldBuf[MB_MASTER_TOTAL_SLAVE_NUM][M_REG_HOLDING_NREGS];
+#endif
+
+// todo
+void MBMasterInit( uint16_t addr)
+{
+  if ( addr < MB_MASTER_TOTAL_SLAVE_NUM )
+  {
+    gMBactM[addr].response = 1;
+    gMBactM[addr].request = 0;
+    gMBactM[addr].error = 0;
+    gMBactM[addr].err_time_out = 0;   
+  }else;  
+}
+/*
+ *
+ */
+void MBMasterRecieved( uint16_t addr )
+{  
+  if ( addr < MB_MASTER_TOTAL_SLAVE_NUM )
+  {
+    gMBactM[addr].response = 1;
+    gMBactM[addr].request = 0;
+    gMBactM[addr].error = 0;
+    gMBactM[addr].err_time_out = 0;   
+  }else;
+  
+  mb_cnt.rx++;
+  if ( mb_cnt.error ) mb_cnt.error--;
+  if ( mb_cnt.error > CNT_MB_ERROR_THR ) mb_cnt.error = 0;
+  mb_act.response = 1;
+  mb_act.request = 0;
+  mb_act.error = 0;
+  mb_act.execute = 0;
+  mb_act.err_time_out = 0;
+}
+/*
+ *
+ */
+void MBMasterTransmite(uint16_t addr )
+{
+  mb_cnt.tx++;
+  if (mb_cnt.tx == 2) 
+  {
+    mb_cnt.tx  = 0;
+  }  
+  if (0 < addr && addr <= MB_MASTER_TOTAL_SLAVE_NUM )
+  {
+    gMBactM[addr-1].request = 1;
+    gMBactM[addr-1].execute = 0;
+    gMBactM[addr-1].response = 0;    
+    gMBactM[addr-1].error = 0;
+    gMBactM[addr-1].err_time_out = 0;   
+  }else;
+  mb_act.response = 0;
+  mb_act.request = 1;
+  mb_act.error = 0;
+  mb_act.execute = 0;
+  mb_act.err_time_out = 0;
+}
+/*
+*
+*/
+uint16_t isMBmRead(uint16_t addr )
+{
+  if (addr <= 0 || (addr > MB_MASTER_TOTAL_SLAVE_NUM)) return 0;
+  uint8_t bRead = 0;  
+  if ( (1 == gMBactM[addr-1].response) || (1 == gMBactM[addr-1].err_time_out )) 
+      bRead = 1;
+  if ( (0 == gMBactM[addr-1].response) && (0 == gMBactM[addr-1].err_time_out )) 
+      bRead = 1;
+  return bRead;
+}
+
+
+uint16_t isCellPresence(uint16_t addr )
+{
+  if ( gCells.reg & ( 1<< (addr) )) return 1;
+  else return 0;
+}
+/*
+*
+*/
+uint16_t isMBError(uint16_t addr )
+{
+  if (addr <= 0 || (addr > MB_MASTER_TOTAL_SLAVE_NUM)) return 0;
+  if ( gCells.reg & ( 1<< (addr) ))      
+  if ((1 == gMBactM[addr - 1].error) || ( 1 == gMBactM[addr - 1].err_time_out) ) return 1;
+  
+  return 0;
+}
+/*
+*
+*/
+uint16_t isMBmRequest( uint16_t addr )
+{
+  if (addr <= 0 || (addr > MB_MASTER_TOTAL_SLAVE_NUM)) return 0;
+  if ( 1 == gMBactM[ addr - 1 ].request && (0 == gMBactM[ addr - 1 ].response ) ) return 1;
+  return 0; 
+}//
+
+/*
+*
+*/
+void ClrMBmRequest( uint16_t addr )
+{
+  if ( (addr <= 0) || (addr > MB_MASTER_TOTAL_SLAVE_NUM)) return;
+  gMBactM[ addr - 1 ].request  = 0;
+}/// 
+/*
+ * not response, not connect
+ */
+void MBMasterError(void )
+{
+	//mb_act.execute = 1;
+	mb_cnt.error++;
+	//mb_act.response = 1;
+	mb_act.request = 0;
+	mb_act.error = 1;
+}//
+/*
+ *
+ */
+void MBMasterErrorTO( uint16_t addr )
+{
+  if ( (addr > 0) &&  addr <= MB_MASTER_TOTAL_SLAVE_NUM )
+  {
+   //gMBactM[addr].response = 1;
+    gMBactM[addr-1].request = 0;
+    //gMBactM[addr].error = 0;
+    gMBactM[addr-1].err_time_out = 1;   
+  }else
+  {
+    WR_DEBUG("Error addr = %i \r\n", addr);
+  }  
+  mb_act.err_time_out = 1;  
+} //MBMasterErrorTO() 
+  
+/*
+ *
+ */
+void MBMasterExec( uint16_t addr )
+{
+  if ( (addr > 0) && addr <= MB_MASTER_TOTAL_SLAVE_NUM )
+  {
+    gMBactM[addr-1].execute = 1;
+    gMBactM[addr-1].response = 0;
+    gMBactM[addr-1].request = 0;
+    gMBactM[addr-1].error = 0;
+    gMBactM[addr-1].err_time_out = 0;   
+  }else;  
+	mb_act.execute = 1;
+	mb_cnt.ex++;
+	mb_act.error = 0;
+}
+
+/**
+  * @brief
+  * @param  
+  * @retval 
+  */
+void SetMBRgM( uint16_t slave, eMBReg_t numMBReg, uint16_t data )
+{
+  
+  if ( numMBReg >= REG_LASTs ) 
+  {
+    assert(numMBReg >= REG_LASTs);
+  }
+  
+  usMRegHoldBuf[slave][ numMBReg ] = data;  
+} // SetMBRg()
+
+/**
+  * @brief
+  * @param  
+  * @retval 
+  */
+uint16_t GetMBRgM( uint16_t slave, eMBReg_t numMBReg )
+{
+  if ( numMBReg >= REG_LASTs ) 
+  {
+    assert(numMBReg >= REG_LASTs);
+  }
+  
+  return usMRegHoldBuf[slave][ numMBReg ];
+}// GetMBRg()
+/**
+ * Modbus master input register callback function.
+ *
+ * @param pucRegBuffer input register buffer
+ * @param usAddress input register address
+ * @param usNRegs input register number
+ *
+ * @return result
+ */
+eMBErrorCode eMBMasterRegInputCB( UCHAR * pucRegBuffer, USHORT usAddress, USHORT usNRegs )
+{
+#if M_REG_INPUT_NREGS > 0
+    eMBErrorCode    eStatus = MB_ENOERR;
+    USHORT          iRegIndex;
+    USHORT *        pusRegInputBuf;
+    USHORT          REG_INPUT_START;
+    USHORT          REG_INPUT_NREGS;
+    USHORT          usRegInStart;
+
+    pusRegInputBuf = usMRegInBuf[ucMBMasterGetDestAddress() - 1];
+    REG_INPUT_START = M_REG_INPUT_START;
+    REG_INPUT_NREGS = M_REG_INPUT_NREGS;
+    usRegInStart = usMRegInStart;
+
+    /* it already plus one in modbus function method. */
+    usAddress--;
+
+    if ((usAddress >= REG_INPUT_START) && (usAddress + usNRegs <= REG_INPUT_START + REG_INPUT_NREGS))
+    {
+        iRegIndex = usAddress - usRegInStart;
+        while (usNRegs > 0)
+        {
+            pusRegInputBuf[iRegIndex] = *pucRegBuffer++ << 8;
+            pusRegInputBuf[iRegIndex] |= *pucRegBuffer++;
+            iRegIndex++;
+            usNRegs--;
+        }
+    }
+    else
+    {
+        eStatus = MB_ENOREG;
+    }
+
+    return eStatus;
+#else
+	return MB_ENOREG;
+#endif
+}
+
+/**
+ * Modbus master holding register callback function.
+ *
+ * @param pucRegBuffer holding register buffer
+ * @param usAddress holding register address
+ * @param usNRegs holding register number
+ * @param eMode read or write
+ *
+ * @return result
+ */
+eMBErrorCode eMBMasterRegHoldingCB(UCHAR * pucRegBuffer, USHORT usAddress, USHORT usNRegs, eMBRegisterMode eMode)
+{
+#if (M_REG_HOLDING_NREGS > 0)
+    eMBErrorCode    eStatus = MB_ENOERR;
+    USHORT          iRegIndex;
+    USHORT *        pusRegHoldingBuf;
+    USHORT          REG_HOLDING_START;
+    USHORT          REG_HOLDING_NREGS;
+    USHORT          usRegHoldStart;
+    uint16_t addr_slave;
+    
+    addr_slave = ucMBMasterGetDestAddress();
+    if ( addr_slave > 0 ) addr_slave -= 1;
+    
+    pusRegHoldingBuf = usMRegHoldBuf[ addr_slave ];
+    REG_HOLDING_START = M_REG_HOLDING_START;
+    REG_HOLDING_NREGS = M_REG_HOLDING_NREGS;
+    usRegHoldStart = usMRegHoldStart;
+    /* if mode is read, the master will write the received date to buffer. */
+    //eMode = MB_REG_WRITE;
+
+    /* it already plus one in modbus function method. */
+    usAddress--;
+
+    if ((usAddress >= REG_HOLDING_START) && (usAddress + usNRegs <= REG_HOLDING_START + REG_HOLDING_NREGS))
+    {
+        iRegIndex = usAddress - usRegHoldStart;
+        switch (eMode)
+        {
+        /* read current register values from the protocol stack. */
+        case MB_REG_READ:
+            while (usNRegs > 0)
+            {
+                //*pucRegBuffer++ = (UCHAR) (pusRegHoldingBuf[iRegIndex] >> 8);
+                //*pucRegBuffer++ = (UCHAR) (pusRegHoldingBuf[iRegIndex] & 0xFF); 
+                pusRegHoldingBuf[ iRegIndex ]  = *pucRegBuffer++ << 8;
+                pusRegHoldingBuf[ iRegIndex ] |= *pucRegBuffer++;                
+                UpDateReadRgM(addr_slave, iRegIndex );
+                iRegIndex++;
+                usNRegs--;
+            }
+            break;
+        /* write current register values with new values from the protocol stack. */
+        case MB_REG_WRITE:
+            while (usNRegs > 0)
+            {
+                pusRegHoldingBuf[ iRegIndex ]  = *pucRegBuffer++ << 8;
+                pusRegHoldingBuf[ iRegIndex ] |= *pucRegBuffer++;
+                
+                UpDateWriteRgM(addr_slave, iRegIndex );   /// todo Р В·Р Т‘Р ВµРЎРѓРЎРЉ Р С—Р С•Р В»РЎС“РЎвЂЎР В°Р ВµР С

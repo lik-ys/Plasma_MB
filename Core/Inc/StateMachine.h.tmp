@@ -1,0 +1,41 @@
+/*******************************************************************************
+*
+* Copyright (C) 2023 Sharopin Yuri
+*
+* File              : StateMaСЃhine.h
+* Compiler          : IAR EWA 8.32
+* Version           : 0.0
+* Created File      : 01.06.2023
+* Last modified     : 01.06.2023
+*
+* Support mail      : yshar@ngs.ru
+*
+* Target MCU        : MCU: f407 @ (Xtal = MHz | CPUclk = MHz)
+* Description       : 
+*                   : 
+* Hardware          : .sch .pcb
+*
+********************************************************************************/
+/*===============================[ REDEFINITION DEFENCE ]======================*/ 
+#ifndef __STATE_MASHINE_HPP__ 
+#define __STATE_MASHINE_HPP__ 
+
+#include "main.h" 
+#include "config.h"
+
+#ifdef __cplusplus
+extern "C" {
+#endif
+
+/*===============================[ SPECIAL ]===================================*/ 
+    // Р‘Р»РѕРє РѕРїРµСЂР°С‚РѕСЂРѕРІ СѓСЃР»РѕРІРЅРѕР№ РєРѕРјРїРёР»СЏС†РёРё 
+/*===============================[ PUBLIC CONSTANTS ]==========================*/ 
+    //  РџСѓР±Р»РёС‡РЅС‹Рµ РєРѕРЅСЃС‚Р°РЅС‚С‹ 
+#define ADC_MAX         4095
+#define DAC_MAX         4095
+
+#define ADC_BUF_LENGHT  16
+  
+#define TIME_OUT_TEST   250
+#define THRESHOLD_CURR_1    100  // 100 A  - РїРѕСЂРѕРіРѕРІС‹Р№ С‚РѕРє РІРєР»СЋС‡РµРЅРёСЏ РіРѕС‚РѕРІРЅРѕСЃС‚Рё РґР»СЏ Р§РџРЈ
+#define THRESHOLD_CURR_OFF  10  // 20 A  - РїРѕСЂРѕРіРѕРІС‹Р№ С‚РѕРє РІС‹РєР»СЋС‡РµРЅРёСЏ РЁР

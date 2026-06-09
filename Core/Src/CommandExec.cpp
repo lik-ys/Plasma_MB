@@ -66,7 +66,7 @@ void Command::InitTechProc(void)
 */
 void Command::TechProc(void)
 {
-  //if ( gActiveReg.rg ) return;  // BUG: ·ÎÓÍËÛÂÚ ÍÓ‰ - ‡ÍÚË‚Ì˚Â ·ËÚ˚ ÌÂ ÍÓÌ˜‡˛ÚÒˇ
+  //if ( gActiveReg.rg ) return;  // BUG: –±–ª–æ–∫–∏—Ä—É–µ—Ç –∫–æ–¥ - –∞–∫—Ç–∏–≤–Ω—ã–µ –±–∏—Ç—ã –Ω–µ –∫–æ–Ω—á–∞—é—Ç—Å—è
   if ( gMbStatus.bit.bStartCNC ) {
     if ( 0 >= repeat && (num != P_CURR_MONITOR) )
     {
@@ -79,14 +79,14 @@ void Command::TechProc(void)
         gActiveReg.rgProcess = 1;
       }
   }else{}
-  // ¬˚ÍÎ˛˜ÂÌËÂ Ì‡ÔˇÊÂÌËˇ ÔÓ Á‡‚Â¯ÂÌËË ÔÓˆÂÒÒ‡ ÂÁÍË: ÚÓÍ 0 - ‚˚ÍÎ ÿ»Ã
+  // –í—ã–∫–ª—é—á–µ–Ω–∏–µ –Ω–∞–ø—Ä—è–∂–µ–Ω–∏—è –ø–æ –∑–∞–≤–µ—Ä—à–µ–Ω–∏–∏ –ø—Ä–æ—Ü–µ—Å—Å–∞ —Ä–µ–∑–∫–∏: —Ç–æ–∫ 0 - –≤—ã–∫–ª –®–ò–ú
   if ( 1 == gStateSM.st.bIgnitionOk )
   {
     // wait end current
     if (hTimer->IsTimeOut( EV_IGNITION1) )
     if ( PhParam.Current1 < THRESHOLD_CURR_OFF ) // PhParam.Current1
     { 
-      CmdStopPwm(); //- TODO : ‚˚ÍÎ˛˜ÂÌËÂ ÒÚ‡ÛÚÒ‡ „ÓÚÓ‚ÌÓÒÚË ◊œ” ˜ÚÓ ·˚ ÓÌ ÓÒÚ‡ÌÓ‚ËÎÒˇ 
+      CmdStopPwm(); //- TODO : –≤—ã–∫–ª—é—á–µ–Ω–∏–µ —Å—Ç–∞—É—Ç—Å–∞ –≥–æ—Ç–æ–≤–Ω–æ—Å—Ç–∏ –ß–ü–£ —á—Ç–æ –±—ã –æ–Ω –æ—Å—Ç–∞–Ω–æ–≤–∏–ª—Å—è 
       gStateSM.st.bIgnitionOk = 0;
       CncWrite( cnc_redy, GPIO_PIN_RESET);
       __NOP();
@@ -99,14 +99,14 @@ static
 void  CmdPilotArcStart(void )
 {
     WR_DEBUG("--1-- PilotARC Timer Start on TIME_START = %i s. \r\n",TIME_START/1000);
-    gMbCntrl.bit.bPilotArc = 1;  // ƒÂÊ. ‰Û„‡
+    gMbCntrl.bit.bPilotArc = 1;  // –î–µ–∂. –¥—É–≥–∞
     gMbActiveCntrl.bit.bPilotArc = 1;
     hTimer->Time_Out( Timer::start, TIME_START, EV_COMM_START); 
     hCmd->num = P_PILOT_ARC;
 }
 // command functions
 /**
-*   ƒÂÊÛÌ‡ˇ ‰Û„‡
+*   –î–µ–∂—É—Ä–Ω–∞—è –¥—É–≥–∞
 */
 static
 void  CmdPilotArc(void )
@@ -132,7 +132,7 @@ void  CmdPilotArc(void )
 } //CmdPilotArc()
 
 /**
-*   œÓ‰ÊË„
+*   –ü–æ–¥–∂–∏–≥
 */
 static void  CmdFireStart( void )
 {  
@@ -147,7 +147,7 @@ static void  CmdFireStart( void )
 }// CmdFireStart()
 
 /**
-*  ∆‰ÂÏ ÚÓÍ THRESHOLD_CURR_1 -> „ÓÚÓ‚ÌÓÒÚ¸ ◊œ”
+*  –ñ–¥–µ–º —Ç–æ–∫ THRESHOLD_CURR_1 -> –≥–æ—Ç–æ–≤–Ω–æ—Å—Ç—å –ß–ü–£
 */
 static 
 void CmdWiteCurrent(void )
@@ -155,7 +155,7 @@ void CmdWiteCurrent(void )
   if ( PhParam.Current1 > THRESHOLD_CURR_1 )  //PhParam.Current1
   {
     gStateSM.st.bIgnitionOk = 1;
-    CncWrite( cnc_redy, GPIO_PIN_SET );  // √ÓÚÓ‚ÌÓÒÚ¸ ‰Îˇ ◊œ”   PD12
+    CncWrite( cnc_redy, GPIO_PIN_SET );  // –ì–æ—Ç–æ–≤–Ω–æ—Å—Ç—å –¥–ª—è –ß–ü–£   PD12
     hCmd->num = P_CURR_MONITOR;
     hTimer->Time_Out( Timer::start, PILOT_ARC_OFF_TO, EV_IGNITION  ); 
     hTimer->Time_Out( Timer::start, PILOT_ARC_OFF_TO1, EV_IGNITION1);
@@ -168,14 +168,14 @@ void CmdWiteCurrent(void )
         hCmd->num = P_END; 
         return;
       }
-      // ¬˚ÍÎ˛˜ËÚ¸ ÔÓ‰ÊË„ Ë ÔÓ‚ÚÓËÚ¸ ‚ÍÎ˛˜ÂÌËÂ
+      // –í—ã–∫–ª—é—á–∏—Ç—å –ø–æ–¥–∂–∏–≥ –∏ –ø–æ–≤—Ç–æ—Ä–∏—Ç—å –≤–∫–ª—é—á–µ–Ω–∏–µ
       hCmd->num = P_CMD_REPEAT;  // -> CmdRepeat()
     }else;    
   }
 }//CmdWiteCurrent()
 
 /**
-*  TODO  BUG - ÔÂ‚˚È ‡Á ‚˚ÔÓÎÌˇÂÚÒˇ ‚ÚÓÓÈ ‡Á ÌÂÚ
+*  TODO  BUG - –ø–µ—Ä–≤—ã–π —Ä–∞–∑ –≤—ã–ø–æ–ª–Ω—è–µ—Ç—Å—è –≤—Ç–æ—Ä–æ–π —Ä–∞–∑ –Ω–µ—Ç
 */
 static
 void CmdRepeat( void )
@@ -252,7 +252,7 @@ void CmdMetalContact( void )
 } // CmdMetalContact( )
 
 /**
-* ‚ÍÎ˛˜ÂÌËÂ-‚˚ÍÎ˛˜ÂÌËÂ ÒËÌıÓ˜‡ÒÚÓÚ˚
+* –≤–∫–ª—é—á–µ–Ω–∏–µ-–≤—ã–∫–ª—é—á–µ–Ω–∏–µ —Å–∏–Ω—Ö—Ä–æ—á–∞—Å—Ç–æ—Ç—ã
 */
 static
 void CmdStartStopPwm( void )
@@ -265,7 +265,7 @@ void CmdStartStopPwm( void )
 
     gMbCntrl.bit.bOnOffPwr = 1;
     gActiveReg.rgCNTRL  = 1;
-    gActiveReg.rgPWM = 1; // Ú.Í. ﬂ˜ÂÈÍË ÂÒÂÚËÏ ÔÓÒÎÂ ÓÒÚ‡ÌÓ‚‡ ÿ»Ã, Á‡ÍËÌËÏ ÛÒÚ‡‚ÍË
+    gActiveReg.rgPWM = 1; // —Ç.–∫. –Ø—á–µ–π–∫–∏ —Ä–µ—Å–µ—Ç–∏–º –ø–æ—Å–ª–µ –æ—Å—Ç–∞–Ω–æ–≤–∞ –®–ò–ú, –∑–∞–∫–∏–Ω–∏–º —É—Å—Ç–∞–≤–∫–∏
     gActiveReg.rgSLOP_1 = 1;
     gActiveReg.rgSLOP_2 = 1;    
 
@@ -283,7 +283,7 @@ void CmdStartStopPwm( void )
 }//StartPwm()
 
 /*
-  œÓ‚ÂÍ‡ ‚ÍÎ˛˜ÂÌËˇ ÿ»Ã Ì‡ ‚ÒÂı ˇ‚˜ÂÈÍ‡ı
+  –ü—Ä–æ–≤–µ—Ä–∫–∞ –≤–∫–ª—é—á–µ–Ω–∏—è –®–ò–ú –Ω–∞ –≤—Å–µ—Ö —è–≤—á–µ–π–∫–∞—Ö
 */
 static 
 uint16_t PwmOnAllCells( void )
@@ -304,19 +304,19 @@ uint16_t PwmOnAllCells( void )
   return bPwm;
 }//PwmOnAllCells()
 
-#define SHORT_CURR_TO       3000 //  ‚ÂÏˇ ÔÓ‚ÂÍË ÍÓÓÚÍÓ„Ó Á‡Ï˚Í‡ÌËˇ 
-#define OPEN_CIRCUIT_C      5    //  ÚÓÍ‡ ’’
-#define OPEN_CIRCUIT_V      590  //  Ì‡Ô. ’’
+#define SHORT_CURR_TO       3000 //  –≤—Ä–µ–º—è –ø—Ä–æ–≤–µ—Ä–∫–∏ –∫–æ—Ä–æ—Ç–∫–æ–≥–æ –∑–∞–º—ã–∫–∞–Ω–∏—è 
+#define OPEN_CIRCUIT_C      5    //  —Ç–æ–∫–∞ –•–•
+#define OPEN_CIRCUIT_V      590  //  –Ω–∞–ø—Ä. –•–•
 #define TEST_PWM_SET        10
-#define DEF_PWM_START       90 // Ì‡ 50% -‰Û„‡ ÌÂ Á‡ÊË„‡ÂÚÒˇ - ÒÚ‡ÚÓ‚˚È ÿ»Ã ÔÓ-ÛÏÓÎ˜‡ÌË˛, ÓÚ ÌÂ„Ó ‡Á‚‡‡˜Ë‚‡ÂÏ ‰Ó ÛÒÚ‡‚ÍË ÿ»Ã
+#define DEF_PWM_START       90 // –Ω–∞ 50% -–¥—É–≥–∞ –Ω–µ –∑–∞–∂–∏–≥–∞–µ—Ç—Å—è - —Å—Ç–∞—Ä—Ç–æ–≤—ã–π –®–ò–ú –ø–æ-—É–º–æ–ª—á–∞–Ω–∏—é, –æ—Ç –Ω–µ–≥–æ —Ä–∞–∑–≤–∞—Ä–∞—á–∏–≤–∞–µ–º –¥–æ —É—Å—Ç–∞–≤–∫–∏ –®–ò–ú
 
 static uint16_t sPwm ;
 
 /*  // TODO
-0 - ‚ÍÎ˛˜ËÚ¸ ‰ÂÊÛÍÛ CmdPilotArc()
-1 - ÔÓ‰‡Ú¸ ÿ»Ã 10 Ì‡ 1 ÒÂÍ
-2 - ÚÓÍ ÂÒÚ¸ ->  «
-3 - ÚÓÍ‡ ÌÂÚ Œ 
+0 - –≤–∫–ª—é—á–∏—Ç—å –¥–µ–∂—É—Ä–∫—É CmdPilotArc()
+1 - –ø–æ–¥–∞—Ç—å –®–ò–ú 10 –Ω–∞ 1 —Å–µ–∫
+2 - —Ç–æ–∫ –µ—Å—Ç—å -> –ö–ó
+3 - —Ç–æ–∫–∞ –Ω–µ—Ç –û–ö
 */
 static 
 void CmdTestShortCurr( void )
@@ -325,7 +325,7 @@ void CmdTestShortCurr( void )
   WR_DEBUG("--0-- CmdTestShortCurr() time= %i s. \r\n",SHORT_CURR_TO/1000);
   
   if ( 1 == gMbStatus.bit.bShortCircuit ) return;
-  // ‰ÂÊÛÍ‡ ‚ÍÎ˛˜ÂÌ‡ - ‚ÍÎ˛˜‡ÂÏ ¯ËÏ
+  // –¥–µ–∂—É—Ä–∫–∞ –≤–∫–ª—é—á–µ–Ω–∞ - –≤–∫–ª—é—á–∞–µ–º —à–∏–º
   if ( (0 == st) && (gMbStatus.bit.bPilotArc) )  st = 1;
   
   switch(st)
@@ -336,7 +336,7 @@ void CmdTestShortCurr( void )
     SetMBRgS( REG_W_PWM, TEST_PWM_SET );
     st = 2;
     break;
-  case 2:   // ÓÊË‰‡ÌËÂ ÔÓˇ‚ÎÂÌËˇ Ì‡ÔˇÊÂÌËˇ 
+  case 2:   // –æ–∂–∏–¥–∞–Ω–∏–µ –ø–æ—è–≤–ª–µ–Ω–∏—è –Ω–∞–ø—Ä—è–∂–µ–Ω–∏—è 
     if (0 == gActiveReg.rgPWM)
     {
       st = 3;
@@ -345,7 +345,7 @@ void CmdTestShortCurr( void )
     }else; 
     
     break;
-  case 3:  // - ËÁÏÂˇÂÏ ÚÓÍ
+  case 3:  // - –∏–∑–º–µ—Ä—è–µ–º —Ç–æ–∫
     if ( hTimer->IsTimeOut(EV_TEST_SHORT_CICUT) )
     {
       //if ( 1 )/////DBG!!! 
@@ -354,7 +354,7 @@ void CmdTestShortCurr( void )
         st = 4;
         gMbStatus.bit.bShortCircuit = 0;
         gActiveReg.rgPWM = 1;
-        SetMBRgS( REG_W_PWM, DEF_PWM_START );   // TODO ‰ÓÊ‰‡Ú¸Òˇ ÍÓ„‰‡ ÛÒÚ‡‚Í‡ ‰ÓÈ‰ÂÚ      
+        SetMBRgS( REG_W_PWM, DEF_PWM_START );   // TODO –¥–æ–∂–¥–∞—Ç—å—Å—è –∫–æ–≥–¥–∞ —É—Å—Ç–∞–≤–∫–∞ –¥–æ–π–¥–µ—Ç      
       }
       else{
         st = 0;
@@ -367,18 +367,18 @@ void CmdTestShortCurr( void )
       SetMBRgS( REG_R_STATUS, gMbStatus.reg );
     }else;    
     break;
-    case 4: // Ê‰ÂÏ ‚˚ÒÚ‡‚ÎÂÌËˇ 50% ÿ»Ã‡
+    case 4: // –∂–¥–µ–º –≤—ã—Å—Ç–∞–≤–ª–µ–Ω–∏—è 50% –®–ò–ú–∞
       if ( 0 == gActiveReg.rgPWM )  
       {
         st = 0; 
-        hCmd->num = P_FIRE_START;  // TODO BUG ÌÂ ÛÒÔÂ‚‡ÂÚ ‰ÓıÓ‰ËÚ¸ 50 %
+        hCmd->num = P_FIRE_START;  // TODO BUG –Ω–µ —É—Å–ø–µ–≤–∞–µ—Ç –¥–æ—Ö–æ–¥–∏—Ç—å 50 %
       }      
     break;
   }//switch()
 }//CmdTestShortCurr()
 
 /**
-* ‚ÍÎ˛˜ÂÌËÂ ÒËÌıÓ˜‡ÒÚÓÚ˚
+* –≤–∫–ª—é—á–µ–Ω–∏–µ —Å–∏–Ω—Ö—Ä–æ—á–∞—Å—Ç–æ—Ç—ã
 */
 static
 void CmdStartPwm( void )
@@ -388,7 +388,7 @@ void CmdStartPwm( void )
     hCmd->num = P_END;  return;
   }
     if (0 == gMbStatus.bit.bOnOffPwr) {  
-      gActiveReg.rgCNTRL = 1;   // ˝ÏÛÎˇˆËˇ ‡·ÓÚ˚ Ã¡ ¬”
+      gActiveReg.rgCNTRL = 1;   // —ç–º—É–ª—è—Ü–∏—è —Ä–∞–±–æ—Ç—ã –ú–ë –í–£
       gActiveReg.rgPWM =1;
       //gActiveReg.rgP = 1;
       //gActiveReg.rgI = 1;    
@@ -418,7 +418,7 @@ void CmdStartPwm( void )
 }//StartPwm()
 
 /**
-* ‚˚ÍÎ˛˜ÂÌËÂ ÒËÌıÓ˜‡ÒÚÓÚ˚
+* –≤—ã–∫–ª—é—á–µ–Ω–∏–µ —Å–∏–Ω—Ö—Ä–æ—á–∞—Å—Ç–æ—Ç—ã
 */
 static
 void CmdStopPwm( void )
@@ -426,7 +426,7 @@ void CmdStopPwm( void )
     gMbCntrl.bit.bOnOffPwr = 0;
     gMbCntrl.bit.bChopperStart = 0;
     SetMBRgS(REG_W_CNTRL, gMbCntrl.reg); 
-    UpateActiveRg(); // ˝ÏÛÎˇˆËˇ ‡·ÓÚ˚ ˜ÂÂÁÂ Ã¡
+    UpateActiveRg(); // —ç–º—É–ª—è—Ü–∏—è —Ä–∞–±–æ—Ç—ã —á–µ—Ä–µ–∑–µ –ú–ë
     gActiveReg.rgCNTRL = 1;
 //    pExtSync->Instance->CNT = 0;
 //    HAL_TIM_PWM_Stop( pExtSync, TIM_CHANNEL_1 );
@@ -439,9 +439,9 @@ void CmdStopPwm( void )
 }//StartPwm()
 
 /**
-*   ÔÓˆÂÒÒ ÂÁ‡, ÏÓÌËÚÓËÏ ÚÓÍ, ˜ÂÂÁ (hPilotArc->time_out_off) mÒÂÍ ‚˚ÍÎ˛˜‡ÂÏ ‰ÂÊÛÍÛ, 
-*   œÂÂıÓ‰ËÏ Ì‡ Â„ÛÎˇÚÓ - ‰‡ÂÏ ÛÒÚ‡‚ÍÛ ÚÓÍ‡
-*   ÂÒÎË Ó·˚‚ ÚÓÍ‡ - ‚˚ÍÎ˛˜‡ÂÏ ÿ»Ã
+*   –ø—Ä–æ—Ü–µ—Å—Å —Ä–µ–∑–∞, –º–æ–Ω–∏—Ç–æ—Ä–∏–º —Ç–æ–∫, —á–µ—Ä–µ–∑ (hPilotArc->time_out_off) m—Å–µ–∫ –≤—ã–∫–ª—é—á–∞–µ–º –¥–µ–∂—É—Ä–∫—É, 
+*   –ü–µ—Ä–µ—Ö–æ–¥–∏–º –Ω–∞ —Ä–µ–≥—É–ª—è—Ç–æ—Ä - –¥–∞–µ–º —É—Å—Ç–∞–≤–∫—É —Ç–æ–∫–∞
+*   –µ—Å–ª–∏ –æ–±—Ä—ã–≤ —Ç–æ–∫–∞ - –≤—ã–∫–ª—é—á–∞–µ–º –®–ò–ú
 */
 static void CmdMonitor(void )
 {
@@ -454,9 +454,9 @@ static void CmdMonitor(void )
     }
   }
   // ++13.04.24
-  if ( PhParam.Current2 <  THRESHOLD_CURR_OFF ) //BUG ÂÒÚ¸ ÌÂÔÓÌˇÚÌÓÂ ‚˚ÍÎ˛˜ÂÌËˇ ÚÓÍ‡ ÔË ÂÁÍË
+  if ( PhParam.Current2 <  THRESHOLD_CURR_OFF ) //BUG –µ—Å—Ç—å –Ω–µ–ø–æ–Ω—è—Ç–Ω–æ–µ –≤—ã–∫–ª—é—á–µ–Ω–∏—è —Ç–æ–∫–∞ –ø—Ä–∏ —Ä–µ–∑–∫–∏
   {
-    CncWrite( cnc_redy, GPIO_PIN_RESET ); // ÒÌËÏ‡ÂÏ "„ÓÚÓ‚ÌÓÒÚ¸ ˜ÔÛ"
+    CncWrite( cnc_redy, GPIO_PIN_RESET ); // —Å–Ω–∏–º–∞–µ–º "–≥–æ—Ç–æ–≤–Ω–æ—Å—Ç—å —á–ø—É"
     gMbCntrl.bit.bPilotArc = 0;
     CmdPilotArc(); 
     CmdStopPwm();   

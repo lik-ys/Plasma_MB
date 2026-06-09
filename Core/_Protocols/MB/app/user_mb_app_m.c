@@ -332,7 +332,7 @@ eMBErrorCode eMBMasterRegHoldingCB(UCHAR * pucRegBuffer, USHORT usAddress, USHOR
                 pusRegHoldingBuf[ iRegIndex ]  = *pucRegBuffer++ << 8;
                 pusRegHoldingBuf[ iRegIndex ] |= *pucRegBuffer++;
                 
-                UpDateWriteRgM(addr_slave, iRegIndex );   /// todo çäåñü ïîëó÷àåì îòâåò ïîñëå çàïèñè â ðåãèñòð
+                UpDateWriteRgM(addr_slave, iRegIndex );   /// todo Ð·Ð´ÐµÑÑŒ Ð¿Ð¾Ð»ÑƒÑ‡Ð°ÐµÐ¼ Ð¾Ñ‚Ð²ÐµÑ‚ Ð¿Ð¾ÑÐ»Ðµ Ð·Ð°Ð¿Ð¸ÑÐ¸ Ð² Ñ€ÐµÐ³Ð¸ÑÑ‚Ñ€
                 
                 iRegIndex++;
                 usNRegs--;

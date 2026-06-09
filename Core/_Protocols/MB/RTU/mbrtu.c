@@ -338,7 +338,7 @@ xMBRTUTimerT35Expired( void )
         /* A frame was received and t35 expired. Notify the listener that
          * a new frame was received. */
     case STATE_RX_RCV:
-		if (usRcvBufferPos >= 5 ) // ÓÚÒÂÍ‡ÂÏ ÎÓÊÌÓÂ Ò‡·‡Ú˚‚‡ÌËÂ ‚˚ıÓ‰‡ RO ‰‡È‚Â‡ 
+		if (usRcvBufferPos >= 5 ) // –æ—Ç—Å–µ–∫–∞–µ–º –ª–æ–∂–Ω–æ–µ —Å—Ä–∞–±–∞—Ç—ã–≤–∞–Ω–∏–µ –≤—ã—Ö–æ–¥–∞ RO –¥—Ä–∞–π–≤–µ—Ä–∞ 
         {
           xNeedPoll = xMBPortEventPost( EV_FRAME_RECEIVED );   memcpy((void *)ucBufRx,(void const*)ucRTUBuf, 20);
         }

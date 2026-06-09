@@ -333,7 +333,7 @@ eMBMasterPoll( void )
     /* Check if there is a event available. If not return control to caller.
      * Otherwise we will handle the event. */
     if( xMBMasterPortEventGet( &eEvent ) == TRUE )
-    { /// TODO  BUG çàâèñàíèå  âñåãäà FALSE
+    { /// TODO  BUG Ð·Ð°Ð²Ð¸ÑÐ°Ð½Ð¸Ðµ  Ð²ÑÐµÐ³Ð´Ð° FALSE
         switch ( eEvent )
         {
         case EV_MASTER_READY:
@@ -393,7 +393,7 @@ eMBMasterPoll( void )
 							}
 						}
 						else {
-							eException = xMasterFuncHandlers[i].pxHandler(ucMBFrame, &usLength);   // Îøèáêà îáðàáîòêè îòâåòà íà ïðèíÿòûé ïîä÷èíåííûì ïàêåò
+							eException = xMasterFuncHandlers[i].pxHandler(ucMBFrame, &usLength);   // ÐžÑˆÐ¸Ð±ÐºÐ° Ð¾Ð±Ñ€Ð°Ð±Ð¾Ñ‚ÐºÐ¸ Ð¾Ñ‚Ð²ÐµÑ‚Ð° Ð½Ð° Ð¿Ñ€Ð¸Ð½ÑÑ‚Ñ‹Ð¹ Ð¿Ð¾Ð´Ñ‡Ð¸Ð½ÐµÐ½Ð½Ñ‹Ð¼ Ð¿Ð°ÐºÐµÑ‚
 						}
 						vMBMasterSetCBRunInMasterMode(FALSE);
 						break;
@@ -426,8 +426,8 @@ eMBMasterPoll( void )
         case EV_MASTER_FRAME_SENT: 
           cntErr = MB_CNT_ERROR;
           
-             MBMcnt.frame_send++;  // BUG ïîñëå ðåñåòà ñðàçó ïîñûëêà êàäðà ???
-        	/* Master is busy now. */                    // BUG 6 ïîñûëîê 2 âûïîëíåíèÿ 2 òàéìàóòà (äîëæíî áûòü 4)
+             MBMcnt.frame_send++;  // BUG Ð¿Ð¾ÑÐ»Ðµ Ñ€ÐµÑÐµÑ‚Ð° ÑÑ€Ð°Ð·Ñƒ Ð¿Ð¾ÑÑ‹Ð»ÐºÐ° ÐºÐ°Ð´Ñ€Ð° ???
+        	/* Master is busy now. */                    // BUG 6 Ð¿Ð¾ÑÑ‹Ð»Ð¾Ðº 2 Ð²Ñ‹Ð¿Ð¾Ð»Ð½ÐµÐ½Ð¸Ñ 2 Ñ‚Ð°Ð¹Ð¼Ð°ÑƒÑ‚Ð° (Ð´Ð¾Ð»Ð¶Ð½Ð¾ Ð±Ñ‹Ñ‚ÑŒ 4)
         	vMBMasterGetPDUSndBuf( &ucMBFrame );
 			eStatus = peMBMasterFrameSendCur( ucMBMasterGetDestAddress(), ucMBFrame, usMBMasterGetPDUSndLength() );
 			xMBMasterPortEventPost(EV_MASTER_READY);
@@ -458,7 +458,7 @@ eMBMasterPoll( void )
         	MBMasterError();
             int16_t addr = ucMBMasterGetDestAddress()-1;
             if ( addr > 0 ) CntSucsses[ addr ]--;
-            /// -- ñáðîñ â îäíîì ìåñòå CntrCellsStatus( addr, RESET );//
+            /// -- ÑÐ±Ñ€Ð¾Ñ Ð² Ð¾Ð´Ð½Ð¾Ð¼ Ð¼ÐµÑÑ‚Ðµ CntrCellsStatus( addr, RESET );//
         	/* Execute specified error process callback function. */
 			errorType = eMBMasterGetErrorType();
 			vMBMasterGetPDUSndBuf( &ucMBFrame );
@@ -596,8 +596,8 @@ typedef struct
   eMBMasterEventType eEvent   ;
 } CellEvent_t;
 
-/* !!! ÎÒëàâèòü ñîáûòèå EV_MASTER_PROCESS_SUCESS */
-// äëÿ êàæäîé ÿ÷åéêè ïèøåì ñîáûòèÿ 
+/* !!! ÐžÐ¢Ð»Ð°Ð²Ð¸Ñ‚ÑŒ ÑÐ¾Ð±Ñ‹Ñ‚Ð¸Ðµ EV_MASTER_PROCESS_SUCESS */
+// Ð´Ð»Ñ ÐºÐ°Ð¶Ð´Ð¾Ð¹ ÑÑ‡ÐµÐ¹ÐºÐ¸ Ð¿Ð¸ÑˆÐµÐ¼ ÑÐ¾Ð±Ñ‹Ñ‚Ð¸Ñ 
 eMBMasterEventType CellEvent[ MB_cell_end ][ EVENTS_MASTER ];
 uint8_t CntEvent[MB_cell_end ]  = {0,};
 
@@ -642,7 +642,7 @@ BOOL xMBMasterPortEventPost( eMBMasterEventType eEvent )
 
 void vMBMasterCBRequestSucess( void )
 {
-	xMBMasterPortEventPost(EV_MASTER_PROCESS_SUCESS);    // TODO  Åñëè íåò îòâåòà -> vMBMasterErrorCBRespondTimeout
+	xMBMasterPortEventPost(EV_MASTER_PROCESS_SUCESS);    // TODO  Ð•ÑÐ»Ð¸ Ð½ÐµÑ‚ Ð¾Ñ‚Ð²ÐµÑ‚Ð° -> vMBMasterErrorCBRespondTimeout
 }
 
 void vMBMasterRunResRelease( void )
