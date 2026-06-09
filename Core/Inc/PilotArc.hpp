@@ -31,9 +31,9 @@ public:
   PilotArc(void );
   
   Timer * htim;
-  port_t    port;     // выод управления деж. дугой
-  uint16_t  TimeOut;  // время ожиданя 
-  uint16_t  curr;  // уровень напряжения 
+  port_t    port;     // РІС‹РѕРґ СѓРїСЂР°РІР»РµРЅРёСЏ РґРµР¶. РґСѓРіРѕР№
+  uint16_t  TimeOut;  // РІСЂРµРјСЏ РѕР¶РёРґР°РЅСЏ 
+  uint16_t  curr;  // СѓСЂРѕРІРµРЅСЊ РЅР°РїСЂСЏР¶РµРЅРёСЏ 
   
   void On( void );
   void Off(void );

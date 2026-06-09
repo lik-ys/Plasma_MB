@@ -39,7 +39,7 @@ USHORT   usSRegHoldBuf[S_REG_HOLDING_NREGS]           ;
 /*------------------------Slave user code----------------------*/
 
 /**
-  * @brief  апдейт регистров чтения
+  * @brief  Р°РїРґРµР№С‚ СЂРµРіРёСЃС‚СЂРѕРІ С‡С‚РµРЅРёСЏ
   * @param
   * @retval
   */
@@ -69,7 +69,7 @@ void UpateActiveRg( void )
 }// UpateActiveRg()
 
 /**
-  * @brief  апдейт регистров записи
+  * @brief  Р°РїРґРµР№С‚ СЂРµРіРёСЃС‚СЂРѕРІ Р·Р°РїРёСЃРё
   * @param
   * @retval
   */
@@ -186,7 +186,7 @@ eMBErrorCode eMBRegInputCB(UCHAR * pucRegBuffer, USHORT usAddress, USHORT usNReg
  */
 eMBErrorCode eMBRegHoldingCB(UCHAR * pucRegBuffer, USHORT usAddress, USHORT usNRegs, eMBRegisterMode eMode)
 {
-///#if S_REG_HOLDING_NREGS > 0  - компилятор не видит  определенимя
+///#if S_REG_HOLDING_NREGS > 0  - РєРѕРјРїРёР»СЏС‚РѕСЂ РЅРµ РІРёРґРёС‚  РѕРїСЂРµРґРµР»РµРЅРёРјСЏ
     eMBErrorCode    eStatus = MB_ENOERR;
     USHORT          iRegIndex;
     USHORT *        pusRegHoldingBuf;

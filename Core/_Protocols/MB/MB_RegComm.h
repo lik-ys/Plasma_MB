@@ -20,7 +20,7 @@
 #ifndef ____MB_REG_COMM_H__ 
 #define ____MB_REG_COMM_H__
 /*===============================[ SPECIAL ]===================================*/ 
-                       // Блок операторов условной компиляции 
+                       // Р‘Р»РѕРє РѕРїРµСЂР°С‚РѕСЂРѕРІ СѓСЃР»РѕРІРЅРѕР№ РєРѕРјРїРёР»СЏС†РёРё 
 /*===============================[ IMPORT DECLARATIONS ]=======================*/
 /* ----------------------------- [ System includes   ]-------------------------*/
 //#include   <> // MCS
@@ -32,7 +32,7 @@
 //#include    "CommonType.h"
 #include    "main.h"
 /*===============================[ PUBLIC CONSTANTS ]=======================*/ 
-// Все частные #defines и constants должны быть объявлены в данном разделе. 
+// Р’СЃРµ С‡Р°СЃС‚РЅС‹Рµ #defines Рё constants РґРѕР»Р¶РЅС‹ Р±С‹С‚СЊ РѕР±СЉСЏРІР»РµРЅС‹ РІ РґР°РЅРЅРѕРј СЂР°Р·РґРµР»Рµ. 
 /*===============================[ TYPE DEFINITIONS ]==========================*/ 
 
 typedef enum _MB_REG
@@ -44,7 +44,7 @@ typedef enum _MB_REG
   REG_LAST = REG_R_VOLT          //
 } eMBReg_t;// _MB_REG
 
-#define REG_HOLDING_NREGS   REG_LAST          // Число регистров МБ
+#define REG_HOLDING_NREGS   REG_LAST          // Р§РёСЃР»Рѕ СЂРµРіРёСЃС‚СЂРѕРІ РњР‘
 #define REG_INPUT_NREGS     1
 #define REG_COILS_SIZE      8
 
@@ -52,7 +52,7 @@ typedef enum _MB_REG
 /*===============================[ EXTERN VAR ]================================*/ 
 extern    const uint16_t         usRegHoldingStart;
 extern    __IO uint16_t          usRegHoldingBuf[ REG_HOLDING_NREGS ];
-// TODO пока работаем только с регистрами
+// TODO РїРѕРєР° СЂР°Р±РѕС‚Р°РµРј С‚РѕР»СЊРєРѕ СЃ СЂРµРіРёСЃС‚СЂР°РјРё
 extern    const uint16_t         usRegInputStart;
 extern    uint16_t               usRegInputBuf[ REG_INPUT_NREGS ];
 extern    uint8_t                ucRegCoilsBuf[ REG_COILS_SIZE / 8 ];
@@ -66,7 +66,7 @@ extern    RegCmdPwm_t            mbRegSet;
 
 /*===============================[ PSEUDO/INLINE FUNCTIONS ]===================*/ 
 
-//inline                 // Inline функции (методы класса)
+//inline                 // Inline С„СѓРЅРєС†РёРё (РјРµС‚РѕРґС‹ РєР»Р°СЃСЃР°)
                        
 /*===============================[ EXPORTED FUNCTIONS ]========================*/ 
 
@@ -78,7 +78,7 @@ void     ClrStReg( eMBcntrlStatus_t bit_mask );
 uint16_t TstStReg( eMBcntrlStatus_t bit_mask );
 
 /*===============================[ END REDEFINITION DEFENCE]===================*/ 
-                         // Окончание однократно включаемого h-файла
+                         // РћРєРѕРЅС‡Р°РЅРёРµ РѕРґРЅРѕРєСЂР°С‚РЅРѕ РІРєР»СЋС‡Р°РµРјРѕРіРѕ h-С„Р°Р№Р»Р°
                        
 #endif
 /** (END OF FILE  : MB_RegComm.h) 

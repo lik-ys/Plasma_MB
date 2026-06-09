@@ -2,7 +2,7 @@
 *
 * Copyright (C) 2023 Sharopin Yuri
 *
-* File              : StateMaСЃhine.cpp
+* File              : StateMaРЎРѓhine.cpp
 * Compiler          : IAR EWA 8.32
 * Version           : 0.0
 * Created File      : 01.06.2023
@@ -11,11 +11,11 @@
 * Support mail      : yshar@ngs.ru
 *
 * Target MCU        : MCU: f407 @ (Xtal = MHz | CPUclk = MHz)
-* Description       : Главная плата управления плазмотроном
+* Description       : Р“Р»Р°РІРЅР°СЏ РїР»Р°С‚Р° СѓРїСЂР°РІР»РµРЅРёСЏ РїР»Р°Р·РјРѕС‚СЂРѕРЅРѕРј
 *                   : 
 * Hardware          : .sch .pcb
 *
-TODO сделать поджиг 
+TODO СЃРґРµР»Р°С‚СЊ РїРѕРґР¶РёРі 
 ********************************************************************************/
 
 #include  <stdint.h>
@@ -118,7 +118,7 @@ void SM_loop( void )
       break;
     case ST_TOGGLE_LED:
       RS485_Dir_m( tx );
-      xMBMasterPortSerialPutByte( 0x55 ); // работает 
+      xMBMasterPortSerialPutByte( 0x55 ); // СЂР°Р±РѕС‚Р°РµС‚ 
       RS485_Dir_m( rx );
       xMBPortSerialGetByte(pdata);
       ToggleLed( &gLed );
@@ -271,7 +271,7 @@ void HAL_ADC_ConvCpltCallback(ADC_HandleTypeDef* hadc)
 #define  ADC_VOLT_COEF  (float)5.17
 
 /*
-Храрактеристика датчика напряжения  LV25-P
+РҐСЂР°СЂР°РєС‚РµСЂРёСЃС‚РёРєР° РґР°С‚С‡РёРєР° РЅР°РїСЂСЏР¶РµРЅРёСЏ  LV25-P
 Uin V     Uout  V
 101         1.1
 200         2.2
@@ -327,14 +327,14 @@ void ADC_Process( void )
 } // ADC_Process()
 
 /**
-  * @brief  Изменилось управляющие слово - выполнить действие
-  *         Работает для 16р регистра
+  * @brief  РР·РјРµРЅРёР»РѕСЃСЊ СѓРїСЂР°РІР»СЏСЋС‰РёРµ СЃР»РѕРІРѕ - РІС‹РїРѕР»РЅРёС‚СЊ РґРµР№СЃС‚РІРёРµ
+  *         Р Р°Р±РѕС‚Р°РµС‚ РґР»СЏ 16СЂ СЂРµРіРёСЃС‚СЂР°
   * @param
-  * @retval Bit Number, если время еще не прошло выдаем
+  * @retval Bit Number, РµСЃР»Рё РІСЂРµРјСЏ РµС‰Рµ РЅРµ РїСЂРѕС€Р»Рѕ РІС‹РґР°РµРј
   */
 int8_t  FindActiveBit( uint16_t ActiveBitRg )
 {
-  uint8_t nb = 0;        // номер бита
+  uint8_t nb = 0;        // РЅРѕРјРµСЂ Р±РёС‚Р°
 
   for ( nb = 0; nb < NUMBERS_CNTL_BIT; nb ++ )
   {
@@ -344,5 +344,5 @@ int8_t  FindActiveBit( uint16_t ActiveBitRg )
   if ( nb > 15 )     return -1;
   else               return nb;
 } // FindActiveBit()
-/** (END OF FILE  : StateMaСЃhine.cpp) 
+/** (END OF FILE  : StateMaРЎРѓhine.cpp) 
 *******************************/ 

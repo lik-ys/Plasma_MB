@@ -46,7 +46,7 @@ void Command :: Proc( void )
 
 // command functions
 /**
-*   Дежурная дуга
+*   Р”РµР¶СѓСЂРЅР°СЏ РґСѓРіР°
 */
 void  CmdPilotArc(void )
 {  
@@ -71,12 +71,12 @@ void  CmdPilotArc(void )
 } //CmdPilotArc()
 
 /**
-*   Поджиг
+*   РџРѕРґР¶РёРі
 */
 void  CmdFireStart( void )
 {
   WR_DEBUG("FIRE_START \r\n");  
-  if ( gMbCntrl.bit.bFireStart ) // получили команду "поджиг "от МБ
+  if ( gMbCntrl.bit.bFireStart ) // РїРѕР»СѓС‡РёР»Рё РєРѕРјР°РЅРґСѓ "РїРѕРґР¶РёРі "РѕС‚ РњР‘
   {
     gMbCntrl.bit.bFireStart  = 0;
     SetMBRgS( REG_W_CNTRL, gMbCntrl.reg );
@@ -98,7 +98,7 @@ void CmdMetalContact( void )
 } // CmdMetalContact( )
 
 /**
-* включение-выключение синхрочастоты
+* РІРєР»СЋС‡РµРЅРёРµ-РІС‹РєР»СЋС‡РµРЅРёРµ СЃРёРЅС…СЂРѕС‡Р°СЃС‚РѕС‚С‹
 */
 void CmdStartStopPwm( void )
 {

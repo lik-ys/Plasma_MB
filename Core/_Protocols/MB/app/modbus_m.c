@@ -2,7 +2,7 @@
 #include "modbus_m.h" 
 
 /**
-  * @brief  апдейт регистров чтения
+  * @brief  Р°РїРґРµР№С‚ СЂРµРіРёСЃС‚СЂРѕРІ С‡С‚РµРЅРёСЏ
   * @param
   * @retval
   */
@@ -19,7 +19,7 @@ void UpDateReadRgM( eMBRegM_t numRg )
   } // switch(  )
 }
 /**
-  * @brief  апдейт регистров записи
+  * @brief  Р°РїРґРµР№С‚ СЂРµРіРёСЃС‚СЂРѕРІ Р·Р°РїРёСЃРё
   * @param
   * @retval
   */
