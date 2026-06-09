@@ -1,4 +1,4 @@
-# ⚡ **STM32F407 — Контроллер 6 DC‑DC чопперов с Modbus RTU**
+# ⚡ ** Контроллер 6 DC‑DC силовых чопперов на Modbus RTU**
 
 ## 📘 **Описание проекта**
 Проект представляет собой систему управления шестью силовыми преобразователями понижающего напряжения (чопперами).  
@@ -13,6 +13,39 @@
 
 Проект написан под **IAR EWARM 8.32.3**, использует **CMSIS v5.0.8 (2017–2018)**, HAL.
 
+---
+
+# 🖥️ Рабочие процессы (State Machine)
+
+```mermaid
+
+stateDiagram-v2
+    [*] --> IDLE
+
+    IDLE --> START        : внешняя команда / init
+    START --> IDLE        : завершение запуска
+
+    IDLE --> TOGGLE_LED   : bToggleLed = 1
+    TOGGLE_LED --> IDLE   : ToggleLed()
+
+    IDLE --> MB_MASTER    : Modbus master event
+    MB_MASTER --> IDLE
+
+    IDLE --> MB_SLAVE     : Modbus slave event
+    MB_SLAVE --> IDLE
+
+    IDLE --> TX           : запрос передачи
+    TX --> IDLE
+
+    IDLE --> ADC_CMPLT    : bAdcCmplt = 1
+    ADC_CMPLT --> IDLE    : ADC_Process()
+
+    IDLE --> PILOT_ARC    : hPilotArc->Proc()
+    PILOT_ARC --> IDLE
+
+    IDLE --> FAULT        : ошибка / авария
+    FAULT --> IDLE        : сброс
+```
 ---
 
 # 🔧 **Аппаратная часть**
@@ -104,38 +137,4 @@ EWARM/Project.eww
 - [ ] Уточнить документацию
 - [ ] Добавить unit‑тесты на алгоритмы обработки  
 - [ ] Добавить диаграмму состояний в Docs  
-
----
-
-# 🖥️ Рабочие процессы (State Machine)
-
-```mermaid
-
-stateDiagram-v2
-    [*] --> IDLE
-
-    IDLE --> START        : внешняя команда / init
-    START --> IDLE        : завершение запуска
-
-    IDLE --> TOGGLE_LED   : bToggleLed = 1
-    TOGGLE_LED --> IDLE   : передача 0x55 / приём байта / ToggleLed()
-
-    IDLE --> MB_MASTER    : Modbus master event
-    MB_MASTER --> IDLE
-
-    IDLE --> MB_SLAVE     : Modbus slave event
-    MB_SLAVE --> IDLE
-
-    IDLE --> TX           : запрос передачи
-    TX --> IDLE
-
-    IDLE --> ADC_CMPLT    : bAdcCmplt = 1
-    ADC_CMPLT --> IDLE    : ADC_Process()
-
-    IDLE --> PILOT_ARC    : hPilotArc->Proc()
-    PILOT_ARC --> IDLE
-
-    %% Ошибки / расширения
-    IDLE --> FAULT        : ошибка / авария
-    FAULT --> IDLE        : сброс
-```
+- [ ] ++ Wi-Fi
